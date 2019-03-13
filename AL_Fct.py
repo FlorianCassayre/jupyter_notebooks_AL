@@ -5,6 +5,7 @@ Created on Wed Mar 13 16:42:29 2019
 
 @author: jecker
 """
+import numpy as np
 
 def printEq(n,coeff):# Latex Print of one equation in format a1x1+ ...+anxn or with coefficients.
     textEq='$'
