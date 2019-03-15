@@ -5,9 +5,8 @@ Created on Mon Mar 11 10:13:39 2019
 
 @author: jecker
 """
-import numpy as np
 
-import AL_newFct as al
+import AL_Fct as al
 
 print("Entrez le nombre de variables n=") #function EnterInt but we might need to specify what int we want: variable, nbr equation,..
 n=input()
