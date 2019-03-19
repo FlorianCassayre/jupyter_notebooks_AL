@@ -8,7 +8,7 @@ Created on Wed Mar 13 16:53:28 2019
 import AL_Fct as al
 import matplotlib.pyplot as plt
 
-
+#SYSTEM
 MatCoeff=np.array([[1, 2,0], [3, -4,9], [3, -4,5]])
 al.printSyst(len(MatCoeff), len(MatCoeff[0,:])-1,MatCoeff)
 al.printSyst(4,5,'')
@@ -32,7 +32,7 @@ MatCoeff=np.array(MatCoeff)
 print("Votre système est de la forme")
 al.printSyst(m,n, MatCoeff)
 
-
+#%% SOLUTION TO SYSTEM
 print("Entrez la solution sous la forme d'une suite de ", n," nombres réels")
 entry=input()
 sol=al.EnterListReal(n-1,entry)
@@ -44,6 +44,11 @@ if all(isSol[i]==True for i in range(len(isSol))):
 else:
     print("Ce n'est pas une solution du système")
 
-x=np.arange(-5,5,0.1)
-plt.plot(x, 3-x)
-plt.show()
+#%% GRAPH OF 2D SYSTEM
+MatCoeff=np.array([[1, 2,0], [3, -4,9], [1,2,3]])
+al.Plot2DSys(-7,7,100,MatCoeff)
+    
+
+
+
+
