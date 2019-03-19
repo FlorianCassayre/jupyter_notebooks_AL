@@ -9,6 +9,7 @@ Created on Mon Mar 18 15:14:28 2019
 import AL_Fct as al
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 print("Entrez le nombre de variables n=") 
 n=input()
@@ -33,4 +34,4 @@ al.printSyst(m,n, MatCoeff)
 print("La matrice correspondante est")
 al.printA(MatCoeff)
 
-al.echelonMatA(MatCoeff)
+al.echelonMat(MatCoeff)

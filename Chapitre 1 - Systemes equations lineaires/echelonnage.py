@@ -16,7 +16,7 @@ MatCoeff=np.array([[0, 2,1,2], [3, -4,10,8], [3, -4,10,8]])
 #A = np.asmatrix(MatCoeff)
 al.printA(MatCoeff)
 
-al.echelonMatA(MatCoeff)
+al.echelonMat(MatCoeff)
 
 #%%TRASH
 #def diviseLgn(coeff, Mat, i,j):

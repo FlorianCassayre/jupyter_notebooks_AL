@@ -10,9 +10,11 @@ from __future__ import division
 import numpy as np
 from IPython.display import display, Latex
 import matplotlib.pyplot as plt
+import math
+
 
 #PRINTS Equations, systems, matrix
-def Eq(n,coeff):# Latex str of one equation in format a1x1+ ...+anxn or with coefficients.
+def strEq(n,coeff):# Latex str of one equation in format a1x1+ ...+anxn or with coefficients.
     Eq=''
     if str(coeff)=='': 
         if n==1:
@@ -35,12 +37,12 @@ def Eq(n,coeff):# Latex str of one equation in format a1x1+ ...+anxn or with coe
 
 def printEq(n,coeff):# Latex Print of one equation in format a1x1+ ...+anxn or with coefficients.
     texEq='$'
-    texEq=texEq+ Eq(n,coeff)
+    texEq=texEq+ strEq(n,coeff)
     texEq=texEq + '$'
     display(Latex(texEq))
     
 def printSyst(m,n,MatCoeff):# Latex Print of one system of m equation in format ai1x1+ ...+ainxn=bi or with coeff in MatCoeff.
-    textSyst='$\\begin{cases}'
+    texSyst='$\\begin{cases}'
     Eq_list=[]
     for i in range(m):          
         if str(MatCoeff)=='':
@@ -52,34 +54,15 @@ def printSyst(m,n,MatCoeff):# Latex Print of one system of m equation in format 
             else:
                 Eq_i=Eq_i + 'a_{' + str(i+1) + '1}' + 'x_1 + \ldots +' + 'a_{' +  str(i+1) +str(n) + '}' + 'x_'+ str(n) + '=b_'  + str(i+1)
         else:
-            Eq_i=Eq(n,MatCoeff[i,:])
+            Eq_i=strEq(n,MatCoeff[i,:])
         Eq_list.append(Eq_i)
-        textSyst=textSyst+  Eq_list[i] + '\\\\'
-    texSyst =textSyst+ '\\end{cases}$'
+        texSyst=texSyst+  Eq_list[i] + '\\\\'
+    texSyst =texSyst+ '\\end{cases}$'
     display(Latex(texSyst))  
 
-def printA(A) : #Print matrix 
-    texApre = '$\\left(\\begin{array}{'
-    texA = ''
-    for i in np.asarray(A) :
-        texALigne = ''
-        texALigne = texALigne + str(round(i[0],3) if i[0] %1 else int(i[0]))
-        if texA == '' :
-            texApre = texApre + 'c'
-        for j in i[1:] :
-            if texA == '' :
-                texApre = texApre + 'c'
-            texALigne = texALigne + ' & ' + str(round(j,3) if j %1 else int(j))
-        texALigne = texALigne + ' \\\\'
-        texA = texA + texALigne
-    texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)$'
-    
-    # print(texA)
-    display(Latex(texA))
 
-
-def texA_rrefA(A, rrefA): #latex of A and rrefA as A~rrefA
-    texApre = '$\\left(\\begin{array}{'
+def texMatrix(A): #return tex expression of one matrix
+    texApre ='\\left(\\begin{array}{'
     texA = ''
     for i in np.asarray(A) :
         texALigne = ''
@@ -93,24 +76,21 @@ def texA_rrefA(A, rrefA): #latex of A and rrefA as A~rrefA
         texALigne = texALigne + ' \\\\'
         texA = texA + texALigne
     texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
-    texApre = texA+ '\\quad \\sim \\, \ldots\\, \\sim \\quad \\left(\\begin{array}{'
-    texA = ''
-    for i in np.asarray(rrefA) :
-        texALigne = ''
-        texALigne = texALigne + str(round(i[0],3) if i[0] %1 else int(i[0]))
-        if texA == '' :
-            texApre = texApre + 'c'
-        for j in i[1:] :
-            if texA == '' :
-                texApre = texApre + 'c'
-            texALigne = texALigne + ' & ' + str(round(j,3) if j %1 else int(j))
-        texALigne = texALigne + ' \\\\'
-        texA = texA + texALigne
-    texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)$'   
-     
-    display(Latex(texA))
+    return texA
 
-# Functions to enter smth
+def printA(A) : #Print matrix 
+    texA='$'+ texMatrix(A) + '$'
+    # print(texA)
+    display(Latex(texA))  
+    
+def printEquMatrices(listOfMatrices): #list of matrices is M=[M1, M2, ..., Mn]
+    texEqu='$' + texMatrix(listOfMatrices[0])
+    for i in range(1,len(listOfMatrices)):
+        texEqu=texEqu+ '\\quad \\sim \\quad' + texMatrix(listOfMatrices[i])
+    texEqu=texEqu+ '$'
+    display(Latex(texEqu))
+
+#%% Functions to enter smth
 
 def EnterInt(n): #function enter integer. 
     while type(n)!=int:
@@ -127,7 +107,8 @@ def EnterInt(n): #function enter integer.
     n=int(n)
     return n
 
-def EnterListReal(n,coeff): #function enter list of real numbers.
+def EnterListReal(n): #function enter list of real numbers.
+    coeff=input()
     while type(coeff)!=list:
         try: 
             coeff=[float(eval(x)) for x in coeff.split(',')]   
@@ -142,7 +123,7 @@ def EnterListReal(n,coeff): #function enter list of real numbers.
     #coeff[abs(coeff)<1e-15]=0 #ensures that 0 is 0.  
     return coeff
 
-#Verify if sol is the solution of the equation with coefficients coeff
+#%%Verify if sol is the solution of the equation with coefficients coeff
 def SolOfEq(sol,coeff, i):
     A = np.asarray(coeff[0:len(coeff)-1])
     if abs(np.dot(A,sol)-coeff[len(coeff)-1])<1e-10:
@@ -152,7 +133,7 @@ def SolOfEq(sol,coeff, i):
     return abs(np.dot(A,sol)-coeff[len(coeff)-1])<1e-10
 
 
-#Plots
+#%%Plots
 def Plot2DSys(xL,xR,p,MatCoeff): 
     x=np.linspace(xL,xR,p)
     fig, ax = plt.subplots()
@@ -173,9 +154,9 @@ def Plot2DSys(xL,xR,p,MatCoeff):
     ax.spines['top'].set_color('none')
     ax.spines['right'].set_color('none')
 
-#Echelonnage
+#%%Echelonnage
    
-def ech_zero(indice, M): #echelonne la matrice pour mettre les zeros dans les lignes du bas. M (matrice ou array) et Mat (list) pas le même format.
+def echZero(indice, M): #echelonne la matrice pour mettre les zeros dans les lignes du bas. M (matrice ou array) et Mat (list) pas le même format.
     Mat=M[indice==False,:].ravel()
     Mat=np.concatenate([Mat,M[indice==True,:].ravel()])
     Mat=Mat.reshape(len(M), len(M[0,:])) 
@@ -193,7 +174,7 @@ def Eijalpha(M, i,j, alpha): # matrice elementaire, AJOUTE à la ligne i alpha *
     M[i,:]=M[i,:] +  alpha *M[j,:]
     return M 
 
-def echelonMatA(MatCoeff):
+def echelonMat(MatCoeff):
     Mat=MatCoeff
     Mat=Mat.astype(float) # in case the array in int instead of float.
 
@@ -204,12 +185,12 @@ def echelonMatA(MatCoeff):
              j+=1 
         if j==len(Mat[0,:])-1:
             print("La matrice est sous la forme échelonnée")
-            texA_rrefA(MatCoeff, Mat)
+            printEquMatrices([MatCoeff, Mat])
             break     
         if abs(Mat[i,j])<1e-15:
                 Mat[i,j]=0
                 zero=abs(Mat[i:,j])<1e-15
-                M= ech_zero(zero,Mat[i:,:] )
+                M= echZero(zero,Mat[i:,:] )
                 Mat[i:,:]=M
         Mat=Ealpha(Mat, i,1/Mat[i,j] ) #normalement Mat[i,i]!=0
         for k in range(i+1,len(MatCoeff)):
