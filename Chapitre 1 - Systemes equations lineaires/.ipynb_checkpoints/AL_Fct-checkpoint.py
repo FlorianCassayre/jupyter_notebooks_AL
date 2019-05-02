@@ -12,6 +12,24 @@ from IPython.display import display, Latex
 import matplotlib.pyplot as plt
 import math
 
+import numpy as np
+import matplotlib.pyplot as plt
+
+from IPython.core.magic import register_cell_magic
+from IPython.display import HTML, display
+
+@register_cell_magic
+def bgc(color, cell=None):
+    script = (
+        "var cell = this.closest('.jp-CodeCell');"
+        "var editor = cell.querySelector('.jp-Editor');"
+        "editor.style.background='{}';"
+        "this.parentNode.removeChild(this)"
+    ).format(color)
+
+    display(HTML('<img src onerror="{}">'.format(script)))
+
+
 
 #PRINTS Equations, systems, matrix
 def strEq(n,coeff):# Latex str of one equation in format a1x1+ ...+anxn or with coefficients.
@@ -141,7 +159,7 @@ def SolOfSyst(solution,MatriceCoeff,m):
     else:
         print("Ce n'est pas une solution du système")
         
-#%%Plots
+#%%Plots using Bokeh
 def Plot2DSys(xL,xR,p,MatCoeff): 
     MatCoeff=np.array(MatCoeff)
     x=np.linspace(xL,xR,p)
