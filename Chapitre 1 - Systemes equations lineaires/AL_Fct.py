@@ -11,10 +11,10 @@ import numpy as np
 from IPython.display import display, Latex
 import matplotlib.pyplot as plt
 import math
-
-import numpy as np
-import matplotlib.pyplot as plt
-
+import plotly
+import plotly.plotly as py
+import plotly.graph_objs as go
+plotly.offline.init_notebook_mode(connected=True)
 from IPython.core.magic import register_cell_magic
 from IPython.display import HTML, display
 
@@ -159,28 +159,29 @@ def SolOfSyst(solution,MatriceCoeff,m):
     else:
         print("Ce n'est pas une solution du système")
         
-#%%Plots using Bokeh
-def Plot2DSys(xL,xR,p,MatCoeff): 
+#%%Plots using plotly
+def Plot2DSys(xL,xR,p,MatCoeff): # small values for p allows for dots to be seen
     MatCoeff=np.array(MatCoeff)
     x=np.linspace(xL,xR,p)
-    fig, ax = plt.subplots()
-    plt.grid(color='gray', linestyle="dotted", linewidth=0.5)
     legend=[]
+    data=[]
     for i in range(1,len(MatCoeff)+1):
-        ax.plot(x,  (MatCoeff[i-1,2]-MatCoeff[i-1,0]*x)/MatCoeff[i-1,1])
-        legend.append('eq %i' %i)
-    plt.legend(legend)
-    ax.set_aspect('equal')
-    ax.grid(True, which='both')  
-    ax.axhline(y=0, color='k')
-    ax.axvline(x=0, color='k')
-    ax.spines['left'].set_position('zero')
-    ax.yaxis.tick_left()
-    ax.spines['bottom'].set_position('zero')
-    ax.xaxis.tick_bottom()
-    ax.spines['top'].set_color('none')
-    ax.spines['right'].set_color('none')
-
+            trace=go.Scatter(x=x,  y= (MatCoeff[i-1,2]-MatCoeff[i-1,0]*x)/MatCoeff[i-1,1], name='Droite %d'%i)
+            data.append(trace)
+    fig = go.Figure(data=data)
+    plotly.offline.iplot(fig)
+    
+def Plot3DSys(xL,xR,p,MatCoeff): # small values for p allows for dots to be seen
+    MatCoeff=np.array(MatCoeff)
+    x=np.linspace(xL,xR,p)
+    legend=[]
+    data=[]
+    for i in range(1,len(MatCoeff)+1):
+            trace=go.Scatter(x=x,  y= (MatCoeff[i-1,2]-MatCoeff[i-1,0]*x)/MatCoeff[i-1,1], name='Droite %d'%i)
+            data.append(trace)
+    fig = go.Figure(data=data)
+    plotly.offline.iplot(fig) 
+    
 #%%Echelonnage
    
 def echZero(indice, M): #echelonne la matrice pour mettre les zeros dans les lignes du bas. M (matrice ou array) et Mat (list) pas le même format.
@@ -202,7 +203,7 @@ def Eijalpha(M, i,j, alpha): # matrice elementaire, AJOUTE à la ligne i alpha *
     return M 
 
 def echelonMat(MatCoeff):
-    Mat=MatCoeff
+    Mat=np.array(MatCoeff)
     Mat=Mat.astype(float) # in case the array in int instead of float.
 
     numPivot=0
