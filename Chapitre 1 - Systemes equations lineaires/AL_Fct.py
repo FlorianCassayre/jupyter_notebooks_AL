@@ -60,24 +60,27 @@ def printEq(n,coeff):# Latex Print of one equation in format a1x1+ ...+anxn or w
     display(Latex(texEq))
     
 def printSyst(m,n,MatCoeff):# Latex Print of one system of m equation in format ai1x1+ ...+ainxn=bi or with coeff in MatCoeff.
-    texSyst='$\\begin{cases}'
-    Eq_list=[]
-    MatCoeff=np.array(MatCoeff) #just in case it's not
-    for i in range(m):          
-        if str(MatCoeff)=='':
-            Eq_i=''
-            if n==1:
-                Eq_i=Eq_i + 'a_{' + str(i+1) + '1}' + 'x_1 = b_' + str(i+1)
-            elif n==2:
-                Eq_i=Eq_i + 'a_{' + str(i+1) + '1}' + 'x_1 + ' +  'a_{' + str(i+1) + '2}' + 'x_2 = b_' + str(i+1)
+    if (str(MatCoeff)=='') or (len(MatCoeff[1])==n+1 and len(MatCoeff)==m):  #ensures that MatCoeff has proper dimensions 
+        texSyst='$\\begin{cases}'
+        Eq_list=[]
+        MatCoeff=np.array(MatCoeff) #just in case it's not
+        for i in range(m):          
+            if str(MatCoeff)=='':
+                Eq_i=''
+                if n==1:
+                    Eq_i=Eq_i + 'a_{' + str(i+1) + '1}' + 'x_1 = b_' + str(i+1)
+                elif n==2:
+                    Eq_i=Eq_i + 'a_{' + str(i+1) + '1}' + 'x_1 + ' +  'a_{' + str(i+1) + '2}' + 'x_2 = b_' + str(i+1)
+                else:
+                    Eq_i=Eq_i + 'a_{' + str(i+1) + '1}' + 'x_1 + \ldots +' + 'a_{' +  str(i+1) +str(n) + '}' + 'x_'+ str(n) + '=b_'  + str(i+1)
             else:
-                Eq_i=Eq_i + 'a_{' + str(i+1) + '1}' + 'x_1 + \ldots +' + 'a_{' +  str(i+1) +str(n) + '}' + 'x_'+ str(n) + '=b_'  + str(i+1)
-        else:
-            Eq_i=strEq(n,MatCoeff[i,:])
-        Eq_list.append(Eq_i)
-        texSyst=texSyst+  Eq_list[i] + '\\\\'
-    texSyst =texSyst+ '\\end{cases}$'
-    display(Latex(texSyst))  
+                Eq_i=strEq(n,MatCoeff[i,:])
+            Eq_list.append(Eq_i)
+            texSyst=texSyst+  Eq_list[i] + '\\\\'
+        texSyst =texSyst+ '\\end{cases}$'
+        display(Latex(texSyst))  
+    else: 
+        print("La matrice des coefficients n'a pas les bonnes dimensions")
 
 
 def texMatrix(A): #return tex expression of one matrix
@@ -170,17 +173,9 @@ def Plot2DSys(xL,xR,p,MatCoeff): # small values for p allows for dots to be seen
             data.append(trace)
     fig = go.Figure(data=data)
     plotly.offline.iplot(fig)
-    
+      
 def Plot3DSys(xL,xR,p,MatCoeff): # small values for p allows for dots to be seen
-    MatCoeff=np.array(MatCoeff)
-    x=np.linspace(xL,xR,p)
-    legend=[]
-    data=[]
-    for i in range(1,len(MatCoeff)+1):
-            trace=go.Scatter(x=x,  y= (MatCoeff[i-1,2]-MatCoeff[i-1,0]*x)/MatCoeff[i-1,1], name='Droite %d'%i)
-            data.append(trace)
-    fig = go.Figure(data=data)
-    plotly.offline.iplot(fig) 
+    tba
     
 #%%Echelonnage
    
