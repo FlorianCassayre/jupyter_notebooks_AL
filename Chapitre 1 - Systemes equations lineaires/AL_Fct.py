@@ -53,16 +53,18 @@ def strEq(n,coeff):# Latex str of one equation in format a1x1+ ...+anxn or with 
              + 'x_' + str(n) + '=' + str(round(coeff[len(coeff)-1],3) if coeff[len(coeff)-1] % 1 else int(coeff[len(coeff)-1])) 
     return Eq
 
-def printEq(n,coeff):# Latex Print of one equation in format a1x1+ ...+anxn or with coefficients.
+def printEq(n,coeff,b):# Latex Print of one equation in format a1x1+ ...+anxn or with coefficients.
+    coeff=coeff+b
     texEq='$'
     texEq=texEq+ strEq(n,coeff)
     texEq=texEq + '$'
     display(Latex(texEq))
     
-def printSyst(m,n,MatCoeff):# Latex Print of one system of m equation in format ai1x1+ ...+ainxn=bi or with coeff in MatCoeff.
-    if (str(MatCoeff)=='') or (len(MatCoeff[1])==n+1 and len(MatCoeff)==m):  #ensures that MatCoeff has proper dimensions 
+def printSyst(m,n,MatCoeff,b):# Latex Print of one system of m equation in format ai1x1+ ...+ainxn=bi or with coeff in MatCoeff.
+    if (str(MatCoeff)=='') or (len(MatCoeff[1])==n and len(MatCoeff)==m):  #ensures that MatCoeff has proper dimensions 
         texSyst='$\\begin{cases}'
         Eq_list=[]
+        MatCoeff = [MatCoeff[i]+[b[i]]for i in range(0,m)]
         MatCoeff=np.array(MatCoeff) #just in case it's not
         for i in range(m):          
             if str(MatCoeff)=='':
@@ -154,28 +156,103 @@ def SolOfEq(sol,coeff, i):
         print("La suite entrée n'est pas une solution de l'équation",i)
     return abs(np.dot(A,sol)-coeff[len(coeff)-1])<1e-10
 
-def SolOfSyst(solution,MatriceCoeff,m):
+def SolOfSyst(solution,MatriceCoeff,b):
+    MatriceCoeff = [MatriceCoeff[i]+[b[i]] for i in range(0,len(MatriceCoeff))]
     MatriceCoeff=np.array(MatriceCoeff)
-    isSol=[SolOfEq(solution, MatriceCoeff[i,:],i+1) for i in range(0,m)]
+    isSol=[SolOfEq(solution, MatriceCoeff[i,:],i+1) for i in range(0,len(MatriceCoeff))]
     if all(isSol[i]==True for i in range(len(isSol))):
         print("C'est une solution du système")
     else:
         print("Ce n'est pas une solution du système")
         
 #%%Plots using plotly
-def Plot2DSys(xL,xR,p,MatCoeff): # small values for p allows for dots to be seen
-    MatCoeff=np.array(MatCoeff)
-    x=np.linspace(xL,xR,p)
-    legend=[]
-    data=[]
-    for i in range(1,len(MatCoeff)+1):
-            trace=go.Scatter(x=x,  y= (MatCoeff[i-1,2]-MatCoeff[i-1,0]*x)/MatCoeff[i-1,1], name='Droite %d'%i)
+def Plot2DSys(xL,xR,p,MatCoeff,b): # small values for p allows for dots to be seen
+        MatCoeff = [MatCoeff[i]+[b[i]] for i in range(0,len(MatCoeff))]
+        MatCoeff=np.array(MatCoeff)
+        t=np.linspace(xL,xR,p)
+        legend=[]
+        data=[]
+        for i in range(1,len(MatCoeff)+1):
+            if (abs(MatCoeff[i-1,1])) > abs (MatCoeff[i-1,0]) :
+                trace=go.Scatter(x=t,  y= (MatCoeff[i-1,2]-MatCoeff[i-1,0]*t)/MatCoeff[i-1,1], name='Droite %d'%i)
+            else :
+                trace=go.Scatter(x=(MatCoeff[i-1,2]-MatCoeff[i-1,1]*t)/MatCoeff[i-1,0],  y= t, name='Droite %d'%i)
             data.append(trace)
-    fig = go.Figure(data=data)
-    plotly.offline.iplot(fig)
+        fig = go.Figure(data=data)
+        plotly.offline.iplot(fig)
       
-def Plot3DSys(xL,xR,p,MatCoeff): # small values for p allows for dots to be seen
-    tba
+def Plot3DSys(xL,xR,p,MatCoeff,b): # small values for p allows for dots to be seen
+    MatCoeff = [MatCoeff[i]+[b[i]] for i in range(0,len(MatCoeff))]
+    MatCoeff=np.array(MatCoeff)
+    gr='rgb(102,255,102)'
+    org='rgb(255,117,26)'
+    red= 'rgb(255,0,0)'
+    blue='rgb(51, 214, 255)'
+    colors =[blue, gr, org]
+    s = np.linspace(xL, xR ,p)
+    t = np.linspace(xL, xR, p)
+    tGrid, sGrid = np.meshgrid(s, t)
+    data=[]
+    for i in range(0, len(MatCoeff)):
+        colorscale=[[0.0,colors[i]],
+               [0.1, colors[i]],
+               [0.2, colors[i]],
+               [0.3, colors[i]],
+               [0.4, colors[i]],
+               [0.5, colors[i]],
+               [0.6, colors[i]],
+               [0.7, colors[i]],
+               [0.8, colors[i]],
+               [0.9, colors[i]],
+               [1.0, colors[i]]]
+        j=i+1 
+        if (abs(MatCoeff[i,2])) > abs (MatCoeff[i,1]) : # z en fonction de x,y
+            x = sGrid
+            y = tGrid
+            surface = go.Surface(x=x, y=y, z=(MatCoeff[i,3]-MatCoeff[i,0]*x -MatCoeff[i,1]*y)/MatCoeff[i,2],
+                             showscale=False, colorscale=colorscale, opacity=1, name='Plan %d' %j)
+        elif (MatCoeff[i,2]==0 and MatCoeff[i,1]==0): # x =b
+            y = sGrid
+            z = tGrid
+            surface = go.Surface(x=MatCoeff[i,3]-MatCoeff[i,1]*y, y=y, z=z,
+                             showscale=False, colorscale=colorscale, opacity=1, name='Plan %d' %j)
+        else:# y en fonction de x,z
+            x = sGrid
+            z = tGrid
+            surface = go.Surface(x=x, y=(MatCoeff[i,3]-MatCoeff[i,0]*x -MatCoeff[i,2]*z)/MatCoeff[i,1], z=z,
+                             showscale=False, colorscale=colorscale, opacity=1, name='Plan %d' %j)
+            
+        data.append(surface)
+        layout = go.Layout(
+        showlegend=True,  #not there WHY????
+        legend=dict(orientation="h"),
+        autosize=True,
+        width=800,
+        height=800, 
+            scene=go.Scene(
+            xaxis=dict(
+                gridcolor='rgb(255, 255, 255)',
+                zerolinecolor='rgb(255, 255, 255)',
+                showbackground=True,
+                backgroundcolor='rgb(230, 230,230)'
+            ),
+            yaxis=dict(
+                gridcolor='rgb(255, 255, 255)',
+                zerolinecolor='rgb(255, 255, 255)',
+                showbackground=True,
+                backgroundcolor='rgb(230, 230,230)'
+            ),
+        zaxis=dict(
+                gridcolor='rgb(255, 255, 255)',
+                zerolinecolor='rgb(255, 255, 255)',
+                showbackground=True,
+                backgroundcolor='rgb(230, 230,230)'
+            )
+        )
+    )
+    fig = go.Figure(data=data, layout=layout)
+    plotly.offline.iplot(fig)
+    
     
 #%%Echelonnage
    
