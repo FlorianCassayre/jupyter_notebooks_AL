@@ -1,36 +1,70 @@
-import plotly
-import plotly.plotly as py
-import plotly.graph_objs as go
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon May 20 11:41:46 2019
 
-# Configure Plotly to be rendered inline in the notebook.
-plotly.offline.init_notebook_mode()
+@author: jecker
+"""
 
-z1 = [
-    [8.83,8.89,8.81,8.87,8.9,8.87],
-    [8.89,8.94,8.85,8.94,8.96,8.92],
-    [8.84,8.9,8.82,8.92,8.93,8.91],
-    [8.79,8.85,8.79,8.9,8.94,8.92],
-    [8.79,8.88,8.81,8.9,8.95,8.92],
-    [8.8,8.82,8.78,8.91,8.94,8.92],
-    [8.75,8.78,8.77,8.91,8.95,8.92],
-    [8.8,8.8,8.77,8.91,8.95,8.94],
-    [8.74,8.81,8.76,8.93,8.98,8.99],
-    [8.89,8.99,8.92,9.1,9.13,9.11],
-    [8.97,8.97,8.91,9.09,9.11,9.11],
-    [9.04,9.08,9.05,9.25,9.28,9.27],
-    [9,9.01,9,9.2,9.23,9.2],
-    [8.99,8.99,8.98,9.18,9.2,9.19],
-    [8.93,8.97,8.97,9.18,9.2,9.18]
-]
+import random 
 
-z2 = [[zij+1 for zij in zi] for zi in z1]
-z3 = [[zij-1 for zij in zi] for zi in z1]
+def generateRandomConnectedGraph( V):
 
-data = [
-    go.Surface(z=z1),
-    go.Surface(z=z2, showscale=False, opacity=0.9),
-    go.Surface(z=z3, showscale=False, opacity=0.9)
+    initialSet = set()
 
-]
-plot_figure = go.Figure(data=data, layout=layout)
-plotly.offline.iplot(plot_figure)
+    visitedSet = set()
+
+    vertices = set()
+
+    edges = set()
+
+    #generate the set of names for the vertices
+
+    for i in range(V):
+
+        initialSet.add(str(i))
+
+        vertices.add(str(i))
+
+    #set the intial vertex to be connected
+
+    curVertex = random.sample(initialSet, 1).pop()
+
+    initialSet.remove(curVertex)
+
+    visitedSet.add(curVertex)
+
+    #loop through all the vertices, connecting them randomly
+
+    while initialSet:
+
+        adjVertex = random.sample(initialSet, 1).pop()
+
+        edge = (random.randint(0,3), curVertex, adjVertex)
+
+        edges.add(edge)
+
+        initialSet.remove(adjVertex)
+
+        visitedSet.add(adjVertex)
+
+        curVertex = adjVertex
+
+    return vertices, edges
+
+
+def generateCombination(n):
+
+    com = []
+
+    for i in range(n):
+
+        for j in range(i+1, n):
+
+            com.append([i,j])
+
+            com.append([j,i])
+
+    return com
+
+V,E=generateRandomConnectedGraph( 5)
