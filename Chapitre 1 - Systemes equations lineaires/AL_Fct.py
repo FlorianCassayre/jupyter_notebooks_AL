@@ -357,3 +357,5 @@ def echelonRedMat(MatCoeff, b):
     printEquMatrices([MatAugm, Mat])
     return Mat
 
+def f(a,x):
+    return x+ a
