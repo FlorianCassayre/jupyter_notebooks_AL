@@ -274,7 +274,8 @@ def Eijalpha(M, i,j, alpha): # matrice elementaire, AJOUTE à la ligne i alpha *
     M[i,:]=M[i,:] +  alpha *M[j,:]
     return M 
 
-def echelonMat(MatCoeff):
+def echelonMat(MatCoeff,b):  #Nous donne la matrice echelonne d un system [A|b]
+    MatCoeff = [MatCoeff[i]+[b[i]] for i in range(0,len(MatCoeff))]
     Mat=np.array(MatCoeff)
     Mat=Mat.astype(float) # in case the array in int instead of float.
 
@@ -284,6 +285,9 @@ def echelonMat(MatCoeff):
         while all(abs(Mat[j:,i])<1e-15) and j!=len(Mat[0,:])-1: #if column (or rest of) is zero, take next column
              j+=1 
         if j==len(Mat[0,:])-1:
+            #ADD ZERO LINES BELOW!!!!!!
+            if len(Mat[0,:])>j:
+                Mat[i+1:len(Mat),:]=0
             print("La matrice est sous la forme échelonnée")
             printEquMatrices([MatCoeff, Mat])
             break     
@@ -292,12 +296,64 @@ def echelonMat(MatCoeff):
                 zero=abs(Mat[i:,j])<1e-15
                 M= echZero(zero,Mat[i:,:] )
                 Mat[i:,:]=M
-        Mat=Ealpha(Mat, i,1/Mat[i,j] ) #normalement Mat[i,i]!=0
+        Mat=Ealpha(Mat, i,1/Mat[i,j] ) #normalement Mat[i,j]!=0
         for k in range(i+1,len(MatCoeff)):
             Mat=Eijalpha(Mat, k,i, -Mat[k,j])
             #Mat[k,:]=[0 if abs(Mat[k,l])<1e-15 else Mat[k,l] for l in range(len(MatCoeff[0,:]))]
-    
         numPivot+=1
         Mat[abs(Mat)<1e-15]=0
-        printA(np.asmatrix(Mat))    
+        printA(np.array(Mat)) 
+    return np.asmatrix(Mat)
+
+def echelonMatCoeff(MatCoeff): #take echelonMAt but without b. 
+    b= [0 for i in range(len(MatCoeff))]
+    Mat = [MatCoeff[i]+[b[i]] for i in range(0,len(MatCoeff))]
+    Mat=np.array(Mat)
+    Mat=Mat.astype(float) # in case the array in int instead of float.
+    numPivot=0
+    for i in range(len(Mat)):
+        j=i
+        while all(abs(Mat[j:,i])<1e-15) and j!=len(Mat[0,:])-1: #if column (or rest of) is zero, take next column
+             j+=1 
+        if j==len(Mat[0,:])-1:
+            #ADD ZERO LINES BELOW!!!!!!
+            if len(Mat[0,:])>j:
+                Mat[i+1:len(Mat),:]=0
+            print("La matrice est sous la forme échelonnée")
+            printEquMatrices([np.asmatrix(MatCoeff), np.asmatrix(Mat[:, :len(MatCoeff[0])])])
+            break     
+        if abs(Mat[i,j])<1e-15:
+                Mat[i,j]=0
+                zero=abs(Mat[i:,j])<1e-15
+                M= echZero(zero,Mat[i:,:] )
+                Mat[i:,:]=M
+        Mat=Ealpha(Mat, i,1/Mat[i,j] ) #normalement Mat[i,j]!=0
+        for k in range(i+1,len(MatCoeff)):
+            Mat=Eijalpha(Mat, k,i, -Mat[k,j])
+            #Mat[k,:]=[0 if abs(Mat[k,l])<1e-15 else Mat[k,l] for l in range(len(MatCoeff[0,:]))]
+        numPivot+=1
+        Mat[abs(Mat)<1e-15]=0
+        printA(np.asmatrix(Mat[:, :len(MatCoeff[0])])) 
+    return np.asmatrix(Mat)
+
+def echelonRedMat(MatCoeff, b):
+    Mat=echelonMat(MatCoeff,b)
+    Mat=np.array(Mat)
+    MatAugm = [MatCoeff[i]+[b[i]] for i in range(0,len(MatCoeff))]
+    i=(len(Mat)-1)
+    while i>=1:
+        while all(abs(Mat[i,:len(Mat[0])-1])<1e-15) and i!=0:#if ligne (or rest of) is zero, take next ligne
+            i-=1
+        #we have a lign with one non-nul element
+        j=i #we can start at pos ij at least the pivot is there
+        if abs(Mat[i,j])<1e-15: #if element Aij=0 take next one --> find pivot
+            j+=1
+        #Aij!=0 and Aij==1 if echelonMat worked
+        for k in range(i): #put zeros above pivot (which is 1 now)
+            Mat=Eijalpha(Mat, k,i, -Mat[k,j])
+        i-=1
+        printA(Mat)
+    print("La matrice est sous la forme échelonnée réduite")
+    printEquMatrices([MatAugm, Mat])
+    return Mat
 
