@@ -84,23 +84,51 @@ def printSyst(m,n,A,b):# Latex Print of one system of m equation in format ai1x1
         print("La matrice des coefficients n'a pas les bonnes dimensions")
 
 
-def texMatrix(A): #return tex expression of one matrix of coefficients
-   
-    texApre ='\\left(\\begin{array}{'
-    texA = ''
-    for i in np.asarray(A) :
-        texALigne = ''
-        texALigne = texALigne + str(round(i[0],3) if i[0] %1 else int(i[0]))
-        if texA == '' :
-            texApre = texApre + 'c'
-        for j in i[1:] :
+def texMatrix(*args): #return tex expression of one matrix of A or (A|b) -- or (A|B)
+    print(args.item())
+    if len(args)==2: # matrice augmentée
+        m=len(A[0])
+        A=np.concatenate((A,b), axis=1)
+        texApre ='\\left(\\begin{array}{'
+        texA = ''
+        for i in np.asarray(A) :
+            texALigne = ''
+            texALigne = texALigne + str(round(i[0],3) if i[0] %1 else int(i[0]))
             if texA == '' :
                 texApre = texApre + 'c'
-            texALigne = texALigne + ' & ' + str(round(j,3) if j %1 else int(j))
-        texALigne = texALigne + ' \\\\'
-        texA = texA + texALigne
-    texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
+            for j in i[1:m] :
+                if texA == '' :
+                    texApre = texApre + 'c'
+                texALigne = texALigne + ' & ' + str(round(j,3) if j %1 else int(j))
+            if texA == '' :
+                texApre = texApre + '| c'
+            for j in i[m:] :   
+                if texA == '' :
+                    texApre = texApre + 'c'
+                texALigne = texALigne + ' & ' + str(round(j,3) if j %1 else int(j))
+            texALigne = texALigne + ' \\\\'
+            texA = texA + texALigne
+        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
+    elif len(args)==1: #matrice des coefficients
+        texApre ='\\left(\\begin{array}{'
+        texA = ''
+        for i in np.asarray(A) :
+            texALigne = ''
+            texALigne = texALigne + str(round(i[0],3) if i[0] %1 else int(i[0]))
+            if texA == '' :
+                texApre = texApre + 'c'
+            for j in i[1:] :
+                if texA == '' :
+                    texApre = texApre + 'c'
+                texALigne = texALigne + ' & ' + str(round(j,3) if j %1 else int(j))
+            texALigne = texALigne + ' \\\\'
+            texA = texA + texALigne
+        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
+    else: 
+        print("Ce n'est pas une matrice des coefficients ni une matrice augmentée")
     return texA
+
+
 
 
 def texMatrixAug(A,b): #return tex expression of one matrix (A|b) where b can also be a matrix

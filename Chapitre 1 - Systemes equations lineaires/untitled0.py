@@ -1,70 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon May 20 11:41:46 2019
+Created on Tue Jun  4 16:26:30 2019
 
 @author: jecker
 """
-
-import random 
-
-def generateRandomConnectedGraph( V):
-
-    initialSet = set()
-
-    visitedSet = set()
-
-    vertices = set()
-
-    edges = set()
-
-    #generate the set of names for the vertices
-
-    for i in range(V):
-
-        initialSet.add(str(i))
-
-        vertices.add(str(i))
-
-    #set the intial vertex to be connected
-
-    curVertex = random.sample(initialSet, 1).pop()
-
-    initialSet.remove(curVertex)
-
-    visitedSet.add(curVertex)
-
-    #loop through all the vertices, connecting them randomly
-
-    while initialSet:
-
-        adjVertex = random.sample(initialSet, 1).pop()
-
-        edge = (random.randint(0,3), curVertex, adjVertex)
-
-        edges.add(edge)
-
-        initialSet.remove(adjVertex)
-
-        visitedSet.add(adjVertex)
-
-        curVertex = adjVertex
-
-    return vertices, edges
+from bokeh.plotting import figure, output_file, show
 
 
-def generateCombination(n):
+def syracuse(N):
+    suite=[N]
+    i=0
+    ind=[i]
+    while N !=1:
+        i+=1
+        ind.append(i)
+        if N%2==0: 
+            N=N/2
+        else:
+            N=3*N+1
+        suite.append(N)
+    return (suite, ind)
 
-    com = []
 
-    for i in range(n):
+suite, ind=syracuse(121)
+p = figure(plot_width=400, plot_height=400)
 
-        for j in range(i+1, n):
+p.line(ind, suite, line_width=2)
+#p.circle(ind, suite, fill_color="white", size=8)
 
-            com.append([i,j])
-
-            com.append([j,i])
-
-    return com
-
-V,E=generateRandomConnectedGraph( 5)
+show(p)
