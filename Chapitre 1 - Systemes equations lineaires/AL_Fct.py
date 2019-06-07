@@ -45,10 +45,10 @@ def strEq(n,coeff):# Latex str of one equation in format a1x1+ ...+anxn or with 
             Eq=Eq + str(round(coeff[0],3) if coeff[0] % 1 else int(coeff[0]))+ 'x_'+str(1) +\
             '='+ str(round(coeff[len(coeff)-1],3) if coeff[len(coeff)-1] % 1 else int(coeff[len(coeff)-1])) 
         else:
-             Eq=Eq + str(round(coeff[0],3) if coeff[0] % 1 else int(coeff[0]))+ 'x_'+str(1)
-             for i in range(1,n-1):
+            Eq=Eq + str(round(coeff[0],3) if coeff[0] % 1 else int(coeff[0]))+ 'x_'+str(1)
+            for i in range(1,n-1):
                 Eq=Eq + ' + ' + str(round(coeff[i],3) if coeff[i] %1 else int(coeff[i])) + 'x_' + str(i+1) 
-             Eq=Eq +  ' + ' +str(round(coeff[len(coeff)-2],3) if coeff[len(coeff)-2] % 1 else int(coeff[len(coeff)-2]))\
+            Eq=Eq +  ' + ' +str(round(coeff[len(coeff)-2],3) if coeff[len(coeff)-2] % 1 else int(coeff[len(coeff)-2]))\
              + 'x_' + str(n) + '=' + str(round(coeff[len(coeff)-1],3) if coeff[len(coeff)-1] % 1 else int(coeff[len(coeff)-1])) 
     return Eq
 
@@ -75,6 +75,7 @@ def printSyst(m,n,A,b):# Latex Print of one system of m equation in format ai1x1
                 else:
                     Eq_i=Eq_i + 'a_{' + str(i+1) + '1}' + 'x_1 + \ldots +' + 'a_{' +  str(i+1) +str(n) + '}' + 'x_'+ str(n) + '=b_'  + str(i+1)
             else:
+                print(A[i,:])
                 Eq_i=strEq(n,A[i,:])
             Eq_list.append(Eq_i)
             texSyst=texSyst+  Eq_list[i] + '\\\\'
@@ -84,10 +85,13 @@ def printSyst(m,n,A,b):# Latex Print of one system of m equation in format ai1x1
         print("La matrice des coefficients n'a pas les bonnes dimensions")
 
 
-def texMatrix(*args): #return tex expression of one matrix of A or (A|b) -- or (A|B)
-    print(args.item())
+def texMatrix(*args): #return tex expression of one matrix of A or (A|b) -- or (A|B) VERIFIED OK
     if len(args)==2: # matrice augmentée
-        m=len(A[0])
+        A=np.matrix(args[0]).astype(float)
+        m=A.shape[0]        
+        b=args[1]
+        b=[[b[i]] for i in range(m)]
+        b=np.matrix(b).astype(float)
         A=np.concatenate((A,b), axis=1)
         texApre ='\\left(\\begin{array}{'
         texA = ''
@@ -110,6 +114,7 @@ def texMatrix(*args): #return tex expression of one matrix of A or (A|b) -- or (
             texA = texA + texALigne
         texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
     elif len(args)==1: #matrice des coefficients
+        A=np.matrix(args[0]).astype(float)
         texApre ='\\left(\\begin{array}{'
         texA = ''
         for i in np.asarray(A) :
@@ -129,45 +134,19 @@ def texMatrix(*args): #return tex expression of one matrix of A or (A|b) -- or (
     return texA
 
 
-
-
-def texMatrixAug(A,b): #return tex expression of one matrix (A|b) where b can also be a matrix
-    m=len(A[0])
-    A=np.concatenate((A,b), axis=1)
-    texApre ='\\left(\\begin{array}{'
-    texA = ''
-    for i in np.asarray(A) :
-        texALigne = ''
-        texALigne = texALigne + str(round(i[0],3) if i[0] %1 else int(i[0]))
-        if texA == '' :
-            texApre = texApre + 'c'
-        for j in i[1:m] :
-            if texA == '' :
-                texApre = texApre + 'c'
-            texALigne = texALigne + ' & ' + str(round(j,3) if j %1 else int(j))
-        if texA == '' :
-            texApre = texApre + '| c'
-        for j in i[m:] :   
-            if texA == '' :
-                texApre = texApre + 'c'
-            texALigne = texALigne + ' & ' + str(round(j,3) if j %1 else int(j))
-        texALigne = texALigne + ' \\\\'
-        texA = texA + texALigne
-    texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
-    return texA
-
-def printA(A) : #Print matrix 
-    texA='$'+ texMatrix(A) + '$'
+def printA(*args) : #Print matrix VERIFIED OK
+    texA='$'+ texMatrix(*args) + '$'
     # print(texA)
     display(Latex(texA))  
 
+def printEquMatrices(*args): # M=[M1, M2, ..., Mn] n>1 VERIFIED OK
+    texEqu='$' + texMatrix(args[0])
+    for i in range(1,len(args)):
+        texEqu=texEqu+ '\\quad \\sim \\quad' + texMatrix(args[i])
+    texEqu=texEqu+ '$'
+    display(Latex(texEqu))
 
-def printAAug(A,b) : #Print matrix (A|b)
-    texA='$'+ texMatrixAug(A,b) + '$'
-    # print(texA)
-    display(Latex(texA))  
-    
-def printEquMatrices(listOfMatrices): #list of matrices is M=[M1, M2, ..., Mn]
+def printEquMatricesOLD(listOfMatrices): #list of matrices is M=[M1, M2, ..., Mn]
     texEqu='$' + texMatrix(listOfMatrices[0])
     for i in range(1,len(listOfMatrices)):
         texEqu=texEqu+ '\\quad \\sim \\quad' + texMatrix(listOfMatrices[i])
@@ -427,3 +406,34 @@ def echelonRedMat(A, b):
     printEquMatrices([MatAugm, Mat])
     return Mat
 
+
+#OBSOLETE
+def texMatrixAug(A,b): #return tex expression of one matrix (A|b) where b can also be a matrix
+    m=len(A[0])
+    A=np.concatenate((A,b), axis=1)
+    texApre ='\\left(\\begin{array}{'
+    texA = ''
+    for i in np.asarray(A) :
+        texALigne = ''
+        texALigne = texALigne + str(round(i[0],3) if i[0] %1 else int(i[0]))
+        if texA == '' :
+            texApre = texApre + 'c'
+        for j in i[1:m] :
+            if texA == '' :
+                texApre = texApre + 'c'
+            texALigne = texALigne + ' & ' + str(round(j,3) if j %1 else int(j))
+        if texA == '' :
+            texApre = texApre + '| c'
+        for j in i[m:] :   
+            if texA == '' :
+                texApre = texApre + 'c'
+            texALigne = texALigne + ' & ' + str(round(j,3) if j %1 else int(j))
+        texALigne = texALigne + ' \\\\'
+        texA = texA + texALigne
+    texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
+    return texA
+def printAAug(A,b) : #Print matrix (A|b)
+    texA='$'+ texMatrixAug(A,b) + '$'
+    # print(texA)
+    display(Latex(texA))  
+    
