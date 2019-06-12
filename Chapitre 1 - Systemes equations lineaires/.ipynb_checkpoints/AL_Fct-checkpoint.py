@@ -15,8 +15,11 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 plotly.offline.init_notebook_mode(connected=True)
 from IPython.core.magic import register_cell_magic
-from IPython.display import HTML, display
+from IPython.display import HTML
+import ipywidgets as widgets
+import random
 
+from ipywidgets import interact, interactive, fixed, interact_manual
 @register_cell_magic
 def bgc(color, cell=None):
     script = (
@@ -52,15 +55,25 @@ def strEq(n,coeff):# Latex str of one equation in format a1x1+ ...+anxn or with 
              + 'x_' + str(n) + '=' + str(round(coeff[len(coeff)-1],3) if coeff[len(coeff)-1] % 1 else int(coeff[len(coeff)-1])) 
     return Eq
 
-def printEq(n,coeff,b):# Latex Print of one equation in format a1x1+ ...+anxn or with coefficients.
+def printEq(coeff,b, *args):# Latex Print of one equation in format a1x1+ ...+anxn or with coefficients.
+    if len(args)==1:
+        n=args[0]
+    else:
+        n=len(coeff)
     coeff=coeff+b
     texEq='$'
     texEq=texEq+ strEq(n,coeff)
     texEq=texEq + '$'
     display(Latex(texEq))
     
-def printSyst(m,n,A,b):# Latex Print of one system of m equation in format ai1x1+ ...+ainxn=bi or with coeff in MatCoeff.
-    if (str(A)=='') or (len(A[1])==n and len(A)==m):  #ensures that MatCoeff has proper dimensions 
+def printSyst(A,b, *args):# Latex Print of one system of m equation in format ai1x1+ ...+ainxn=bi or with coeff in MatCoeff.
+    if (len(args)==2) or (len(A)==len(b)):  #ensures that MatCoeff has proper dimensions 
+        if len(args)==2:
+            m=args[0]
+            n=args[1]
+        else:
+            m=len(A)
+            n=len(A[0])
         texSyst='$\\begin{cases}'
         Eq_list=[]
         A = [A[i]+[b[i]]for i in range(0,m)] #becomes augmented matrix
@@ -75,8 +88,7 @@ def printSyst(m,n,A,b):# Latex Print of one system of m equation in format ai1x1
                 else:
                     Eq_i=Eq_i + 'a_{' + str(i+1) + '1}' + 'x_1 + \ldots +' + 'a_{' +  str(i+1) +str(n) + '}' + 'x_'+ str(n) + '=b_'  + str(i+1)
             else:
-                print(A[i,:])
-                Eq_i=strEq(n,A[i,:])
+                Eq_i=strEq(n,A[i,:]) #attention A is (A|b)
             Eq_list.append(Eq_i)
             texSyst=texSyst+  Eq_list[i] + '\\\\'
         texSyst =texSyst+ '\\end{cases}$'
@@ -90,7 +102,7 @@ def texMatrix(*args): #return tex expression of one matrix of A or (A|b) -- or (
         A=np.matrix(args[0]).astype(float)
         m=A.shape[0]        
         b=args[1]
-        b=[[b[i]] for i in range(m)]
+        #b=[b[i] for i in range(m)]
         b=np.matrix(b).astype(float)
         A=np.concatenate((A,b), axis=1)
         texApre ='\\left(\\begin{array}{'
@@ -146,12 +158,7 @@ def printEquMatrices(*args): # M=[M1, M2, ..., Mn] n>1 VERIFIED OK
     texEqu=texEqu+ '$'
     display(Latex(texEqu))
 
-def printEquMatricesOLD(listOfMatrices): #list of matrices is M=[M1, M2, ..., Mn]
-    texEqu='$' + texMatrix(listOfMatrices[0])
-    for i in range(1,len(listOfMatrices)):
-        texEqu=texEqu+ '\\quad \\sim \\quad' + texMatrix(listOfMatrices[i])
-    texEqu=texEqu+ '$'
-    display(Latex(texEqu))
+
     
 def printEquMatricesAug(listOfMatrices, listOfRhS): #list of matrices is M=[M1, M2, ..., Mn] where Mi=(Mi|b) 
     texEqu='$' + texMatrixAug(listOfMatrices[0],listOfRhS[0])
@@ -407,7 +414,50 @@ def echelonRedMat(A, b):
     return Mat
 
 
+#Generate random matrix
+def randomA():
+    n=random.randint(1,10)
+    m=random.randint(1,10)
+    A=np.empty([m,n],dtype=int)
+    A=[[random.randint(-100,100) for i in range(n)] for j in range(m)]
+    printA(A)
+    return np.matrix(A)
+
+
+def dimensionA(A):
+    m=widgets.IntText(
+    value=1,
+    step=1,
+    description='m:',
+    disabled=False
+    )
+    n=widgets.IntText(
+        value=1,
+        step=1,
+        description='m:',
+        disabled=False
+    )
+
+    display(m)
+    display(n)
+    def f():
+        if m.value==A.shape[0] and n.value==A.shape[1]:
+            print('Correcte!')
+        else:
+            print('Incorrecte, entrez de nouvelles valeurs')
+    out=interact_manual(f)
+
+
+
+
 #OBSOLETE
+
+def printEquMatricesOLD(listOfMatrices): #list of matrices is M=[M1, M2, ..., Mn]
+    texEqu='$' + texMatrix(listOfMatrices[0])
+    for i in range(1,len(listOfMatrices)):
+        texEqu=texEqu+ '\\quad \\sim \\quad' + texMatrix(listOfMatrices[i])
+    texEqu=texEqu+ '$'
+    display(Latex(texEqu))
 def texMatrixAug(A,b): #return tex expression of one matrix (A|b) where b can also be a matrix
     m=len(A[0])
     A=np.concatenate((A,b), axis=1)
