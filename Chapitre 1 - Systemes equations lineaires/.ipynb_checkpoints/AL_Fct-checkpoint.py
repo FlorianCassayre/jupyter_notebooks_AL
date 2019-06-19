@@ -76,7 +76,11 @@ def printSyst(A,b, *args):# Latex Print of one system of m equation in format ai
             n=len(A[0])
         texSyst='$\\begin{cases}'
         Eq_list=[]
-        A = [A[i]+[b[i]]for i in range(0,m)] #becomes augmented matrix
+        if type(b[0])==list:
+            b=np.matrix(b).astype(float)
+            A=np.concatenate((A,b), axis=1)
+        else:
+            A = [A[i]+[b[i]]for i in range(0,m)] #becomes augmented matrix
         A=np.array(A) #just in case it's not
         for i in range(m):          
             if str(A)=='':
@@ -227,6 +231,8 @@ def Plot2DSys(xL,xR,p,A,b): # small values for p allows for dots to be seen
         data=[]
         for i in range(1,len(A)+1):
             if (abs(A[i-1,1])) > abs (A[i-1,0]) :
+                #p0=[0,A[i-1,2]/A[i-1,1]]
+                #p1=[1,(A[i-1,2]-A[i-1,0])/A[i-1,1]]
                 trace=go.Scatter(x=t,  y= (A[i-1,2]-A[i-1,0]*t)/A[i-1,1], name='Droite %d'%i)
             else :
                 trace=go.Scatter(x=(A[i-1,2]-A[i-1,1]*t)/A[i-1,0],  y= t, name='Droite %d'%i)
@@ -447,6 +453,59 @@ def dimensionA(A):
             print('Incorrecte, entrez de nouvelles valeurs')
     out=interact_manual(f)
 
+
+def manualEch(*args):
+    if len(args)==2: # matrice augmentée
+        A=np.matrix(args[0]).astype(float)
+        m=A.shape[0]        
+        b=args[1]
+        #b=[b[i] for i in range(m)]
+        if type(b[0])==list:
+            b=np.matrix(b).astype(float)
+            A=np.concatenate((A,b), axis=1)
+        else:
+            b=[b[i] for i in range(m)]
+            A = [A[i]+[b[i]]for i in range(0,m)]
+    else:
+        A=np.matrix(args[0]).astype(float)
+        m=A.shape[0]
+    A=np.array(A) #just in case it's not
+    j=widgets.BoundedIntText(
+    value=1,
+    min=1,
+    max=m,
+    step=1,
+    description='Ligne j:',
+    disabled=False
+    )
+    i=widgets.BoundedIntText(
+        value=1,
+        min=1,
+        max=m,
+        step=1,
+        description='Ligne i:',
+        disabled=False
+    )
+
+    r=widgets.RadioButtons(
+        options=['Eij', 'Ei(alpha)', 'Eij(alpha)'],
+        description='Opération:',
+        disabled=False
+    )
+
+
+    alpha=widgets.Text(
+        value='1',
+        description='Coeff. alpha:',
+        disabled=False
+    )
+    print("Régler les paramètres et évaluer la cellule suivante")
+    print("Répéter cela jusqu'à obtenir une forme échelonnée réduite")
+    display(r)
+    display(i)
+    display(j)
+    display(alpha)
+    return i,j,r,alpha
 
 
 
