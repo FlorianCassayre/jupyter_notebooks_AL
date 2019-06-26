@@ -337,8 +337,9 @@ def Eijalpha(M, i,j, alpha): # matrice elementaire, AJOUTE à la ligne i alpha *
     M[i,:]=M[i,:] +  alpha *M[j,:]
     return M 
 
-def echelonMat(A,b):  #Nous donne la matrice echelonne d un system [A|b]
-    A = [A[i]+[b[i]] for i in range(0,len(A))]
+def echelonMat(*args):  #Nous donne la matrice echelonne d un system [A|b]
+    #A = [A[i]+[b[i]] for i in range(0,len(A))]
+    A=np.concatenate((A,b), axis=1) #DO AS manualOp for b=[1,2,3] 
     Mat=np.array(A)
     Mat=Mat.astype(float) # in case the array in int instead of float.
     numPivot=0
@@ -351,7 +352,7 @@ def echelonMat(A,b):  #Nous donne la matrice echelonne d un system [A|b]
             if len(Mat[0,:])>j:
                 Mat[i+1:len(Mat),:]=0
             print("La matrice est sous la forme échelonnée")
-            printEquMatrices([A, Mat])
+            printEquMatrices(np.asmatrix(A), np.asmatrix(Mat))
             break     
         if abs(Mat[i,j])<1e-15:
                 Mat[i,j]=0
@@ -382,7 +383,7 @@ def echelonMatCoeff(A): #take echelonMAt but without b.
             if len(Mat[0,:])>j:
                 Mat[i+1:len(Mat),:]=0
             print("La matrice est sous la forme échelonnée")
-            printEquMatrices([np.asmatrix(A), np.asmatrix(Mat[:, :len(A[0])])])
+            printEquMatrices(np.asmatrix(A), np.asmatrix(Mat[:, :len(A[0])]))
             break     
         if abs(Mat[i,j])<1e-15:
                 Mat[i,j]=0
@@ -401,7 +402,8 @@ def echelonMatCoeff(A): #take echelonMAt but without b.
 def echelonRedMat(A, b):
     Mat=echelonMat(A,b)
     Mat=np.array(Mat)
-    MatAugm = [A[i]+[b[i]] for i in range(0,len(A))]
+    MatAugm=np.concatenate((A,b), axis=1)
+   # MatAugm = [A[i]+[b[i]] for i in range(0,len(A))]
     i=(len(Mat)-1)
     while i>=1:
         while all(abs(Mat[i,:len(Mat[0])-1])<1e-15) and i!=0:#if ligne (or rest of) is zero, take next ligne
@@ -416,8 +418,8 @@ def echelonRedMat(A, b):
         i-=1
         printA(Mat)
     print("La matrice est sous la forme échelonnée réduite")
-    printEquMatrices([MatAugm, Mat])
-    return Mat
+    printEquMatrices(MatAugm, Mat)
+    return np.asmatrix(Mat)
 
 
 #Generate random matrix
@@ -506,6 +508,70 @@ def manualEch(*args):
     display(j)
     display(alpha)
     return i,j,r,alpha
+
+def manualOp(*args):
+    if len(args)==2: # matrice augmentée
+        A=np.matrix(args[0]).astype(float)
+        m=A.shape[0]        
+        b=args[1]
+        #b=[b[i] for i in range(m)]
+        if type(b[0])==list:
+            b=np.matrix(b).astype(float)
+            A=np.concatenate((A,b), axis=1)
+        else:
+            b=[b[i] for i in range(m)]
+            A = [A[i]+[b[i]]for i in range(0,m)]
+    else:
+        A=np.matrix(args[0]).astype(float)
+        m=A.shape[0]
+    A=np.array(A) #just in case it's not
+    j=widgets.BoundedIntText(
+    value=1,
+    min=1,
+    max=m,
+    step=1,
+    description='Ligne j:',
+    disabled=False
+    )
+    i=widgets.BoundedIntText(
+        value=1,
+        min=1,
+        max=m,
+        step=1,
+        description='Ligne i:',
+        disabled=False
+    )
+
+    r=widgets.RadioButtons(
+        options=['Eij', 'Ei(alpha)', 'Eij(alpha)'],
+        description='Opération:',
+        disabled=False
+    )
+
+
+    alpha=widgets.Text(
+        value='1',
+        description='Coeff. alpha:',
+        disabled=False
+    )
+    print("Régler les paramètres et cliquer sur RUN INTERACT pour effectuer votre opération")
+    def f(r,i,j,alpha):
+        m=np.concatenate((A,b), axis=1)
+        MatriceList=[A]
+        RhSList=[b]    
+        if alpha==0:
+            print('Le coefficient alpha doit être non-nul!')
+        if r=='Eij':
+            m=Eij(m,i-1,j-1)
+        if r=='Ei(alpha)':
+            m=Ealpha(m,i.value-1,eval(alpha))
+        if r=='Eij(alpha)':
+            m=Eijalpha(m,i-1,j-1,eval(alpha))
+        MatriceList.append(m[:,0:len(A[0])])
+        RhSList.append(m[:,len(A[0]):])    
+        printEquMatricesAug(MatriceList,RhSList)
+    interact_manual(f,r=r,i=i,j=j,alpha=alpha)
+    
 
 
 
