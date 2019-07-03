@@ -104,7 +104,7 @@ def printSyst(A,b, *args):# Latex Print of one system of m equation in format ai
 def texMatrix(*args): #return tex expression of one matrix of A or (A|b) -- or (A|B) VERIFIED OK
     if len(args)==2: # matrice augmentée
         A=np.matrix(args[0]).astype(float)
-        m=A.shape[0]        
+        m=A.shape[1]    #??????    
         b=args[1]
         #b=[b[i] for i in range(m)]
         b=np.matrix(b).astype(float)
@@ -167,6 +167,7 @@ def printEquMatrices(*args): #list of matrices is M=[M1, M2, ..., Mn] where Mi=(
         display(Latex(texEqu))
     else:
         listOfMatrices=args[0]
+       # print(listOfMatrices)
         texEqu='$' + texMatrix(listOfMatrices[0])
         for i in range(1,len(listOfMatrices)):
             texEqu=texEqu+ '\\quad \\sim \\quad' + texMatrix(listOfMatrices[i])
@@ -344,7 +345,8 @@ def Eijalpha(M, i,j, alpha): # matrice elementaire, AJOUTE à la ligne i alpha *
 def echelonMat(ech,*args):  #Nous donne la matrice echelonnée 'E' ou reduite 'ER' d'une matrice des coeffs. ou augmentée. 
     if len(args)==2: # matrice augmentée
         A=np.matrix(args[0]).astype(float)
-        m=A.shape[0]        
+        m=A.shape[0] 
+        n=A.shape[1] 
         b=args[1]
         if type(b[0])==list:
             b=np.matrix(b).astype(float)
@@ -354,9 +356,12 @@ def echelonMat(ech,*args):  #Nous donne la matrice echelonnée 'E' ou reduite 'E
             A = [A[i]+[b[i]]for i in range(0,m)]
     else: # matrice coeff
         A=np.matrix(args[0]).astype(float)
-        m=A.shape[0]
-        b=np.zeros(m)
+        m=A.shape[0] 
+        n=A.shape[1] 
+        b=np.zeros((m,1))
         A=np.concatenate((A,b), axis=1)
+        
+        
     if ech=='E': #Echelonnée
         Mat=np.array(A)
         Mat=Mat.astype(float) # in case the array in int instead of float.
@@ -369,7 +374,10 @@ def echelonMat(ech,*args):  #Nous donne la matrice echelonnée 'E' ou reduite 'E
                 if len(Mat[0,:])>j:
                     Mat[i+1:len(Mat),:]=0
                 print("La matrice est sous la forme échelonnée")
-                printEquMatrices(np.asmatrix(A), np.asmatrix(Mat))
+                if len(args)==2:
+                    printEquMatrices([A[:,0:n], Mat[:,0:n]],[A[:,n:],Mat[:,n:]])
+                else:
+                    printEquMatrices([A,Mat])
                 break     
             if abs(Mat[i,j])<1e-15:
                     Mat[i,j]=0
@@ -396,7 +404,10 @@ def echelonMat(ech,*args):  #Nous donne la matrice echelonnée 'E' ou reduite 'E
                 if len(Mat[0,:])>j:
                     Mat[i+1:len(Mat),:]=0
                 print("La matrice est sous la forme échelonnée")
-                printEquMatrices(np.asmatrix(A), np.asmatrix(Mat))
+                if len(args)==2:
+                    printEquMatrices([A[:,0:n], Mat[:,0:n]],[A[:,n:], Mat[:,n:]])      
+                else:
+                    printEquMatrices([np.asmatrix(A), np.asmatrix(Mat)])
                 break     
             if abs(Mat[i,j])<1e-15:
                     Mat[i,j]=0
@@ -424,9 +435,11 @@ def echelonMat(ech,*args):  #Nous donne la matrice echelonnée 'E' ou reduite 'E
             for k in range(i): #put zeros above pivot (which is 1 now)
                 Mat=Eijalpha(Mat, k,i, -Mat[k,j])
             i-=1
-            #printA(Mat)
         print("La matrice est sous la forme échelonnée réduite")
-        printEquMatrices(MatAugm, Mat)           
+        if len(args)==2:
+            printEquMatrices([A[:,0:n], Mat[:,0:n]],[A[:,n:], Mat[:,n:]])             
+        else:
+            printEquMatrices([A,Mat])
     return np.asmatrix(Mat)
 
 
@@ -528,13 +541,16 @@ def echelonnage(i,j,r,alpha,A,m,*args): #1.5-1.6 Matrice echelonnées
     if r.value=='Eij(alpha)':
         m=Eijalpha(m,i.value-1,j.value-1,eval(alpha.value))    
     if len(args)==2: 
+        A=np.asmatrix(A)
         MatriceList=args[0]
         RhSList=args[1]
-        MatriceList.append(m[:,0:len(A[0])])
+        MatriceList.append(m[:,0:A.shape[1]])#??????????
+        RhSList.append(m[:,A.shape[1]:])#??????????
         printEquMatrices(MatriceList,RhSList)
     else:
         MatriceList=args[0]
-        MatriceList.append(m[:,0:len(A[0])])
+        A=np.asmatrix(A)
+        MatriceList.append(m[:,0:A.shape[1]]) #??????????
         printEquMatrices(MatriceList)   
     
     
