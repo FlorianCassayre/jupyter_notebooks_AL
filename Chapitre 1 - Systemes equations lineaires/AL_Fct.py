@@ -155,21 +155,25 @@ def printA(*args) : #Print matrix VERIFIED OK
     # print(texA)
     display(Latex(texA))  
 
-def printEquMatrices(*args): # M=[M1, M2, ..., Mn] n>1 VERIFIED OK
-    texEqu='$' + texMatrix(args[0])
-    for i in range(1,len(args)):
-        texEqu=texEqu+ '\\quad \\sim \\quad' + texMatrix(args[i])
-    texEqu=texEqu+ '$'
-    display(Latex(texEqu))
+
+def printEquMatrices(*args): #list of matrices is M=[M1, M2, ..., Mn] where Mi=(Mi|b) 
+    if len(args)==2:
+        listOfMatrices=args[0]
+        listOfRhS=args[1]
+        texEqu='$' + texMatrix(listOfMatrices[0],listOfRhS[0])
+        for i in range(1,len(listOfMatrices)):
+            texEqu=texEqu+ '\\quad \\sim \\quad' + texMatrix(listOfMatrices[i], listOfRhS[i])
+        texEqu=texEqu+ '$'
+        display(Latex(texEqu))
+    else:
+        listOfMatrices=args[0]
+        texEqu='$' + texMatrix(listOfMatrices[0])
+        for i in range(1,len(listOfMatrices)):
+            texEqu=texEqu+ '\\quad \\sim \\quad' + texMatrix(listOfMatrices[i])
+        texEqu=texEqu+ '$'
+        display(Latex(texEqu))
 
 
-    
-def printEquMatricesAug(listOfMatrices, listOfRhS): #list of matrices is M=[M1, M2, ..., Mn] where Mi=(Mi|b) 
-    texEqu='$' + texMatrixAug(listOfMatrices[0],listOfRhS[0])
-    for i in range(1,len(listOfMatrices)):
-        texEqu=texEqu+ '\\quad \\sim \\quad' + texMatrixAug(listOfMatrices[i], listOfRhS[i])
-    texEqu=texEqu+ '$'
-    display(Latex(texEqu))
 
 #%% Functions to enter smth
 
@@ -425,58 +429,6 @@ def echelonMat(ech,*args):  #Nous donne la matrice echelonnée 'E' ou reduite 'E
         printEquMatrices(MatAugm, Mat)           
     return np.asmatrix(Mat)
 
-def echelonMatCoeff(A): #take echelonMAt but without b. 
-    b= [0 for i in range(len(A))]
-    Mat = [A[i]+[b[i]] for i in range(0,len(A))]
-    Mat=np.array(Mat)
-    Mat=Mat.astype(float) # in case the array in int instead of float.
-    numPivot=0
-    for i in range(len(Mat)):
-        j=i
-        while all(abs(Mat[j:,i])<1e-15) and j!=len(Mat[0,:])-1: #if column (or rest of) is zero, take next column
-             j+=1 
-        if j==len(Mat[0,:])-1:
-            #ADD ZERO LINES BELOW!!!!!!
-            if len(Mat[0,:])>j:
-                Mat[i+1:len(Mat),:]=0
-            print("La matrice est sous la forme échelonnée")
-            printEquMatrices(np.asmatrix(A), np.asmatrix(Mat[:, :len(A[0])]))
-            break     
-        if abs(Mat[i,j])<1e-15:
-                Mat[i,j]=0
-                zero=abs(Mat[i:,j])<1e-15
-                M= echZero(zero,Mat[i:,:] )
-                Mat[i:,:]=M
-        Mat=Ealpha(Mat, i,1/Mat[i,j] ) #normalement Mat[i,j]!=0
-        for k in range(i+1,len(A)):
-            Mat=Eijalpha(Mat, k,i, -Mat[k,j])
-            #Mat[k,:]=[0 if abs(Mat[k,l])<1e-15 else Mat[k,l] for l in range(len(MatCoeff[0,:]))]
-        numPivot+=1
-        Mat[abs(Mat)<1e-15]=0
-        #printA(np.asmatrix(Mat[:, :len(A[0])])) 
-    return np.asmatrix(Mat)
-
-def echelonRedMat(A, b):
-    Mat=echelonMat('ER',A,b)
-    Mat=np.array(Mat)
-    MatAugm=np.concatenate((A,b), axis=1)
-   # MatAugm = [A[i]+[b[i]] for i in range(0,len(A))]
-    i=(len(Mat)-1)
-    while i>=1:
-        while all(abs(Mat[i,:len(Mat[0])-1])<1e-15) and i!=0:#if ligne (or rest of) is zero, take next ligne
-            i-=1
-        #we have a lign with one non-nul element
-        j=i #we can start at pos ij at least the pivot is there
-        if abs(Mat[i,j])<1e-15: #if element Aij=0 take next one --> find pivot
-            j+=1
-        #Aij!=0 and Aij==1 if echelonMat worked
-        for k in range(i): #put zeros above pivot (which is 1 now)
-            Mat=Eijalpha(Mat, k,i, -Mat[k,j])
-        i-=1
-        printA(Mat)
-    print("La matrice est sous la forme échelonnée réduite")
-    printEquMatrices(MatAugm, Mat)
-    return np.asmatrix(Mat)
 
 
 #Generate random matrix
@@ -499,7 +451,7 @@ def dimensionA(A):
     n=widgets.IntText(
         value=1,
         step=1,
-        description='n:',
+        description='m:',
         disabled=False
     )
 
@@ -566,6 +518,26 @@ def manualEch(*args):
     display(alpha)
     return i,j,r,alpha
 
+def echelonnage(i,j,r,alpha,A,m,*args): #1.5-1.6 Matrice echelonnées
+    if alpha.value==0:
+        print('Le coefficient alpha doit être non-nul!')
+    if r.value=='Eij':
+        m=Eij(m,i.value-1,j.value-1)
+    if r.value=='Ei(alpha)':
+        m=Ealpha(m,i.value-1,eval(alpha.value))
+    if r.value=='Eij(alpha)':
+        m=Eijalpha(m,i.value-1,j.value-1,eval(alpha.value))    
+    if len(args)==2: 
+        MatriceList=args[0]
+        RhSList=args[1]
+        MatriceList.append(m[:,0:len(A[0])])
+        printEquMatrices(MatriceList,RhSList)
+    else:
+        MatriceList=args[0]
+        MatriceList.append(m[:,0:len(A[0])])
+        printEquMatrices(MatriceList)   
+    
+    
 def manualOp(*args):
     if len(args)==2: # matrice augmentée
         A=np.matrix(args[0]).astype(float)
@@ -632,7 +604,67 @@ def manualOp(*args):
 
 
 
-#OBSOLETE
+########################################OBSOLETE
+def printEquMatricesAug(listOfMatrices, listOfRhS): #list of matrices is M=[M1, M2, ..., Mn] where Mi=(Mi|b) 
+    texEqu='$' + texMatrixAug(listOfMatrices[0],listOfRhS[0])
+    for i in range(1,len(listOfMatrices)):
+        texEqu=texEqu+ '\\quad \\sim \\quad' + texMatrixAug(listOfMatrices[i], listOfRhS[i])
+    texEqu=texEqu+ '$'
+    display(Latex(texEqu))
+
+def echelonMatCoeff(A): #take echelonMAt but without b. 
+    b= [0 for i in range(len(A))]
+    Mat = [A[i]+[b[i]] for i in range(0,len(A))]
+    Mat=np.array(Mat)
+    Mat=Mat.astype(float) # in case the array in int instead of float.
+    numPivot=0
+    for i in range(len(Mat)):
+        j=i
+        while all(abs(Mat[j:,i])<1e-15) and j!=len(Mat[0,:])-1: #if column (or rest of) is zero, take next column
+             j+=1 
+        if j==len(Mat[0,:])-1:
+            #ADD ZERO LINES BELOW!!!!!!
+            if len(Mat[0,:])>j:
+                Mat[i+1:len(Mat),:]=0
+            print("La matrice est sous la forme échelonnée")
+            printEquMatrices(np.asmatrix(A), np.asmatrix(Mat[:, :len(A[0])]))
+            break     
+        if abs(Mat[i,j])<1e-15:
+                Mat[i,j]=0
+                zero=abs(Mat[i:,j])<1e-15
+                M= echZero(zero,Mat[i:,:] )
+                Mat[i:,:]=M
+        Mat=Ealpha(Mat, i,1/Mat[i,j] ) #normalement Mat[i,j]!=0
+        for k in range(i+1,len(A)):
+            Mat=Eijalpha(Mat, k,i, -Mat[k,j])
+            #Mat[k,:]=[0 if abs(Mat[k,l])<1e-15 else Mat[k,l] for l in range(len(MatCoeff[0,:]))]
+        numPivot+=1
+        Mat[abs(Mat)<1e-15]=0
+        #printA(np.asmatrix(Mat[:, :len(A[0])])) 
+    return np.asmatrix(Mat)
+
+def echelonRedMat(A, b):
+    Mat=echelonMat('ER',A,b)
+    Mat=np.array(Mat)
+    MatAugm=np.concatenate((A,b), axis=1)
+   # MatAugm = [A[i]+[b[i]] for i in range(0,len(A))]
+    i=(len(Mat)-1)
+    while i>=1:
+        while all(abs(Mat[i,:len(Mat[0])-1])<1e-15) and i!=0:#if ligne (or rest of) is zero, take next ligne
+            i-=1
+        #we have a lign with one non-nul element
+        j=i #we can start at pos ij at least the pivot is there
+        if abs(Mat[i,j])<1e-15: #if element Aij=0 take next one --> find pivot
+            j+=1
+        #Aij!=0 and Aij==1 if echelonMat worked
+        for k in range(i): #put zeros above pivot (which is 1 now)
+            Mat=Eijalpha(Mat, k,i, -Mat[k,j])
+        i-=1
+        printA(Mat)
+    print("La matrice est sous la forme échelonnée réduite")
+    printEquMatrices(MatAugm, Mat)
+    return np.asmatrix(Mat)
+
 
 def printEquMatricesOLD(listOfMatrices): #list of matrices is M=[M1, M2, ..., Mn]
     texEqu='$' + texMatrix(listOfMatrices[0])
@@ -668,4 +700,11 @@ def printAAug(A,b) : #Print matrix (A|b)
     texA='$'+ texMatrixAug(A,b) + '$'
     # print(texA)
     display(Latex(texA))  
+
     
+def printEquMatricesOLD(*args): # M=[M1, M2, ..., Mn] n>1 VERIFIED OK
+    texEqu='$' + texMatrix(args[0])
+    for i in range(1,len(args)):
+        texEqu=texEqu+ '\\quad \\sim \\quad' + texMatrix(args[i])
+    texEqu=texEqu+ '$'
+    display(Latex(texEqu))
