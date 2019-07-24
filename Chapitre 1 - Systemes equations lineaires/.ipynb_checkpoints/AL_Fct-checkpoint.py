@@ -11,8 +11,10 @@ from IPython.display import display, Latex
 import matplotlib.pyplot as plt
 import math
 import plotly
-import plotly.plotly as py
+#import chart_studio.plotly as py
+#import plotly.plotly as py
 import plotly.graph_objs as go
+from plotly.graph_objs import *
 plotly.offline.init_notebook_mode(connected=True)
 from IPython.core.magic import register_cell_magic
 from IPython.display import HTML
@@ -228,6 +230,73 @@ def SolOfSyst(solution,A,b):
         print("Ce n'est pas une solution du système")
         
 #%%Plots using plotly
+def drawLine(p, d): #p,d=vectors p-->"point" and d-->"direction",
+    blue='rgb(51, 214, 255)'
+    colors=[blue]
+    colorscale=[[0.0,colors[0]],
+               [0.1, colors[0]],
+               [0.2, colors[0]],
+               [0.3, colors[0]],
+               [0.4, colors[0]],
+               [0.5, colors[0]],
+               [0.6, colors[0]],
+               [0.7, colors[0]],
+               [0.8, colors[0]],
+               [0.9, colors[0]],
+               [1.0, colors[0]]]
+    vec=0.9*np.array(d)
+    if len(p)==2:
+        data=[]
+        t=np.linspace(-5,5,51)
+        s=np.linspace(0,1,10)
+        trace=Scatter(x=p[0]+t*d[0],  y= p[1] + t*d[1],name='Droite')
+        peak=Scatter(x= d[0],  y=  d[1],marker=dict(symbol=6,size=12,color = colors[0]),showlegend=False)
+        vector=Scatter(x=p[0]+s*d[0],  y= p[1] + s*d[1],mode='lines',
+                         line=dict(width = 5,
+            color = colors[0]), name='Vecteur directeur')
+        data.append(trace)
+        data.append(vector)
+        data.append(peak)
+        fig = FigureWidget(data=data)
+        plotly.offline.iplot(fig)
+    elif len(p)==3:
+        data=[
+            {
+            'type': 'cone',
+            'x': [1], 'y': vec[1], 'z': vec[2],
+            'u': d[0], 'v': d[1], 'w': d[2],
+            "sizemode": "absolute",
+            'colorscale': colorscale,
+            'sizeref': 1,
+            "showscale": False,
+              'hoverinfo':'none'  
+            }
+            ]
+        t=np.linspace(-5,5,51)
+        s=np.linspace(0,1,10)
+        trace=Scatter3d(x=p[0]+t*d[0],  y= p[1] + t*d[1], z=p[2]+ t*d[2], mode='lines', name='Droite')
+        zero=Scatter3d(x=t*0,  y= t*0, z=t*0, name='Origine', marker=dict(size=5),showlegend=False)
+        if all(dd==[0] for dd in d):
+            vector=Scatter3d(x=p[0]+s*d[0],  y= p[1] + s*d[1], z=p[2]+ s*d[2], marker=dict(size=5),name='Point') 
+        else:
+            vector=Scatter3d(x=p[0]+s*d[0],  y= p[1] + s*d[1], z=p[2]+ s*d[2], mode='lines',
+                         line=dict(width = 5,
+            color = colors[0], dash='solid'), name='Vecteur directeur', hoverinfo='none')
+        data.append(zero)
+        data.append(vector)
+        data.append(trace)
+        layout = {
+            'scene': {
+              'camera': {
+                'eye': {'x': -0.76, 'y': 1.8, 'z': 0.92}
+              }
+            }
+        }
+        fig = FigureWidget(data=data, layout=layout)
+        plotly.offline.iplot(fig)    
+    return fig
+        
+
 def Plot2DSys(xL,xR,p,A,b): # small values for p allows for dots to be seen
         A = [A[i]+[b[i]] for i in range(0,len(A))]
         A=np.array(A)
@@ -244,6 +313,7 @@ def Plot2DSys(xL,xR,p,A,b): # small values for p allows for dots to be seen
             data.append(trace)
         fig = go.Figure(data=data)
         plotly.offline.iplot(fig)
+
 
         
 def Plot3DSys(xL,xR,p,A,b): # small values for p allows for dots to be seen
@@ -317,7 +387,55 @@ def Plot3DSys(xL,xR,p,A,b): # small values for p allows for dots to be seen
     )
     fig = go.Figure(data=data, layout=layout)
     plotly.offline.iplot(fig)
-    
+    return
+
+
+def Ex3Chapitre1_7():
+    systa=widgets.Select(
+            options=['Point', 'Droite', 'Plan', 'Incompatible'],
+            description='Système a):',
+            #layout=Layout(width='auto'),
+            disabled=False,
+        )
+    systb=widgets.Select(
+            options=['Point', 'Droite', 'Plan', 'Incompatible'],
+            description='Système b):',
+            disabled=False
+        )
+    systc=widgets.Select(
+            options=['Point', 'Droite', 'Plan','Espace', 'Incompatible'],
+            description='Système c):',
+            disabled=False
+        )
+    systd=widgets.Select(
+            options=['Point', 'Droite', 'Plan','Espace',  'Incompatible'],
+            description='Système d):',
+            disabled=False
+        )
+    choice=widgets.Dropdown(
+        options=['a)', 'b)', 'c)', 'd)'],
+        value='a)',
+        description='Système:',
+        disabled=False,
+    )
+    def plot(c):
+        if c=='a)':
+            drawLine([[0],[0]],[[4],[1]])
+        if c=='b)':
+            print("Le système est incompatible, donc il n'y a pas de solutions")
+        if c=='c)':
+            drawLine([[-17],[5],[-10]],[[0],[0],[0]])
+        if c=='d)':
+            drawLine([[1],[0],[0]],[[0],[-1],[1]])
+
+    def correction(a,b,c,d): 
+        if 'Droite' in a and 'Incompatible' in b and 'Point' in c and 'Droite' in d:
+            print("C'est correct!")
+            out=interact_manual(plot,c=choice)
+        else:
+            print("C'est faux. Veuillez rentrer d'autres valeurs")
+
+    out=interact_manual(correction,a=systa,b=systb, c=systc, d=systd)   
     
 #%%Echelonnage
    
@@ -464,7 +582,7 @@ def dimensionA(A):
     n=widgets.IntText(
         value=1,
         step=1,
-        description='m:',
+        description='n:',
         disabled=False
     )
 
@@ -552,7 +670,7 @@ def echelonnage(i,j,r,alpha,A,m,*args): #1.5-1.6 Matrice echelonnées
         A=np.asmatrix(A)
         MatriceList.append(m[:,0:A.shape[1]]) #??????????
         printEquMatrices(MatriceList)   
-    
+    return m
     
 def manualOp(*args):
     if len(args)==2: # matrice augmentée
