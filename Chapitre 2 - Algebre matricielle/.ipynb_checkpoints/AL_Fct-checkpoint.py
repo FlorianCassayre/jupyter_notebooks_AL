@@ -152,7 +152,9 @@ def texMatrix(*args): #return tex expression of one matrix of A or (A|b) -- or (
     return texA
 
 
-def printA(*args) : #Print matrix VERIFIED OK
+def printA(*args) : #Print matrix VERIFIED OK 
+    #if len(args)==3 and type(args[2])==str:
+     #    texA='$'+ args[2] + '=' + texMatrix(*args) + '$'
     texA='$'+ texMatrix(*args) + '$'
     # print(texA)
     display(Latex(texA))  
@@ -650,6 +652,7 @@ def manualEch(*args):
     return i,j,r,alpha
 
 def echelonnage(i,j,r,alpha,A,m,*args): #1.5-1.6 Matrice echelonnées
+    m=np.matrix(m).astype(float)
     if alpha.value==0:
         print('Le coefficient alpha doit être non-nul!')
     if r.value=='Eij':

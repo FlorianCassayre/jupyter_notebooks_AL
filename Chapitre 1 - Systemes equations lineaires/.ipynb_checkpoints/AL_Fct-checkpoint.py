@@ -650,6 +650,7 @@ def manualEch(*args):
     return i,j,r,alpha
 
 def echelonnage(i,j,r,alpha,A,m,*args): #1.5-1.6 Matrice echelonnées
+    m=np.matrix(m).astype(float)
     if alpha.value==0:
         print('Le coefficient alpha doit être non-nul!')
     if r.value=='Eij':
