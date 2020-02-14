@@ -52,23 +52,26 @@ def printMonomial(coeff, index=None, include_zeros=False):
     :rtype: str
     """
 
+    if index is not None:
+        coeff = abs(coeff)
+
     if coeff % 1:
-        return str(round(abs(coeff), 3)) + ('x_' + str(index) if index is not None else "")
+        return str(round(coeff, 3)) + ('x_' + str(index) if index is not None else "")
     elif not coeff:
         if index is None:
             return str(0)
         else:
             return str(0) + 'x_' + str(index) if include_zeros else ""
     elif coeff == 1:
-        return 'x_' + str(index) if index is not None else str(coeff)
+        return 'x_' + str(index) if index is not None else str(int(coeff))
     elif coeff == -1:
-        return 'x_' + str(index) if index is not None else str(coeff)
+        return 'x_' + str(index) if index is not None else str(int(coeff))
     else:
-        return str(int(abs(coeff))) + ('x_' + str(index) if index is not None else "")
+        return str(int(coeff)) + ('x_' + str(index) if index is not None else "")
 
 
 def printPlusMinus(coeff, include_zeros=False):
-    """Prints a plus or minus sign, depending on the sign of te coefficient
+    """Prints a plus or minus sign, depending on the sign of the coefficient
 
     :param coeff: value of the coefficient
     :type coeff: float
@@ -272,6 +275,7 @@ def texMatrix(*args):
         texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
     else:
         print("Ce n'est pas une matrice des coefficients ni une matrice augmentée")
+        texA = ''
     return texA
 
 
@@ -377,7 +381,7 @@ def SolOfEq(sol, coeff, i):
         return False
 
     A = np.array(coeff[:-1])
-    isSol = abs(np.dot(A, sol) - coeff[-1]) < 1e-10
+    isSol = abs(np.dot(A, sol) - coeff[-1]) < 1e-8
     if isSol:
         print(f"La suite entrée est une solution de l'équation {i}")
     else:
@@ -485,7 +489,22 @@ def drawLine(p, d):  # p,d=vectors p-->"point" and d-->"direction",
     return fig
 
 
-def Plot2DSys(xL, xR, p, A, b):  # small values for p allows for dots to be seen
+def Plot2DSys(xL, xR, p, A, b):
+    """Function for the graphical visualization of a 2D system of equations, plotting the straight lines characterizing
+    the different equations appearing in the system
+
+    :param xL: left limit of the plot in both coordinates
+    :type xL: int or float
+    :param xR: right limit of the plot in both coordinates
+    :type xR: int or float
+    :param p: number of points used to draw the straight lines
+    :type p: int
+    :param A: matrix of the linear system
+    :type A: list[list[float]] or numpy.ndarray
+    :param b: right-hand side vector of the linear system
+    :type b: list[float] or numpy.ndarray
+    """
+
     A = [A[i] + [b[i]] for i in range(0, len(A))]
     A = np.array(A)
     t = np.linspace(xL, xR, p)
@@ -494,27 +513,43 @@ def Plot2DSys(xL, xR, p, A, b):  # small values for p allows for dots to be seen
         if (abs(A[i - 1, 1])) > abs(A[i - 1, 0]):
             # p0=[0,A[i-1,2]/A[i-1,1]]
             # p1=[1,(A[i-1,2]-A[i-1,0])/A[i-1,1]]
-            trace = go.Scatter(x=t, y=(A[i - 1, 2] - A[i - 1, 0] * t) / A[i - 1, 1], name='Droite %d' % i)
+            trace = go.Scatter(x=t, y=(A[i-1, 2] - A[i-1, 0] * t) / A[i-1, 1], name='Droite %d' % i)
         else:
-            trace = go.Scatter(x=(A[i - 1, 2] - A[i - 1, 1] * t) / A[i - 1, 0], y=t, name='Droite %d' % i)
+            trace = go.Scatter(x=(A[i-1, 2] - A[i-1, 1] * t) / A[i-1, 0], y=t, name='Droite %d' % i)
         data.append(trace)
+
     fig = go.Figure(data=data)
     plotly.offline.iplot(fig)
+    return
 
 
-def Plot3DSys(xL, xR, p, A, b):  # small values for p allows for dots to be seen
+def Plot3DSys(xL, xR, p, A, b):
+    """Function for the graphical visualization of a 3D system of equations, plotting the straight lines characterizing
+       the different equations appearing in the system
+
+       :param xL: left limit of the plot in all coordinates
+       :type xL: int or float
+       :param xR: right limit of the plot in all coordinates
+       :type xR: int or float
+       :param p: number of points used to draw the straight lines
+       :type p: int
+       :param A: matrix of the linear system
+       :type A: list[list[float]] or numpy.ndarray
+       :param b: right-hand side vector of the linear system
+       :type b: list[float] or numpy.ndarray
+       """
     A = [A[i] + [b[i]] for i in range(0, len(A))]
     A = np.array(A)
     gr = 'rgb(102,255,102)'
     org = 'rgb(255,117,26)'
-    red = 'rgb(255,0,0)'
+    # red = 'rgb(255,0,0)'
     blue = 'rgb(51, 214, 255)'
     colors = [blue, gr, org]
     s = np.linspace(xL, xR, p)
     t = np.linspace(xL, xR, p)
     tGrid, sGrid = np.meshgrid(s, t)
     data = []
-    for i in range(0, len(A)):
+    for i in range(len(A)):
         colorscale = [[0.0, colors[i]],
                       [0.1, colors[i]],
                       [0.2, colors[i]],
@@ -531,21 +566,21 @@ def Plot3DSys(xL, xR, p, A, b):  # small values for p allows for dots to be seen
             x = sGrid
             y = tGrid
             surface = go.Surface(x=x, y=y, z=(A[i, 3] - A[i, 0] * x - A[i, 1] * y) / A[i, 2],
-                                 showscale=False, colorscale=colorscale, opacity=1, name='Plan %d' % j)
+                                 showscale=False, showlegend=True, colorscale=colorscale, opacity=1, name='Plan %d' % j)
         elif A[i, 2] == 0 and A[i, 1] == 0:  # x =b
             y = sGrid
             z = tGrid
             surface = go.Surface(x=A[i, 3] - A[i, 1] * y, y=y, z=z,
-                                 showscale=False, colorscale=colorscale, opacity=1, name='Plan %d' % j)
+                                 showscale=False, showlegend=True, colorscale=colorscale, opacity=1, name='Plan %d' % j)
         else:  # y en fonction de x,z
             x = sGrid
             z = tGrid
             surface = go.Surface(x=x, y=(A[i, 3] - A[i, 0] * x - A[i, 2] * z) / A[i, 1], z=z,
-                                 showscale=False, colorscale=colorscale, opacity=1, name='Plan %d' % j)
+                                 showscale=False, showlegend=True, colorscale=colorscale, opacity=1, name='Plan %d' % j)
 
         data.append(surface)
         layout = go.Layout(
-            showlegend=True,  # not there WHY????
+            showlegend=True,  # not there WHY???? --> LEGEND NOT YET IMPLEMENTED FOR SURFACE OBJECTS!!
             legend=dict(orientation="h"),
             autosize=True,
             width=800,
@@ -756,8 +791,14 @@ def echelonMat(ech,
     return np.asmatrix(Mat)
 
 
-# Generate random matrix
+
 def randomA():
+    """Method which generates a random matrix with rows and columns within 1 and 10 and integer entries between -100
+    and 100
+
+    :return: generated random matrix
+    :rtype: numpy.ndarray
+    """
     n = random.randint(1, 10)
     m = random.randint(1, 10)
     A = [[random.randint(-100, 100) for i in range(n)] for j in range(m)]
@@ -766,6 +807,11 @@ def randomA():
 
 
 def dimensionA(A):
+    """Method which allows the user to enter the matrix dimensions and verifies whether they are correct or not
+
+    :param A: reference matrix
+    :type A: numpy.ndarray
+    """
     m = widgets.IntText(
         value=1,
         step=1,
@@ -788,7 +834,8 @@ def dimensionA(A):
         else:
             print('Incorrecte, entrez de nouvelles valeurs')
 
-    out = interact_manual(f)
+    interact_manual(f)
+    return
 
 
 def manualEch(*args):
@@ -796,7 +843,6 @@ def manualEch(*args):
         A = np.array(args[0]).astype(float)
         m = A.shape[0]
         b = args[1]
-        # b=[b[i] for i in range(m)]
         if type(b[0])is list:
             b = np.array(b).astype(float)
             A = np.concatenate((A, b), axis=1)
@@ -872,33 +918,34 @@ def echelonnage(i, j, r, alpha, A, m, *args):  # 1.5-1.6 Matrice echelonnées
 def manualOp(*args):
     if len(args) == 2:  # matrice augmentée
         A = np.array(args[0]).astype(float)
-        m = A.shape[0]
+        M = A.shape[0]
         b = args[1]
-        # b=[b[i] for i in range(m)]
         if type(b[0]) is list:
             b = np.array(b).astype(float)
             A = np.concatenate((A, b), axis=1)
         else:
-            b = [b[i] for i in range(m)]
-            A = [A[i] + [b[i]] for i in range(0, m)]
+            b = [b[i] for i in range(M)]
+            A = [A[i] + [b[i]] for i in range(0, M)]
     else:
         A = np.array(args[0]).astype(float)
-        m = A.shape[0]
+        M = A.shape[0]
     A = np.array(A)  # just in case it's not
-    j = widgets.BoundedIntText(
-        value=1,
-        min=1,
-        max=m,
-        step=1,
-        description='Ligne j:',
-        disabled=False
-    )
+
     i = widgets.BoundedIntText(
         value=1,
         min=1,
-        max=m,
+        max=M,
         step=1,
         description='Ligne i:',
+        disabled=False
+    )
+
+    j = widgets.BoundedIntText(
+        value=1,
+        min=1,
+        max=M,
+        step=1,
+        description='Ligne j:',
         disabled=False
     )
 
@@ -913,39 +960,42 @@ def manualOp(*args):
         description='Coeff. alpha:',
         disabled=False
     )
+
     print("Régler les paramètres et cliquer sur RUN INTERACT pour effectuer votre opération")
 
     def f(r, i, j, alpha):
-        m = np.concatenate((A, b), axis=1)
-        MatriceList = [A]
-        RhSList = [b]
-        if alpha == 0:
+        m = A
+        MatriceList = [A[:, :len(A[0])-1]]
+        RhSList = [A[:, len(A[0])-1:]]
+        if alpha == 0 and r != 'Eij':
             print('Le coefficient alpha doit être non-nul!')
         if r == 'Eij':
-            m = Eij(m, i - 1, j - 1)
+            m = Eij(m, i-1, j-1)
         if r == 'Ei(alpha)':
-            m = Ealpha(m, i.value - 1, eval(alpha))
+            m = Ealpha(m, i-1, eval(alpha))
         if r == 'Eij(alpha)':
-            m = Eijalpha(m, i - 1, j - 1, eval(alpha))
-        MatriceList.append(m[:, 0:len(A[0])])
-        RhSList.append(m[:, len(A[0]):])
+            m = Eijalpha(m, i-1, j-1, eval(alpha))
+        MatriceList.append(m[:, :len(A[0])-1])
+        RhSList.append(m[:, len(A[0])-1:])
         printEquMatricesAug(MatriceList, RhSList)
+        return
 
     interact_manual(f, r=r, i=i, j=j, alpha=alpha)
+    return
 
 
-########################################OBSOLETE
+######################################## OBSOLETE ####################################################################
 def printEquMatricesAug(listOfMatrices, listOfRhS):  # list of matrices is M=[M1, M2, ..., Mn] where Mi=(Mi|b)
-    texEqu = '$' + texMatrixAug(listOfMatrices[0], listOfRhS[0])
+    texEqu = '$' + texMatrix(listOfMatrices[0], listOfRhS[0])
     for i in range(1, len(listOfMatrices)):
-        texEqu = texEqu + '\\quad \\sim \\quad' + texMatrixAug(listOfMatrices[i], listOfRhS[i])
+        texEqu = texEqu + '\\quad \\sim \\quad' + texMatrix(listOfMatrices[i], listOfRhS[i])
     texEqu = texEqu + '$'
     display(Latex(texEqu))
 
 
 def echelonMatCoeff(A):  # take echelonMAt but without b.
-    b = [0 for i in range(len(A))]
-    Mat = [A[i] + [b[i]] for i in range(0, len(A))]
+    b = [0 for _ in range(len(A))]
+    Mat = [A[i] + [b[i]] for i in range(len(A))]
     Mat = np.array(Mat)
     Mat = Mat.astype(float)  # in case the array in int instead of float.
     numPivot = 0
