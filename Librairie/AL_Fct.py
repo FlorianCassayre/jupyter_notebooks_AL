@@ -11,7 +11,6 @@ from IPython.display import display, Latex
 import matplotlib.pyplot as plt
 import math
 import plotly
-# import chart_studio.plotly as py
 import plotly.graph_objs as go
 from plotly.graph_objs import *
 
@@ -325,42 +324,67 @@ def printEquMatrices(*args):
     return
 
 
-# %% Functions to enter smth
+# %% Functions to enter something
 
-def EnterInt(n):  # function enter integer.
-    while type(n) is not int:
+def EnterInt(n=None):
+    """Function to allow the user to enter a nonnegative integer
+
+    :param n: first integer, passed to the function. If null or negative or None, an integer is requested to the user.
+       Defaults to None
+    :type n: int or NoneType
+    :return: positive integer
+    :rtype: int
+    """
+
+    while type(n) is not int or (type(n) is int and n <= 0):
         try:
             n = int(n)
             if n <= 0:
-                print("Le nombre ne peut pas être négatif!")
-                print("Entrez à nouveau : ")
+                print("Le nombre ne peut pas être négatif o zero!")
+                print("Entrez à nouveau: ")
                 n = input()
         except:
-            print("Ce n'est pas un entier!")
-            print("Entrez à nouveau :")
-            n = input()
-    n = int(n)
+            if n is not None:
+                print("Ce n'est pas un entier!")
+                print("Entrez à nouveau:")
+                n = input()
+            else:
+                print("Entrez un entier positif")
+                n = input()
     return n
 
 
-def EnterListReal(n):  # function enter list of real numbers.
-    coeff = input()
-    while type(coeff) is not list:
-        try:
-            coeff = [float(eval(x)) for x in coeff.split(',')]
-            if len(coeff) != n + 1:
-                print("Vous n'avez pas entré le bon nombre de réels!")
-                print("Entrez à nouveau : ")
+def EnterListReal(n):
+    """Function which allows the user to enter a list of `n` real numbers
+
+    :param n: number of real numbers in the desired list
+    :type n: int
+    :return: list of `n` real numbers
+    :rtype: list[float]
+    """
+
+    if n < 0:
+        print(f"Impossible de générer une liste de {n} nombres réels")
+    elif n == 0:
+        return []
+    else:
+        print(f"Entrez une liste de {n} nombres réels")
+        coeff = None
+        while type(coeff) is not list:
+            try:
                 coeff = input()
-        except:
-            print("Ce n'est pas le bon format!")
-            print("Entrez à nouveau")
-            coeff = input()
-            # coeff[abs(coeff)<1e-15]=0 #ensures that 0 is 0.
-    return coeff
+                coeff = [float(eval(x)) for x in coeff.split(',')]
+                if len(coeff) != n:
+                    print("Vous n'avez pas entré le bon nombre de réels!")
+                    print("Entrez à nouveau : ")
+                    coeff = input()
+            except:
+                print("Ce n'est pas le bon format!")
+                print("Entrez à nouveau")
+                coeff = input()
+        return coeff
 
 
-# %%Verify if sol is the solution of the equation with coefficients coeff
 def SolOfEq(sol, coeff, i):
     """Method that verifies if `sol` is a solution to the linear equation `i`with coefficients `coeff`
 
@@ -688,8 +712,18 @@ def Eijalpha(M, i, j, alpha):  # matrice elementaire, AJOUTE à la ligne i alpha
     return M
 
 
-def echelonMat(ech,
-               *args):  # Nous donne la matrice echelonnée 'E' ou reduite 'ER' d'une matrice des coeffs. ou augmentée.
+def echelonMat(ech, *args):
+    """Method to perform Gauss elimination on either the matrix of the coefficients (if `len(args)==1`) or on the
+    augmented matrix (if `len(args)==2`); the elimination can be either in standard form (if `ech=='E` or in reduced
+    form (if `ech=='ER'`).
+
+    :param ech:
+    :type ech:
+    :param args:
+    :type args:
+    :return:
+    :rtype:
+    """
     if len(args) == 2:  # matrice augmentée
         A = np.array(args[0]).astype(float)
         m = A.shape[0]
@@ -710,72 +744,78 @@ def echelonMat(ech,
 
     if ech == 'E':  # Echelonnée
         Mat = np.array(A)
-        Mat = Mat.astype(float)  # in case the array in int instead of float.
+        Mat = Mat.astype(float)  # in case the array is int instead of float.
         numPivot = 0
         for i in range(len(Mat)):
             j = i
-            while all(abs(Mat[j:, i]) < 1e-15) and j != len(Mat[0, :]) - 1:  # if column (or rest of) is 0, take next
+            while all(abs(Mat[j:, i]) < 1e-15) and j <= len(Mat[0, :])-1:  # if column (or rest of) is 0, take next
                 j += 1
-            if j == len(Mat[0, :]) - 1:
-                if len(Mat[0, :]) > j:
-                    Mat[i + 1:len(Mat), :] = 0
-                print("La matrice est sous la forme échelonnée")
-                if len(args) == 2:
-                    printEquMatrices([A[:, 0:n], Mat[:, 0:n]], [A[:, n:], Mat[:, n:]])
-                else:
-                    printEquMatrices([A, Mat])
-                break
+            # if j == len(Mat[0, :])-1:
+            #     if len(Mat[0, :]) > j:
+            #         Mat[i+1:len(Mat), :] = 0
+            #     print("La matrice est sous la forme échelonnée")
+            #     if len(args) == 2:
+            #         printEquMatrices([A[:, :n], Mat[:, :n]], [A[:, n:], Mat[:, n:]])
+            #     else:
+            #         printEquMatrices([A, Mat])
+            #     break
             if abs(Mat[i, j]) < 1e-15:
                 Mat[i, j] = 0
                 zero = abs(Mat[i:, j]) < 1e-15
                 M = echZero(zero, Mat[i:, :])
                 Mat[i:, :] = M
-            Mat = Ealpha(Mat, i, 1 / Mat[i, j])  # normalement Mat[i,j]!=0
+            Mat = Ealpha(Mat, i, 1 / Mat[i, j])  # usually Mat[i,j]!=0
             for k in range(i + 1, len(A)):
                 Mat = Eijalpha(Mat, k, i, -Mat[k, j])
                 # Mat[k,:]=[0 if abs(Mat[k,l])<1e-15 else Mat[k,l] for l in range(len(MatCoeff[0,:]))]
             numPivot += 1
             Mat[abs(Mat) < 1e-15] = 0
-            # printA(np.array(Mat))
+        print("La matrice est sous la forme échelonnée")
+        if len(args) == 2:
+            printEquMatrices([A[:, 0:n], Mat[:, 0:n]], [A[:, n:], Mat[:, n:]])
+        else:
+            printEquMatrices([np.asmatrix(A), np.asmatrix(Mat)])
+
     elif ech == 'ER':  # Echelonnée réduite
         Mat = np.array(A)
-        Mat = Mat.astype(float)  # in case the array in int instead of float.
+        Mat = Mat.astype(float)  # in case the array is int instead of float.
         numPivot = 0
         for i in range(len(Mat)):
             j = i
-            while all(abs(Mat[j:, i]) < 1e-15) and j != len(
-                    Mat[0, :]) - 1:  # if column (or rest of) is zero, take next column
+            while all(abs(Mat[j:, i]) < 1e-15) and j <= len(Mat[0, :])-1:  # if column (or rest of) is zero, take next column
                 j += 1
-            if j == len(Mat[0, :]) - 1:
+            # if j == len(Mat[0, :]) - 1:
                 # ADD ZERO LINES BELOW!!!!!!
-                if len(Mat[0, :]) > j:
-                    Mat[i + 1:len(Mat), :] = 0
-                print("La matrice est sous la forme échelonnée")
-                if len(args) == 2:
-                    printEquMatrices([A[:, 0:n], Mat[:, 0:n]], [A[:, n:], Mat[:, n:]])
-                else:
-                    printEquMatrices([np.asmatrix(A), np.asmatrix(Mat)])
-                break
+                # if len(Mat[0, :]) > j:
+                #     Mat[i+1:len(Mat), :] = 0
+                # print("La matrice est sous la forme échelonnée")
+                # if len(args) == 2:
+                #     printEquMatrices([A[:, 0:n], Mat[:, 0:n]], [A[:, n:], Mat[:, n:]])
+                # else:
+                #     printEquMatrices([np.asmatrix(A), np.asmatrix(Mat)])
+                # break
             if abs(Mat[i, j]) < 1e-15:
                 Mat[i, j] = 0
                 zero = abs(Mat[i:, j]) < 1e-15
                 M = echZero(zero, Mat[i:, :])
                 Mat[i:, :] = M
-            Mat = Ealpha(Mat, i, 1 / Mat[i, j])  # normalement Mat[i,j]!=0
+            Mat = Ealpha(Mat, i, 1 / Mat[i, j])  # usually Mat[i,j]!=0
             for k in range(i + 1, len(A)):
                 Mat = Eijalpha(Mat, k, i, -Mat[k, j])
                 # Mat[k,:]=[0 if abs(Mat[k,l])<1e-15 else Mat[k,l] for l in range(len(MatCoeff[0,:]))]
             numPivot += 1
             Mat[abs(Mat) < 1e-15] = 0
+        print("La matrice est sous la forme échelonnée")
+        if len(args) == 2:
+            printEquMatrices([A[:, 0:n], Mat[:, 0:n]], [A[:, n:], Mat[:, n:]])
+        else:
+            printEquMatrices([np.asmatrix(A), np.asmatrix(Mat)])
         Mat = np.array(Mat)
-        MatAugm = np.concatenate((A, b), axis=1)
-        # MatAugm = [A[i]+[b[i]] for i in range(0,len(A))]
         i = (len(Mat) - 1)
         while i >= 1:
-            while all(
-                    abs(Mat[i, :len(Mat[0]) - 1]) < 1e-15) and i != 0:  # if ligne (or rest of) is zero, take next ligne
+            while all(abs(Mat[i, :len(Mat[0])-1]) < 1e-15) and i != 0:  # if line (or rest of) is zero, take next line
                 i -= 1
-            # we have a lign with one non-nul element
+            # we have a line with one non-null element
             j = i  # we can start at pos ij at least the pivot is there
             if abs(Mat[i, j]) < 1e-15:  # if element Aij=0 take next one --> find pivot
                 j += 1
@@ -785,11 +825,15 @@ def echelonMat(ech,
             i -= 1
         print("La matrice est sous la forme échelonnée réduite")
         if len(args) == 2:
-            printEquMatrices([A[:, 0:n], Mat[:, 0:n]], [A[:, n:], Mat[:, n:]])
+            printEquMatrices([A[:, :n], Mat[:, :n]], [A[:, n:], Mat[:, n:]])
         else:
             printEquMatrices([A, Mat])
-    return np.asmatrix(Mat)
 
+    else:
+        print(f"Méthode d'échelonnage non reconnue {ech}. Méthodes disponibles: 'E' (pour la forme échelonnée standard)"
+              f", 'ER' (pour la forme échelonnée réduite))")
+
+    return np.asmatrix(Mat)
 
 
 def randomA():
@@ -839,20 +883,29 @@ def dimensionA(A):
 
 
 def manualEch(*args):
+    """Method which allows the user to perform the Gauss elimination method on the given input matrix, eventually
+    extended by the right-hand side vector.
+
+    :param args:
+    :type args:
+    :return:
+    :rtype:
+    """
+
     if len(args) == 2:  # matrice augmentée
         A = np.array(args[0]).astype(float)
         m = A.shape[0]
         b = args[1]
-        if type(b[0])is list:
+        if type(b[0]) is list:
             b = np.array(b).astype(float)
             A = np.concatenate((A, b), axis=1)
         else:
             b = [b[i] for i in range(m)]
-            A = [A[i] + [b[i]] for i in range(0, m)]
+            A = [A[i] + [b[i]] for i in range(m)]
     else:
         A = np.array(args[0]).astype(float)
         m = A.shape[0]
-    A = np.array(A)  # just in case it's not
+
     j = widgets.BoundedIntText(
         value=1,
         min=1,
@@ -871,7 +924,7 @@ def manualEch(*args):
     )
 
     r = widgets.RadioButtons(
-        options=['Eij', 'Ei(alpha)', 'Eij(alpha)'],
+        options=['Eij', 'Ei(alpha)', 'Eij(alpha)', 'Revert'],
         description='Opération:',
         disabled=False
     )
@@ -892,30 +945,60 @@ def manualEch(*args):
 
 def echelonnage(i, j, r, alpha, A, m, *args):  # 1.5-1.6 Matrice echelonnées
     m = np.array(m).astype(float)
-    if alpha.value == 0:
+    if alpha.value == 0 and r.value in {'Ei(alpha)', 'Eij(alpha)'}:
         print('Le coefficient alpha doit être non-nul!')
+
     if r.value == 'Eij':
-        m = Eij(m, i.value - 1, j.value - 1)
+        m = Eij(m, i.value-1, j.value-1)
     if r.value == 'Ei(alpha)':
-        m = Ealpha(m, i.value - 1, eval(alpha.value))
+        m = Ealpha(m, i.value-1, eval(alpha.value))
     if r.value == 'Eij(alpha)':
-        m = Eijalpha(m, i.value - 1, j.value - 1, eval(alpha.value))
+        m = Eijalpha(m, i.value-1, j.value-1, eval(alpha.value))
+
     if len(args) == 2:
         A = np.asmatrix(A)
         MatriceList = args[0]
         RhSList = args[1]
-        MatriceList.append(m[:, 0:A.shape[1]])  # ??????????
-        RhSList.append(m[:, A.shape[1]:])  # ??????????
+        if r.value != 'Revert':
+            MatriceList.append(m[:, :A.shape[1]])
+            RhSList.append(m[:, A.shape[1]:])
+        else:
+            if len(MatriceList) > 1 and len(RhSList) > 1:
+                MatriceList.pop()
+                RhSList.pop()
+                mat = MatriceList[-1]
+                rhs = RhSList[-1]
+                m = np.concatenate((mat,rhs), axis=1)
+            else:
+                print("Impossible de revenir sur l'opération!")
         printEquMatrices(MatriceList, RhSList)
-    else:
+    elif len(args) == 1:
         MatriceList = args[0]
-        A = np.asmatrix(A)
-        MatriceList.append(m[:, 0:A.shape[1]])  # ??????????
+        if r.value != 'Revert':
+            MatriceList.append(m)
+        else:
+            if len(MatriceList) > 1:
+                MatriceList.pop()
+                m = MatriceList[-1]
+            else:
+                print("Impossible de revenir sur l'opération!")
         printEquMatrices(MatriceList)
+    else:
+        print("La liste des matrices ou des matrices et des vecteurs connus doit être donnée en entrée de la fonction!")
+        raise ValueError
     return m
 
 
 def manualOp(*args):
+    """Method which allows the user to perform elementary operations on the given input matrix, eventually extended by
+    the right-hand side vector.
+
+    :param args:
+    :type args:
+    :return:
+    :rtype:
+    """
+
     if len(args) == 2:  # matrice augmentée
         A = np.array(args[0]).astype(float)
         M = A.shape[0]
@@ -925,7 +1008,7 @@ def manualOp(*args):
             A = np.concatenate((A, b), axis=1)
         else:
             b = [b[i] for i in range(M)]
-            A = [A[i] + [b[i]] for i in range(0, M)]
+            A = [A[i] + [b[i]] for i in range(M)]
     else:
         A = np.array(args[0]).astype(float)
         M = A.shape[0]
