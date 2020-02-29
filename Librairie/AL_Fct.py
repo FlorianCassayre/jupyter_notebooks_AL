@@ -8,11 +8,8 @@ Created on Wed Mar 13 16:42:29 2019
 from __future__ import division
 import numpy as np
 from IPython.display import display, Latex
-import matplotlib.pyplot as plt
-import math
 import plotly
 import plotly.graph_objs as go
-from plotly.graph_objs import *
 
 plotly.offline.init_notebook_mode(connected=True)
 from IPython.core.magic import register_cell_magic
@@ -444,8 +441,19 @@ def SolOfSyst(solution, A, b):
         return False
 
 
-# %%Plots using plotly
-def drawLine(p, d):  # p,d=vectors p-->"point" and d-->"direction",
+# PLOTS WITH PLOTLY #
+
+def drawLine(p, d):
+    """Method which allows to plot lines, points and arrows in the 2D-place or 3D-space, using plotly library
+
+    :param p: point
+    :type p: list[list[float]]
+    :param d: direction vector. If made of all zeros, just the reference point is plotted; if different from 0 a line
+      passing through `p` and with direction `d` is plotted
+    :type d: list[list[float]]
+    :return: generated plot
+    """
+
     blue = 'rgb(51, 214, 255)'
     colors = [blue]
     colorscale = [[0.0, colors[0]],
@@ -464,14 +472,23 @@ def drawLine(p, d):  # p,d=vectors p-->"point" and d-->"direction",
         data = []
         t = np.linspace(-5, 5, 51)
         s = np.linspace(0, 1, 10)
-        trace = go.Scatter(x=p[0] + t * d[0], y=p[1] + t * d[1], name='Droite')
-        peak = go.Scatter(x=d[0], y=d[1], marker=dict(symbol=6, size=12, color=colors[0]), showlegend=False)
-        vector = go.Scatter(x=p[0] + s * d[0], y=p[1] + s * d[1], mode='lines',
-                         line=dict(width=5,
-                                   color=colors[0]), name='Vecteur directeur')
-        data.append(trace)
+        if all(dd == [0] for dd in d):
+            vector = go.Scatter(x=p[0] + s*0, y=p[1] + s*0, marker=dict(symbol=6, size=12, color=colors[0]),
+                                name ='Point')
+        else:
+            trace = go.Scatter(x=p[0] + t * d[0], y=p[1] + t * d[1], name='Droite')
+            peak = go.Scatter(x=d[0], y=d[1], marker=dict(symbol=6, size=12, color=colors[0]), showlegend=False)
+            vector = go.Scatter(x=p[0] + s * d[0], y=p[1] + s * d[1], mode='lines',
+                                line=dict(width=5, color=colors[0]), name='Vecteur directeur')
+        zero = go.Scatter(x=t*0, y=t*0, name='Origine', marker=dict(symbol=6, size=12, color=colors[0]),
+                          showlegend=False)
+
         data.append(vector)
-        data.append(peak)
+        data.append(zero)
+        if not all(dd == [0] for dd in d):
+            data.append(trace)
+            data.append(peak)
+
         fig = go.FigureWidget(data=data)
         plotly.offline.iplot(fig)
     elif len(p) == 3:
@@ -489,18 +506,19 @@ def drawLine(p, d):  # p,d=vectors p-->"point" and d-->"direction",
         ]
         t = np.linspace(-5, 5, 51)
         s = np.linspace(0, 1, 10)
-        trace = go.Scatter3d(x=p[0] + t * d[0], y=p[1] + t * d[1], z=p[2] + t * d[2], mode='lines', name='Droite')
-        zero = go.Scatter3d(x=t * 0, y=t * 0, z=t * 0, name='Origine', marker=dict(size=5), showlegend=False)
+        zero = go.Scatter3d(x=t*0, y=t*0, z=t*0, name='Origine', marker=dict(size=3), showlegend=False)
         if all(dd == [0] for dd in d):
-            vector = go.Scatter3d(x=p[0] + s * d[0], y=p[1] + s * d[1], z=p[2] + s * d[2], marker=dict(size=5),
-                               name='Point')
+            vector = go.Scatter3d(x=p[0] + s*0, y=p[1] + s*0, z=p[2] + s*0, marker=dict(size=5),
+                                  name='Point')
         else:
+            trace = go.Scatter3d(x=p[0] + t * d[0], y=p[1] + t * d[1], z=p[2] + t * d[2], mode='lines', name='Droite')
             vector = go.Scatter3d(x=p[0] + s * d[0], y=p[1] + s * d[1], z=p[2] + s * d[2], mode='lines',
-                               line=dict(width=5,
-                                         color=colors[0], dash='solid'), name='Vecteur directeur', hoverinfo='none')
+                                  line=dict(width=5,color=colors[0], dash='solid'), name='Vecteur directeur',
+                                  hoverinfo='none')
         data.append(zero)
         data.append(vector)
-        data.append(trace)
+        if not all(dd == [0] for dd in d):
+            data.append(trace)
         layout = {
             'scene': {
                 'camera': {
@@ -636,10 +654,12 @@ def Plot3DSys(xL, xR, p, A, b):
 
 
 def Ex3Chapitre1_7():
+    """Helper function, which sets widgets for the resolution of exercise 3 in jupiter notebook relative to chapter 1.7
+    """
+
     systa = widgets.Select(
         options=['Point', 'Droite', 'Plan', 'Incompatible'],
         description='Système a):',
-        # layout=Layout(width='auto'),
         disabled=False,
     )
     systb = widgets.Select(
@@ -677,36 +697,88 @@ def Ex3Chapitre1_7():
     def correction(a, b, c, d):
         if 'Droite' in a and 'Incompatible' in b and 'Point' in c and 'Droite' in d:
             print("C'est correct!")
-            out = interact_manual(plot, c=choice)
+            print("Sélectionnez le système souhaité et appuyez sur 'Run Interact'"
+                  " pour visualiser son ensemble de solution(s), le cas échéant")
+            interact_manual(plot, c=choice)
         else:
             print("C'est faux. Veuillez rentrer d'autres valeurs")
 
-    out = interact_manual(correction, a=systa, b=systb, c=systc, d=systd)
+    interact_manual(correction, a=systa, b=systb, c=systc, d=systd)
+
+    return
 
 
-# %%Echelonnage
+# ECHELONNAGE #
 
-def echZero(indice,
-            M):  # echelonne la matrice pour mettre les zeros dans les lignes du bas. M (matrice ou array) et Mat (list) pas le même format.
-    Mat = M[indice == False, :].ravel()
-    Mat = np.concatenate([Mat, M[indice == True, :].ravel()])
+def echZero(indice, M):
+    """Method which sets to zero the entries of matrix M that correspond to a True value in the boolean vector indice
+
+    :param indice: vector of booleans; if an element is True, it means that the element with the corresponding index in
+       matrix M must be set to 0
+    :type indice: list[bool]
+    :param M: matrix to be processed
+    :type: numpy.ndarray
+    :return: processed matrix M, where the given entries have been properly set to 0
+    :rtype: numpy.ndarray
+    """
+
+    Mat = M[not indice, :].ravel()
+    Mat = np.concatenate([Mat, M[indice, :].ravel()])
     Mat = Mat.reshape(len(M), len(M[0, :]))
     return Mat
 
 
-def Eij(M, i, j):  # matrice elementaire, echange la ligne i avec la ligne j
+def Eij(M, i, j):
+    """Method to swap line `i` and line `j` of matrix `M`
+
+    :param M: matrix to be processed
+    :type M: numpy.ndarray
+    :param i: first line index
+    :type i: int
+    :param j: second line index
+    :type j: int
+    :return: processed matrix, with line `i` and `j` having been swapped
+    :rtype: numpy.ndarray
+    """
+
     M = np.array(M)
     M[[i, j], :] = M[[j, i], :]
     return M
 
 
-def Ealpha(M, i, alpha):  # matrice elementaire, multiple la ligne i par le scalaire alpha
+def Ealpha(M, i, alpha):
+    """Method to multiply line `i` of matrix `M` by the scalar coefficient `alpha`
+
+    :param M: matrix to be processed
+    :type M: numpy.ndarray
+    :param i: reference line index
+    :type i: int
+    :param alpha: scalar coefficient
+    :type alpha: float
+    :return: processed matrix, with line `i` multiplied by the scalar `alpha`
+    :rtype: numpy.ndarray
+    """
+
     M = np.array(M)
     M[i, :] = alpha * M[i, :]
     return M
 
 
-def Eijalpha(M, i, j, alpha):  # matrice elementaire, AJOUTE à la ligne i alpha *ligne j. Attention alpha + ou -
+def Eijalpha(M, i, j, alpha):
+    """Method to add to line `i` of matrix `M` line `j` of the same matrix, multiplied by the scalar coefficient `alpha`
+
+    :param M: matrix to be processed
+    :type M: numpy.ndarray
+    :param i: line to be modified
+    :type i: int
+    :param j: line whose multiple has tobe added to line `i`
+    :type j: int
+    :param alpha: scalar coefficient
+    :type alpha: float
+    :return: processed matrix, with line `i` being summed up with line `j` multiplied by `alpha`
+    :rtype: numpy.ndarray
+    """
+
     M = np.array(M)
     M[i, :] = M[i, :] + alpha * M[j, :]
     return M
@@ -739,8 +811,6 @@ def echelonMat(ech, *args):
         A = np.array(args[0]).astype(float)
         m = A.shape[0]
         n = A.shape[1]
-        # b = np.zeros((m, 1))
-        # A = np.concatenate((A, b), axis=1)
 
     if ech == 'E':  # Echelonnée
         Mat = np.array(A)
@@ -759,7 +829,7 @@ def echelonMat(ech, *args):
                 zero = abs(Mat[i:, j]) < 1e-15
                 M = echZero(zero, Mat[i:, :])
                 Mat[i:, :] = M
-            Mat = Ealpha(Mat, i, 1 / Mat[i, j])  # normalement Mat[i,j]!=0
+            Mat = Ealpha(Mat, i, 1 / Mat[i, j])  # usually Mat[i,j]!=0
             for k in range(i + 1, len(A)):
                 Mat = Eijalpha(Mat, k, i, -Mat[k, j])
                 # Mat[k,:]=[0 if abs(Mat[k,l])<1e-15 else Mat[k,l] for l in range(len(MatCoeff[0,:]))]
@@ -768,7 +838,7 @@ def echelonMat(ech, *args):
 
         print("La matrice est sous la forme échelonnée")
         if len(args) == 2:
-            printEquMatrices([A[:, 0:n], Mat[:, 0:n]], [A[:, n:], Mat[:, n:]])
+            printEquMatrices([A[:, :n], Mat[:, :n]], [A[:, n:], Mat[:, n:]])
         else:
             printEquMatrices([A, Mat])
 
@@ -800,7 +870,7 @@ def echelonMat(ech, *args):
 
         print("La matrice est sous la forme échelonnée")
         if len(args) == 2:
-            printEquMatrices([A[:, 0:n], Mat[:, 0:n]], [A[:, n:], Mat[:, n:]])
+            printEquMatrices([A[:, :n], Mat[:, :n]], [A[:, n:], Mat[:, n:]])
         else:
             printEquMatrices([np.asmatrix(A), np.asmatrix(Mat)])
 
@@ -821,7 +891,7 @@ def echelonMat(ech, *args):
 
         print("La matrice est sous la forme échelonnée réduite")
         if len(args) == 2:
-            printEquMatrices([A[:, 0:n], Mat[:, 0:n]], [A[:, n:], Mat[:, n:]])
+            printEquMatrices([A[:, :n], Mat[:, :n]], [A[:, n:], Mat[:, n:]])
         else:
             printEquMatrices([A, Mat])
 
@@ -939,7 +1009,28 @@ def manualEch(*args):
     return i, j, r, alpha
 
 
-def echelonnage(i, j, r, alpha, A, m, *args):  # 1.5-1.6 Matrice echelonnées
+def echelonnage(i, j, r, alpha, A, m, *args):
+    """Method which performs the Gauss elimination method step described by `r.value` with parameters `ì`, `j` and
+    `alpha` on matrix `A`
+
+    :param i: first reference line
+    :type i: ipywidgets.Text
+    :param j: second reference line
+    :type j: ipywidgets.Text
+    :param r: RadioButton describing the elementary matricial operation to be performed
+    :type r: ipywidgets.radioButton
+    :param alpha: scalar coefficient
+    :type alpha: ipywidgets.Text
+    :param A: starting matrix
+    :type A: numpy.ndarray
+    :param m: starting augmented matrix
+    :type m: numpy.ndarray
+    :param args: either the list of matrices or both the list of matrices and rhs having bee built during the
+       application of the methos
+    :type args: list[numpy.ndarray] or tuple(list[numpy.ndarray], list[numpy.ndarray])
+    :return: processed matrix
+    :rtype: numpy.ndarray
+    """
     m = np.array(m).astype(float)
     if alpha.value == 0 and r.value in {'Ei(alpha)', 'Eij(alpha)'}:
         print('Le coefficient alpha doit être non-nul!')
