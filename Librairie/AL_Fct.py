@@ -653,6 +653,20 @@ def Plot3DSys(xL, xR, p, A, b):
     return
 
 
+def Ex3Chapitre1_3_4(res):
+    """Provides the correction to exercice 3 of notebook 1_3-4
+
+    :param res: list of systems having the same set of solutions
+    :type res: tuple[str]
+    """
+    if 'a)' in res and 'c)' in res and 'd)' in res and 'h)' in res:
+        print("C'est correct!")
+    else:
+        print("C'est faux. Veuillez rentrer d'autres valeurs")
+
+    return
+
+
 def Ex3Chapitre1_7():
     """Helper function, which sets widgets for the resolution of exercise 3 in jupiter notebook relative to chapter 1.7
     """
@@ -704,6 +718,25 @@ def Ex3Chapitre1_7():
             print("C'est faux. Veuillez rentrer d'autres valeurs")
 
     interact_manual(correction, a=systa, b=systb, c=systc, d=systd)
+
+    return
+
+
+def Ex2Chapitre1_7(inc, c):
+    """Provides the correction to exercice 2 of notebook 1_7
+
+    :param inc: list of incompatible systems
+    :type inc: tuple[str]
+    :param c: list of compatible systems
+    :type c: tuple[str]
+    """
+
+    if 'a)' in c and 'c)' in c and 'd)' in c and 'b)' in inc:
+        print("C'est correct!")
+        print("En particulier, les systèmes a) et d) admettent une infinité de solutions, tandis que le système c) "
+              "admet une solution unique.")
+    else:
+        print("C'est faux. Veuillez rentrer d'autres valeurs")
 
     return
 
