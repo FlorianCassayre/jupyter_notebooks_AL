@@ -223,17 +223,24 @@ def texMatrix(*args):
       plotted. Otherwise, if the input is unique, just the matrix A is plotted
 
     :param args: input arguments; they could be either a matrix and a vector or a single matrix
-    :type args: list
+    :type args: list[list] or list[numpy.ndarray]
     :return: Latex string representing the input matrix or the input matrix augmented by the input vector
     :rtype: str
     """
 
     if len(args) == 2:  # matrice augmentée
-        A = np.array(args[0]).astype(float)
+        if not type(args[0]) is np.ndarray:
+            A = np.array(args[0]).astype(float)
+        else:
+            A = args[0].astype(float)
         m = A.shape[1]
-        b = np.array(args[1]).astype(float)
+        if not type(args[1]) is np.array:
+            b = np.array(args[1]).astype(float)
+        else:
+            b = args[1].astype(float)
+
         A = np.concatenate((A, b), axis=1)
-        texApre = '\\left(\\begin{array}{'
+        texApre = '\\left[\\begin{array}{'
         texA = ''
         for i in np.asarray(A):
             texALigne = ''
@@ -252,10 +259,13 @@ def texMatrix(*args):
                 texALigne = texALigne + ' & ' + str(round(j, 3) if j % 1 else int(j))
             texALigne = texALigne + ' \\\\'
             texA = texA + texALigne
-        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
+        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right]'
     elif len(args) == 1:  # matrice des coefficients
-        A = np.array(args[0]).astype(float)
-        texApre = '\\left(\\begin{array}{'
+        if not type(args[0]) is np.ndarray:
+            A = np.array(args[0]).astype(float)
+        else:
+            A = args[0].astype(float)
+        texApre = '\\left[\\begin{array}{'
         texA = ''
         for i in np.asarray(A):
             texALigne = ''
@@ -268,14 +278,14 @@ def texMatrix(*args):
                 texALigne = texALigne + ' & ' + str(round(j, 3) if j % 1 else int(j))
             texALigne = texALigne + ' \\\\'
             texA = texA + texALigne
-        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
+        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right]'
     else:
         print("Ce n'est pas une matrice des coefficients ni une matrice augmentée")
         texA = ''
     return texA
 
 
-def printA(*args):  # Print matrix
+def printA(*args):
     """Method which prints the input matrix.
 
     .. note:: if two inputs are passed, they represent A and b respectively; as a result the augmented matrix A|B is
@@ -652,7 +662,49 @@ def Plot3DSys(xL, xR, p, A, b):
     plotly.offline.iplot(fig)
     return
 
-# EXERCICES CORRECTIONS
+
+def isDiag(M):
+    """Method which checks if a matrix is diagonal
+
+    :param M: input matrix
+    :type M: list[list[float]] or numpy.ndarray
+    :return: True if M is diagonal else False
+    :rtype: bool
+    """
+    if not type(M) is np.ndarray:
+        M = np.array(M)
+
+    i, j = M.shape
+    try:
+        assert i == j
+    except AssertionError:
+        print("A non-squared matrix cannot be diagonal!")
+        return False
+
+    test = M.reshape(-1)[:-1].reshape(i - 1, j + 1)
+    return ~np.any(test[:, 1:])
+
+
+def isSym(M):
+    """Method which checks if a matrix is symmetric
+
+    :param M: input matrix
+    :type M: list[list[float]] or numpy.ndarray
+    :return: True if M is symmetric else False
+    :rtype: bool
+    """
+
+    if not type(M) is np.ndarray:
+        M = np.array(M)
+
+    i, j = M.shape
+    try:
+        assert i == j
+    except AssertionError:
+        print("A non-squared matrix cannot be symmetric!")
+        return False
+
+    return ~np.any(M - np.transpose(M))
 
 
 # ECHELONNAGE #
