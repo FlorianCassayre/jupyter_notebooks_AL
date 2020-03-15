@@ -16,7 +16,7 @@ from IPython.core.magic import register_cell_magic
 from IPython.display import HTML
 import ipywidgets as widgets
 import random
-from ipywidgets import interact_manual, Layout
+from ipywidgets import interact_manual
 
 
 @register_cell_magic
