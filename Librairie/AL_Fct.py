@@ -244,19 +244,19 @@ def texMatrix(*args):
         texA = ''
         for i in np.asarray(A):
             texALigne = ''
-            texALigne = texALigne + str(round(i[0], 3) if i[0] % 1 else int(i[0]))
+            texALigne = texALigne + str(round(i[0], 4) if i[0] % 1 else int(i[0]))
             if texA == '':
                 texApre = texApre + 'c'
             for j in i[1:m]:
                 if texA == '':
                     texApre = texApre + 'c'
-                texALigne = texALigne + ' & ' + str(round(j, 3) if j % 1 else int(j))
+                texALigne = texALigne + ' & ' + str(round(j, 4) if j % 1 else int(j))
             if texA == '':
                 texApre = texApre + '| c'
             for j in i[m:]:
                 if texA == '':
                     texApre = texApre + 'c'
-                texALigne = texALigne + ' & ' + str(round(j, 3) if j % 1 else int(j))
+                texALigne = texALigne + ' & ' + str(round(j, 4) if j % 1 else int(j))
             texALigne = texALigne + ' \\\\'
             texA = texA + texALigne
         texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right]'
@@ -269,13 +269,13 @@ def texMatrix(*args):
         texA = ''
         for i in np.asarray(A):
             texALigne = ''
-            texALigne = texALigne + str(round(i[0], 3) if i[0] % 1 else int(i[0]))
+            texALigne = texALigne + str(round(i[0], 4) if i[0] % 1 else int(i[0]))
             if texA == '':
                 texApre = texApre + 'c'
             for j in i[1:]:
                 if texA == '':
                     texApre = texApre + 'c'
-                texALigne = texALigne + ' & ' + str(round(j, 3) if j % 1 else int(j))
+                texALigne = texALigne + ' & ' + str(round(j, 4) if j % 1 else int(j))
             texALigne = texALigne + ' \\\\'
             texA = texA + texALigne
         texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right]'
@@ -334,7 +334,7 @@ def printEquMatrices(*args):
 # %% Functions to enter something
 
 def EnterInt(n=None):
-    """Function to allow the user to enter a nonnegative integer
+    """Function to allow the user to enter a non-negative integer
 
     :param n: first integer, passed to the function. If null or negative or None, an integer is requested to the user.
        Defaults to None
