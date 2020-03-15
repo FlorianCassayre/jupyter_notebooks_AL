@@ -306,3 +306,190 @@ def Ex2Chapitre2_3():
 
     return
 
+
+def Ex1Chapitre2_4():
+    """Provides the correction to exercise 1 of notebook 2_4
+    """
+
+    a = widgets.Checkbox(
+        value=False,
+        description=r'$A^{-1}$ exists and the system admits multiple solutions, whichever $b$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    b = widgets.Checkbox(
+        value=False,
+        description=r'$A^{-1}$ exists and the system admits either a unique solution or multiple solutions '
+                    r'depending on the value of $b$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+
+    )
+    c = widgets.Checkbox(
+        value=False,
+        description=r'$A$ is invertible and the system admits a unique solution, whichever $b$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    d = widgets.Checkbox(
+        value=False,
+        description=r'$A^{-1}$ exists and the system admits at least one solution, whichever $b$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    e = widgets.Checkbox(
+        value=False,
+        description=r'$A$ is not invertible and the system admits either a unique or multiple solutions, depending on '
+                    r'the value of $b$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    f = widgets.Checkbox(
+        value=False,
+        description=r'$A$ is not invertible and the system admits a unique solution, whichever $b$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    g = widgets.Checkbox(
+        value=False,
+        description=r'The system admits a unique solution and $A$ is not invertible',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    h = widgets.Checkbox(
+        value=False,
+        description=r'The system admits a unique solution and $A$ is invertible',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    def correction(a, b, c, d, e, f, g, h):
+        if c and d and h and not a and not b and not e and not f and not g:
+            display(Latex("C'est correct!"))
+        else:
+            display(Latex("C'est faux."))
+
+    interact_manual(correction, a=a, b=b, c=c, d=d, e=e, f=f, g=g, h=h)
+
+    return
+
+
+def Ex2Chapitre2_4():
+    """Provides the correction to exercise 2 of notebook 2_4
+    """
+
+    a = widgets.Checkbox(
+        value=False,
+        description=r'The system admits a unique solution and it is:'
+                    r'$$\qquad x = \begin{bmatrix} 1&4/3&4/3\end{bmatrix}^T$$',
+        disabled=False,
+        layout=Layout(width='80%', height='70px')
+    )
+    b = widgets.Checkbox(
+        value=False,
+        description=r'The system does not admit any solution',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    c = widgets.Checkbox(
+        value=False,
+        description=r'The system admits a unique solution and it is:'
+                    r'$$\qquad x = \begin{bmatrix} 1&4/3&8/3\end{bmatrix}^T$$',
+        disabled=False,
+        layout=Layout(width='80%', height='70px')
+
+    )
+    d = widgets.Checkbox(
+        value=False,
+        description=r'The system admits multiple solutions',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    e = widgets.Checkbox(
+        value=False,
+        description=r'$A$ is invertible and its inverse is: <br>'
+                    r'$$\qquad A^{-1} = \begin{bmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&5/6\end{bmatrix}$$',
+        disabled=False,
+        layout=Layout(width='80%', height='100px')
+    )
+    f = widgets.Checkbox(
+        value=False,
+        description=r'$A$ is not invertible',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    g = widgets.Checkbox(
+        value=False,
+        description=r'$A$ is invertible and its inverse is: <br>'
+                    r'$$\qquad A^{-1} = \begin{bmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&-1/2\end{bmatrix}$$',
+        disabled=False,
+        layout=Layout(width='80%', height='100x')
+    )
+
+    def correction(a, b, c, d, e, f, g):
+        if c and e and not a and not b and not d and not f and not g:
+            display(Latex("C'est correct!"))
+        else:
+            display(Latex("C'est faux."))
+
+    interact_manual(correction, a=a, b=b, c=c, d=d, e=e, f=f, g=g)
+
+    return
+
+
+def Ex3Chapitre2_4():
+    """Provides the correction to exercise 3 of notebook 2_4
+    """
+
+    a = widgets.Checkbox(
+        value=False,
+        description=r'The system admits unique solution only if $\alpha < 2$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    b = widgets.Checkbox(
+        value=False,
+        description=r'The system admits unique solution only if $\alpha \geq 2$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    c = widgets.Checkbox(
+        value=False,
+        description=r'The system admits unique solution $\forall \alpha \in \mathbb{R}$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+
+    )
+    d = widgets.Checkbox(
+        value=False,
+        description=r'The system does not admit any solution if $\alpha < 2$, while it admits unique solution'
+                    r' if $\alpha \geq 2$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    e = widgets.Checkbox(
+        value=False,
+        description=r'The system admits multiple solutions if $\alpha \neq 2$, while it admits unique solution '
+                    r'for $\alpha == 2$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    f = widgets.Checkbox(
+        value=False,
+        description=r'The system never admits a unique solution, whichever $\alpha \in \mathbb{R}$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    def correction(a, b, c, d, e, f):
+        if f and not a and not b and not c and not d and not e:
+            display(Latex("C'est correct!"))
+        else:
+            display(Latex("C'est faux."))
+
+    interact_manual(correction, a=a, b=b, c=c, d=d, e=e, f=f)
+
+    return
+
+
+
