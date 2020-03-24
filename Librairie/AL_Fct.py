@@ -590,8 +590,8 @@ def Plot3DSys(xL, xR, p, A, b):
        :param b: right-hand side vector of the linear system
        :type b: list[float] or numpy.ndarray
        """
-    A = [A[i] + [b[i]] for i in range(0, len(A))]
     A = np.array(A)
+    b = np.array(b)
     gr = 'rgb(102,255,102)'
     org = 'rgb(255,117,26)'
     # red = 'rgb(255,0,0)'
@@ -617,18 +617,120 @@ def Plot3DSys(xL, xR, p, A, b):
         if (abs(A[i, 2])) > abs(A[i, 1]):  # z en fonction de x,y
             x = sGrid
             y = tGrid
-            surface = go.Surface(x=x, y=y, z=(A[i, 3] - A[i, 0] * x - A[i, 1] * y) / A[i, 2],
+            surface = go.Surface(x=x, y=y, z=(b[i] - A[i, 0] * x - A[i, 1] * y) / A[i, 2],
                                  showscale=False, showlegend=True, colorscale=colorscale, opacity=1, name='Plan %d' % j)
-        elif A[i, 2] == 0 and A[i, 1] == 0:  # x =b
+            
+        elif A[i, 2] == 0 and A[i, 1] == 0: 
             y = sGrid
             z = tGrid
-            surface = go.Surface(x=A[i, 3] - A[i, 1] * y, y=y, z=z,
+            surface = go.Surface(x=(b[i] - A[i, 1] * y)/A[i, 0], y=y, z=z,
                                  showscale=False, showlegend=True, colorscale=colorscale, opacity=1, name='Plan %d' % j)
+
         else:  # y en fonction de x,z
             x = sGrid
             z = tGrid
-            surface = go.Surface(x=x, y=(A[i, 3] - A[i, 0] * x - A[i, 2] * z) / A[i, 1], z=z,
+            surface = go.Surface(x=x, y=(b[i] - A[i, 0] * x - A[i, 2] * z) / A[i, 1], z=z,
                                  showscale=False, showlegend=True, colorscale=colorscale, opacity=1, name='Plan %d' % j)
+
+
+        data.append(surface)
+        layout = go.Layout(
+            showlegend=True,  # not there WHY???? --> LEGEND NOT YET IMPLEMENTED FOR SURFACE OBJECTS!!
+            legend=dict(orientation="h"),
+            autosize=True,
+            width=800,
+            height=800,
+            scene=go.layout.Scene(
+                xaxis=dict(
+                    gridcolor='rgb(255, 255, 255)',
+                    zerolinecolor='rgb(255, 255, 255)',
+                    showbackground=True,
+                    backgroundcolor='rgb(230, 230,230)'
+                ),
+                yaxis=dict(
+                    gridcolor='rgb(255, 255, 255)',
+                    zerolinecolor='rgb(255, 255, 255)',
+                    showbackground=True,
+                    backgroundcolor='rgb(230, 230,230)'
+                ),
+                zaxis=dict(
+                    gridcolor='rgb(255, 255, 255)',
+                    zerolinecolor='rgb(255, 255, 255)',
+                    showbackground=True,
+                    backgroundcolor='rgb(230, 230,230)'
+                )
+            )
+        )
+    fig = go.Figure(data=data, layout=layout)
+    plotly.offline.iplot(fig)
+    return
+
+
+def Plot3DSys_2(xL, xR, p, A, b):
+    """Function for the graphical visualization of a 3D system of equations, plotting the straight lines characterizing
+       the different equations appearing in the system
+
+       :param xL: left limit of the plot in all coordinates
+       :type xL: int or float
+       :param xR: right limit of the plot in all coordinates
+       :type xR: int or float
+       :param p: number of points used to draw the straight lines
+       :type p: int
+       :param A: matrix of the linear system
+       :type A: list[list[float]] or numpy.ndarray
+       :param b: right-hand side vector of the linear system
+       :type b: list[float] or numpy.ndarray
+       """
+    A = np.array(A)
+    b = np.array(b)
+    
+    gr = 'rgb(102,255,102)'
+    org = 'rgb(255,117,26)'
+    # red = 'rgb(255,0,0)'
+    blue = 'rgb(51, 214, 255)'
+    colors = [blue, gr, org]
+    s = np.linspace(xL, xR, p)
+    t = np.linspace(xL, xR, p)
+    tGrid, sGrid = np.meshgrid(s, t)
+    data = []
+    for i in range(len(A)):
+        colorscale = [[0.0, colors[i]],
+                      [0.1, colors[i]],
+                      [0.2, colors[i]],
+                      [0.3, colors[i]],
+                      [0.4, colors[i]],
+                      [0.5, colors[i]],
+                      [0.6, colors[i]],
+                      [0.7, colors[i]],
+                      [0.8, colors[i]],
+                      [0.9, colors[i]],
+                      [1.0, colors[i]]]
+        j = i + 1
+        if A[i, 2]!= 0.0:  # z en fonction de x,y
+            x = sGrid
+            y = tGrid
+            surface = go.Surface(x=x, y=y, z=(b[i] - A[i, 0] * x - A[i, 1] * y) / A[i, 2],
+                                 showscale=False, showlegend=True, colorscale=colorscale, opacity=1, name='Plan %d' % j)
+            
+        elif A[i, 1]!=0:  # y en fonction de x,z
+            x = sGrid
+            z = tGrid
+            surface = go.Surface(x=x, y=(b[i]-A[i, 0]*x - A[i, 2]*z)/A[i, 1], z=z,
+                                 showscale=False, showlegend=True, colorscale=colorscale, opacity=1, name='Plan %d' % j)
+
+        elif A[i, 0]!=0:  # x en fonction de y,z
+            y = sGrid
+            z = tGrid
+            surface = go.Surface(x=(b[i] - A[i, 1] * y - A[i,2] * z)/A[i, 0], y=y, z=z,
+                                 showscale=False, showlegend=True, colorscale=colorscale, opacity=1, name='Plan %d' % j)
+
+        else:  # All the coefficient of equation are 0: b==0 -> every combinations are solution, b!=0 -> No solution
+            if b[i] == 0:
+                print("Non constraints on equation", j, "of the system.")
+            else:
+                print("No solution for equation", j, "of the system.")
+            
+
 
         data.append(surface)
         layout = go.Layout(

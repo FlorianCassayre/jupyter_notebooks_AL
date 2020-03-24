@@ -306,122 +306,54 @@ def Ex2Chapitre2_3():
 
     return
 
-
 def Ex1Chapitre2_4():
-    """Provides the correction to exercise 1 of notebook 2_4
-    """
-
-    a = widgets.Checkbox(
-        value=False,
-        description=r'$A^{-1}$ exists and the system admits multiple solutions, whichever $b$',
-        disabled=False,
-        layout=Layout(width='80%', height='40px')
-    )
-    b = widgets.Checkbox(
-        value=False,
-        description=r'$A^{-1}$ exists and the system admits either a unique solution or multiple solutions '
-                    r'depending on the value of $b$',
-        disabled=False,
-        layout=Layout(width='80%', height='40px')
-
-    )
-    c = widgets.Checkbox(
-        value=False,
-        description=r'$A$ is invertible and the system admits a unique solution, whichever $b$',
-        disabled=False,
-        layout=Layout(width='80%', height='40px')
-    )
-    d = widgets.Checkbox(
-        value=False,
-        description=r'$A^{-1}$ exists and the system admits at least one solution, whichever $b$',
-        disabled=False,
-        layout=Layout(width='80%', height='40px')
-    )
-    e = widgets.Checkbox(
-        value=False,
-        description=r'$A$ is not invertible and the system admits either a unique or multiple solutions, depending on '
-                    r'the value of $b$',
-        disabled=False,
-        layout=Layout(width='80%', height='40px')
-    )
-    f = widgets.Checkbox(
-        value=False,
-        description=r'$A$ is not invertible and the system admits a unique solution, whichever $b$',
-        disabled=False,
-        layout=Layout(width='80%', height='40px')
-    )
-    g = widgets.Checkbox(
-        value=False,
-        description=r'The system admits a unique solution and $A$ is not invertible',
-        disabled=False,
-        layout=Layout(width='80%', height='40px')
-    )
-    h = widgets.Checkbox(
-        value=False,
-        description=r'The system admits a unique solution and $A$ is invertible',
-        disabled=False,
-        layout=Layout(width='80%', height='40px')
-    )
-
-    def correction(a, b, c, d, e, f, g, h):
-        if c and d and h and not a and not b and not e and not f and not g:
-            display(Latex("C'est correct!"))
-        else:
-            display(Latex("C'est faux."))
-
-    interact_manual(correction, a=a, b=b, c=c, d=d, e=e, f=f, g=g, h=h)
-
-    return
-
-
-def Ex2Chapitre2_4():
     """Provides the correction to exercise 2 of notebook 2_4
     """
 
     a = widgets.Checkbox(
         value=False,
-        description=r'The system admits a unique solution and it is:'
-                    r'$$\qquad x = \begin{bmatrix} 1&4/3&4/3\end{bmatrix}^T$$',
+        description=r'Le système admet une solution unique et elle est:'
+                    r'$$\qquad \qquad x = \begin{bmatrix} 1&4/3&4/3\end{bmatrix}^T$$',
         disabled=False,
         layout=Layout(width='80%', height='70px')
     )
     b = widgets.Checkbox(
         value=False,
-        description=r'The system does not admit any solution',
+        description=r"Le système n'admet aucune solution",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     c = widgets.Checkbox(
         value=False,
-        description=r'The system admits a unique solution and it is:'
-                    r'$$\qquad x = \begin{bmatrix} 1&4/3&8/3\end{bmatrix}^T$$',
+        description=r'Le système admet une solution unique et elle est:'
+                    r'$$\qquad \qquad x = \begin{bmatrix} 1&4/3&8/3\end{bmatrix}^T$$',
         disabled=False,
         layout=Layout(width='80%', height='70px')
 
     )
     d = widgets.Checkbox(
         value=False,
-        description=r'The system admits multiple solutions',
+        description=r'Le système admet plusieurs solutions',
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     e = widgets.Checkbox(
         value=False,
-        description=r'$A$ is invertible and its inverse is: <br>'
-                    r'$$\qquad A^{-1} = \begin{bmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&5/6\end{bmatrix}$$',
+        description=r'$A$ est inversible et son inverse est: <br>'
+                    r'$$\qquad \qquad A^{-1} = \begin{bmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&5/6\end{bmatrix}$$',
         disabled=False,
         layout=Layout(width='80%', height='100px')
     )
     f = widgets.Checkbox(
         value=False,
-        description=r'$A$ is not invertible',
+        description=r"$A$ n'est pas inversible",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     g = widgets.Checkbox(
         value=False,
-        description=r'$A$ is invertible and its inverse is: <br>'
-                    r'$$\qquad A^{-1} = \begin{bmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&-1/2\end{bmatrix}$$',
+        description=r'$A$ est inversible et son inverse est:'
+                    r'$$\qquad \qquad A^{-1} = \begin{bmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&-1/2\end{bmatrix}$$',
         disabled=False,
         layout=Layout(width='80%', height='100x')
     )
@@ -437,46 +369,46 @@ def Ex2Chapitre2_4():
     return
 
 
-def Ex3Chapitre2_4():
+def Ex2Chapitre2_4():
     """Provides the correction to exercise 3 of notebook 2_4
     """
 
     a = widgets.Checkbox(
         value=False,
-        description=r'The system admits unique solution only if $\alpha < 2$',
+        description=r"Le système n'admet une solution unique que si $\alpha < 2$",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     b = widgets.Checkbox(
         value=False,
-        description=r'The system admits unique solution only if $\alpha \geq 2$',
+        description=r"Le système n'admet une solution unique que si $\alpha \geq 2$",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     c = widgets.Checkbox(
         value=False,
-        description=r'The system admits unique solution $\forall \alpha \in \mathbb{R}$',
+        description=r'Le système admet une solution unique $\forall \alpha \in \mathbb{R}$',
         disabled=False,
         layout=Layout(width='80%', height='40px')
 
     )
     d = widgets.Checkbox(
         value=False,
-        description=r'The system does not admit any solution if $\alpha < 2$, while it admits unique solution'
-                    r' if $\alpha \geq 2$',
+        description=r"Le système n'admet aucune solution si $\alpha < 2$, alors qu'il admet une solution unique si "
+                    r"$\alpha \geq 2$",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     e = widgets.Checkbox(
         value=False,
-        description=r'The system admits multiple solutions if $\alpha \neq 2$, while it admits unique solution '
-                    r'for $\alpha == 2$',
+        description=r"Le système admet plusieurs solutions si $\alpha \neq 2$, alors qu'il admet une solution unique si"
+                    r" $\alpha = 2$",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     f = widgets.Checkbox(
         value=False,
-        description=r'The system never admits a unique solution, whichever $\alpha \in \mathbb{R}$',
+        description=r"Le système n'admet jamais une solution unique, quelle que soit  $\alpha \in \mathbb{R}$",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
@@ -490,6 +422,191 @@ def Ex3Chapitre2_4():
     interact_manual(correction, a=a, b=b, c=c, d=d, e=e, f=f)
 
     return
+
+
+def Ex1aChapitre2_5():
+    """Provides the correction to exercise 1a of notebook 2_5
+    """
+
+    a = widgets.Checkbox(
+        value=False,
+        description=r'\(E_1E_2\) multiplie la ligne 4 par -6 et échange les lignes 2 et 3',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    b = widgets.Checkbox(
+        value=False,
+        description=r'\(E_1E_2\) ajoute 6 fois la ligne 4 à la ligne 2 et échange les lignes 1 et 3',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+
+    )
+    c = widgets.Checkbox(
+        value=False,
+        description=r'\(E_1E_2\) échange les lignes 1 et 3 et ajoute -6 fois la ligne 4 à la ligne 2',
+        disabled=False,
+       layout=Layout(width='80%', height='40px')
+    )
+    d = widgets.Checkbox(
+        value=False,
+        description=r"\(E_1E_2\) ajoute -6 fois la ligne 4 à la ligne 2 et échange les lignes 1 et 2",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    def correction(a, b, c, d):
+        if c and not(a) and not(d) and not(b):
+            print("C'est correct! Par exemple, si on applique le produit à la matrice ci-dessous")
+            A=[[1,-1,0,0], [0,0,0,1], [1,2,1,2], [1,0,0,1]]
+            B=[[1,0,0,0], [0,1,0,-6], [0,0,1,0], [0,0,0,1]]
+            C=[[0,0,1,0], [0,1,0,0], [1,0,0,0], [0,0,0,1]]
+            BCA = np.linalg.multi_dot([B,C,A])
+            texA = '$' + texMatrix(A) + '$'
+            texBCA = '$' + texMatrix(BCA) + '$'
+            display(Latex('$\qquad A = $' + texA))
+            print("on obtient")
+            display((Latex('$\qquad \hat{A} = $' + texBCA)))
+        else:
+            print("C'est faux.")
+
+    interact_manual(correction,a=a,b=b,c=c,d=d)
+
+    return
+
+
+def Ex1bChapitre2_5(inv):
+    """Provides the correction to exercise 1b of notebook 2_5
+
+    :param inv: inverse of the matrix to be calculated
+    :type inv: list[list]
+    """
+
+    if inv == [[0, 0, 1, 0], [0, 1, 0, 6], [1, 0, 0, 0], [0, 0, 0, 1]]:
+        print("C'est correct!")
+    else:
+        print("C'est faux.")
+
+    return
+
+
+def Ex2aChapitre2_5(A, B, T, D, L):
+    """Provides the correction to exercise 2a of notebook 2_5
+
+    :param A: starting matrix
+    :type A: list[list]
+    :param B: target matrix
+    :type B: list[list]
+    :param T: permutation (type I) matrix
+    :type T: list[list]
+    :param D: scalar multiplication (type II) matrix
+    :type D: list[list]
+    :param L: linear combination (type III) matrix
+    :type L: list[list]
+    """
+
+    if ~(B - np.linalg.multi_dot([L, D, T, A])).any():
+        print("C'est correct!")
+    else:
+        print("C'est faux.")
+        str = 'Il faut entrer la/les matrice(s) {'
+        if (np.asmatrix(T) - np.asmatrix([[0, 0, 1], [0, 1, 0], [1, 0, 0]])).any():
+            str = str + ' T, '
+        if (np.asmatrix(D) - np.asmatrix([[1, 0, 0], [0, 1, 0], [0, 0, 5]])).any():
+            str = str + ' D, '
+        if (np.asmatrix(L) - np.asmatrix([[1, 0, 0], [-4, 1, 0], [0, 0, 1]])).any():
+            str = str + ' L, '
+        str = str + '}. Le produit des matrices entrées vaut:'
+        print(str)
+        tmp = np.linalg.multi_dot([L, D, T, A])
+        texM = '$' + texMatrix(tmp) + '$'
+        display(Latex('$\qquad \hat{B} = $' + texM))
+
+    return
+
+
+def Ex2bChapitre2_5(inv):
+    """Provides the correction to exercise 2b of notebook 2_5
+
+    :param inv: inverse of the matrix to be calculated
+    :type inv: list[list]
+    """
+
+    if inv == [[0,0,1/5], [4,1,0], [1,0,0]]:
+        print("C'est correct!")
+    else:
+        print("C'est faux.")
+
+    return
+
+
+def Ex1Chapitre2_6_7():
+    """Provides the correction to exercise 1 of notebook 2_4
+    """
+
+    a = widgets.Checkbox(
+        value=False,
+        description=r'$A^{-1}$ existe et le système admet plusieurs solutions, quelle que soit la valeur de $b$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    b = widgets.Checkbox(
+        value=False,
+        description=r'$A^{-1}$ existe et le système admet une solution unique ou plusieurs solutions en fonction '
+                    r'de la valeur de $b$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+
+    )
+    c = widgets.Checkbox(
+        value=False,
+        description=r'$A$ est inversible et le système admet une solution unique, quelle que soit la valeur de $b$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    d = widgets.Checkbox(
+        value=False,
+        description=r'$A^{-1}$ existe et le système admet au moins une solution, quelle que soit la valeur de $b$',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    e = widgets.Checkbox(
+        value=False,
+        description=r"$A$ n'est pas inversible et le système admet une unique solution ou plusieurs solutions, "
+                    r"selon la valeur de $b$ ",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    f = widgets.Checkbox(
+        value=False,
+        description=r"$A$ n'est pas inversible et le système admet une solution unique, "
+                    r"quelle que soit la valeur de $b$",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    g = widgets.Checkbox(
+        value=False,
+        description=r"Le système admet une solution unique et $A$ n'est pas inversible",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    h = widgets.Checkbox(
+        value=False,
+        description=r'Le système admet une solution unique et $A$ est inversible',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    def correction(a, b, c, d, e, f, g, h):
+        if c and d and h and not a and not b and not e and not f and not g:
+            display(Latex("C'est correct!"))
+        else:
+            display(Latex("C'est faux."))
+
+    interact_manual(correction, a=a, b=b, c=c, d=d, e=e, f=f, g=g, h=h)
+
+    return
+
+
 
 
 
