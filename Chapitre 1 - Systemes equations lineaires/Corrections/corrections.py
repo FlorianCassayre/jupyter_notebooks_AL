@@ -12,7 +12,7 @@ def Ex3Chapitre1_3_4():
     """Provides the correction to exercise 3 of notebook 1_3-4
     """
 
-    print("Cliquer sur CTRL pour sélectionner plusieurs réponses")
+    print("Cliquer sur CTRL (ou CMD) pour sélectionner plusieurs réponses")
 
     style = {'description_width': 'initial'}
     res = widgets.SelectMultiple(
