@@ -531,7 +531,7 @@ def Ex2bChapitre2_5(inv):
     :type inv: list[list]
     """
 
-    if inv == [[0,0,1/5], [4,1,0], [1,0,0]]:
+    if inv == [[0, 0, 1/5], [4, 1, 0], [1, 0, 0]]:
         print("C'est correct!")
     else:
         print("C'est faux.")
@@ -540,7 +540,7 @@ def Ex2bChapitre2_5(inv):
 
 
 def Ex1Chapitre2_6_7():
-    """Provides the correction to exercise 1 of notebook 2_4
+    """Provides the correction to exercise 1 of notebook 2_6-7
     """
 
     a = widgets.Checkbox(
@@ -603,6 +603,172 @@ def Ex1Chapitre2_6_7():
             display(Latex("C'est faux."))
 
     interact_manual(correction, a=a, b=b, c=c, d=d, e=e, f=f, g=g, h=h)
+
+    return
+
+
+def Ex2Chapitre2_6_7():
+    """Provides the correction to exercise 2 of notebook 2_6-7
+    """
+
+    a = widgets.Checkbox(
+        value=False,
+        description=r'$A_1$ est inversible',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    b = widgets.Checkbox(
+        value=False,
+        description=r'$A_2$ est inversible',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+
+    )
+    c = widgets.Checkbox(
+        value=False,
+        description=r'$A_3$ est inversible',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    def correction(a, b, c):
+        if a and not b and not c:
+            A1 = np.array([[2, 0, 1], [0, 6, 4], [2, 2, 1]])
+            A1_inv = np.linalg.inv(A1)
+            texA1inv = '$' + texMatrix(A1_inv) + '$'
+            display(Latex("C'est correct! $A_1$ est la seule matrice inversible et son inverse est: $\quad A_1^{-1} = $"
+                          + texA1inv))
+        else:
+            display(Latex("C'est faux."))
+
+    interact_manual(correction, a=a, b=b, c=c)
+
+    return
+
+
+def Ex3Chapitre2_6_7():
+    """Provides the correction to exercise 3 of notebook 2_6-7
+    """
+
+    style = {'description_width': 'initial'}
+    a = widgets.Checkbox(
+        value=False,
+        description=r"Si $\alpha = 4$ et $\beta = 2$, alors $A$ n'est pas inversible et le système linéaire "
+                    r"admet une infinité de solutions",
+        disabled=False,
+        style=style,
+        layout=Layout(width='80%', height='40px')
+    )
+    b = widgets.Checkbox(
+        value=False,
+        description=r"Si $\alpha=8$ et $\beta=-1$, alors $A$ n'est pas inversible et le système linéaire n'admet pas de"
+                    r" solutions",
+        disabled=False,
+        style=style,
+        layout=Layout(width='80%', height='40px')
+
+    )
+    c = widgets.Checkbox(
+        value=False,
+        description=r"Si $\alpha=-2$ et $\beta=-4$, alors $A$ n'est pas inversible et le système linéaire admet "
+                    r"une infinité de solutions",
+        disabled=False,
+        style=style,
+        layout=Layout(width='80%', height='40px')
+    )
+    d = widgets.Checkbox(
+        value=False,
+        description=r"Si $\alpha=8$ et $\beta=1$, alors $A$ n'est pas inversible et le système linéaire admet "
+                    r"une infinité de solutions",
+        disabled=False,
+        style=style,
+        layout=Layout(width='80%', height='40px')
+    )
+    e = widgets.Checkbox(
+        value=False,
+        description=r"Si $\alpha=-4$ et $\beta=-2$, alors $A$ n'est pas inversible et le système linéaire n'admet pas"
+                    r"de solutions",
+        disabled=False,
+        style=style,
+        layout=Layout(width='80%', height='40px')
+    )
+    f = widgets.Checkbox(
+        value=False,
+        description=r'Si $\alpha=4$ et $\beta=1$, alors $A$ est inversible et le système linéaire admet une infinité '
+                    r'de solutions',
+        disabled=False,
+        style=style,
+        layout=Layout(width='80%', height='40px')
+    )
+    g = widgets.Checkbox(
+        value=False,
+        description=r'Si $\alpha=4$ et $\beta=1$, alors $A$ est inversible et le système linéaire admet une solution'
+                    r' unique',
+        disabled=False,
+        style=style,
+        layout=Layout(width='80%', height='40px')
+    )
+    h = widgets.Checkbox(
+        value=False,
+        description=r"Pour infinite de valeurs de $\alpha$ et $\beta$ $A$ n'est pas inversible, mais seulement pour l'un"
+                    r" d'eux le système admet une infinité de solutions",
+        disabled=False,
+        style=style,
+        layout=Layout(width='100%', height='40px')
+    )
+
+    def correction(a, b, c, d, e, f, g, h):
+        if c and e and h and not a and not b and not d and not f and not g:
+            display(Latex(r"C'est correct! En effet $A$ n'est pas inversible si $\alpha = \dfrac{8}{\beta}$ (résultat "
+                          r"obtenu en divisant par élément les lignes de A les unes par les autres et en imposant que "
+                          r"les résultats des divisions soient les mêmes). De plus, si $\alpha = -2$ et $\beta = -4$, "
+                          r"alors le système admet une infinité de solutions, puisque les rapports obtenus par la "
+                          r"division est $-\dfrac{1}{2}$)."))
+        else:
+            display(Latex("C'est faux."))
+
+    interact_manual(correction, a=a, b=b, c=c, d=d, e=e, f=f, g=g, h=h)
+
+    return
+
+def Ex4Chapitre2_6_7():
+    """Provides the correction of exercise 4 of notebook 2_6-7
+    """
+
+    display(Latex("Insert the values of a and b as floating point numbers"))
+    a = widgets.FloatText(
+        value=0.0,
+        step=0.1,
+        description='a:',
+        disabled=False
+    )
+    b = widgets.FloatText(
+        value=0.0,
+        step=0.1,
+        description='b:',
+        disabled=False
+    )
+
+    display(a)
+    display(b)
+
+    def f():
+        A = np.array([[0.5, a.value, 1], [0, 2, -1], [-2, 1, b.value]])
+        B = np.array([[-6, -2, -2], [4, 2, 1], [8, 3, 2]])
+
+        AB = np.dot(A, B)
+        texAB = '$' + texMatrix(AB) + '$'
+        BA = np.dot(B, A)
+        texBA = '$' + texMatrix(BA) + '$'
+
+        if a.value == -1 and b.value == -2:
+            display(Latex(r"Correcte! Le produits $A \cdot B$ et $B \cdot A$ valent chacun: $I$ = " + texAB))
+        else:
+            display(Latex(r"Incorrecte! Le produit $A \cdot B$ vaut  " + texAB + r" et le produit "
+                          r"$B \cdot A$ vaut  " + texBA + r"  donc, $A$ ne peut pas être l'inverse de $B$. "
+                          r"Entrez de nouvelles valeurs!"))
+
+    interact_manual(f)
 
     return
 
