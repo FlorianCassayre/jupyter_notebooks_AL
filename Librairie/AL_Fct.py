@@ -234,11 +234,23 @@ def texMatrix(*args):
             A = np.array(args[0]).astype(float)
         else:
             A = args[0].astype(float)
+        if len(A.shape) <= 1:
+            raise ValueError("If two input arguments are passed, the first one must be either a matrix or a column "
+                             "vector! Row vectors or empty vectors are not accepted.")
         m = A.shape[1]
         if not type(args[1]) is np.array:
             b = np.array(args[1]).astype(float)
         else:
             b = args[1].astype(float)
+        if len(b.shape) <= 1:
+            raise ValueError("If two input arguments are passed, the second one must be either a matrix or a column "
+                             "vector! Row vectors or empty vectors are not accepted.")
+        try:
+            assert A.shape[0] == b.shape[0]
+        except AssertionError:
+            raise ValueError(f"If two input arguments are passed, they must both be either matrices or column vectors, "
+                             f"with the same number of rows. In this case, instead, the first input argument has "
+                             f"{A.shape[0]} rows, while the second one has {b.shape[0]}")
 
         A = np.concatenate((A, b), axis=1)
         texApre = '\\left[\\begin{array}{'
@@ -266,8 +278,15 @@ def texMatrix(*args):
             A = np.array(args[0]).astype(float)
         else:
             A = args[0].astype(float)
+
         texApre = '\\left[\\begin{array}{'
+        texApost = ' \\end{array}\\right]'
         texA = ''
+        if len(A.shape) == 0 or A.shape[0] == 0:
+            return texApre + '}' + texA + texApost
+        elif len(A.shape) == 1:
+            A = np.expand_dims(A, 0)
+
         for i in np.asarray(A):
             texALigne = ''
             texALigne = texALigne + str(round(i[0], 4) if i[0] % 1 else int(i[0]))
@@ -279,10 +298,11 @@ def texMatrix(*args):
                 texALigne = texALigne + ' & ' + str(round(j, 4) if j % 1 else int(j))
             texALigne = texALigne + ' \\\\'
             texA = texA + texALigne
-        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right]'
+        texA = texApre + '}  ' + texA[:-2] + texApost
     else:
         print("Ce n'est pas une matrice des coefficients ni une matrice augmentée")
         texA = ''
+
     return texA
 
 
