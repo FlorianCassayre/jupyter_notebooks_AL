@@ -5,9 +5,10 @@ Created on Wed Mar 13 16:42:29 2019
 
 @author: jecker
 """
+
 from __future__ import division
 import numpy as np
-from IPython.display import display, Latex
+from IPython.display import display, Latex, display_latex
 import plotly
 import plotly.graph_objs as go
 
@@ -349,6 +350,32 @@ def printEquMatrices(*args):
             texEqu = texEqu + '\\quad \\sim \\quad' + texMatrix(listOfMatrices[i])
         texEqu = texEqu + '$'
         display(Latex(texEqu))
+    return
+
+
+def printLUMatrices(LList, UList):
+    """Method which prints the list of L and U matrices, constructed during an interactive LU decomposition routine
+
+   :param LList: list of lower triangular matrices
+   :type LList: list[numpy.ndarray]
+   :param UList: list of upper triangular matrices
+   :type UList: list[numpy.ndarray]
+    """
+
+    try:
+        assert len(LList) == len(UList)
+    except AssertionError:
+        print("The lists of lower and upper traingular matrices must have the same length!")
+        raise ValueError
+
+    texEqu = '\\begin{equation}\\begin{align}'
+    for i in range(len(LList)):
+        texEqu += 'L &= ' + texMatrix(LList[i]) + '\\qquad & U &= ' + texMatrix(UList[i])
+        if i < len(LList) - 1:
+            texEqu += ' \\\\ '
+    texEqu += '\\end{align}\\end{equation}'
+    display(Latex(texEqu))
+
     return
 
 
@@ -767,7 +794,7 @@ def echZero(indice, M):
     return Mat
 
 
-def Eij(M, i, j):
+def Eij(M, i, j, get_E_inv=False):
     """Method to swap line `i` and line `j` of matrix `M`
 
     :param M: matrix to be processed
@@ -776,16 +803,23 @@ def Eij(M, i, j):
     :type i: int
     :param j: second line index
     :type j: int
+    :param get_E_inv: if True, the inverse matrix of the applied elementary operation is returned. Defaults to False
+    :type get_E_inv: bool
     :return: processed matrix, with line `i` and `j` having been swapped
     :rtype: numpy.ndarray
     """
 
     M = np.array(M)
     M[[i, j], :] = M[[j, i], :]
-    return M
+
+    if get_E_inv:
+        L = np.eye(M.shape[0], M.shape[1]).astype(float)
+        L[[i, j]] = L[[j, i]]
+
+    return M if not get_E_inv else M, L
 
 
-def Ealpha(M, i, alpha):
+def Ealpha(M, i, alpha, get_E_inv=False):
     """Method to multiply line `i` of matrix `M` by the scalar coefficient `alpha`
 
     :param M: matrix to be processed
@@ -794,16 +828,23 @@ def Ealpha(M, i, alpha):
     :type i: int
     :param alpha: scalar coefficient
     :type alpha: float
+    :param get_E_inv: if True, the inverse matrix of the applied elementary operation is returned. Defaults to False
+    :type get_E_inv: bool
     :return: processed matrix, with line `i` multiplied by the scalar `alpha`
     :rtype: numpy.ndarray
     """
 
     M = np.array(M)
     M[i, :] = alpha * M[i, :]
-    return M
+
+    if get_E_inv:
+        L = np.eye(M.shape[0], M.shape[1]).astype(float)
+        L[i ,i] = 1 / alpha
+
+    return M if not get_E_inv else M, L
 
 
-def Eijalpha(M, i, j, alpha):
+def Eijalpha(M, i, j, alpha, get_E_inv=False):
     """Method to add to line `i` of matrix `M` line `j` of the same matrix, multiplied by the scalar coefficient `alpha`
 
     :param M: matrix to be processed
@@ -814,13 +855,20 @@ def Eijalpha(M, i, j, alpha):
     :type j: int
     :param alpha: scalar coefficient
     :type alpha: float
+    :param get_E_inv: if True, the inverse matrix of the applied elementary operation is returned. Defaults to False
+    :type get_E_inv: bool
     :return: processed matrix, with line `i` being summed up with line `j` multiplied by `alpha`
     :rtype: numpy.ndarray
     """
 
     M = np.array(M)
     M[i, :] = M[i, :] + alpha * M[j, :]
-    return M
+
+    if get_E_inv:
+        L = np.eye(M.shape[0], M.shape[1]).astype(float)
+        L[i, j] = -alpha
+
+    return M if not get_E_inv else M, L
 
 
 def echelonMat(ech, *args):
@@ -1048,7 +1096,7 @@ def manualEch(*args):
     return i, j, r, alpha
 
 
-def echelonnage(i, j, r, alpha, A, m, *args):
+def echelonnage(i, j, r, alpha, A, m=None, *args):
     """Method which performs the Gauss elimination method step described by `r.value` with parameters `ì`, `j` and
     `alpha` on matrix `A`
 
@@ -1062,14 +1110,17 @@ def echelonnage(i, j, r, alpha, A, m, *args):
     :type alpha: ipywidgets.Text
     :param A: starting matrix
     :type A: numpy.ndarray
-    :param m: starting augmented matrix
-    :type m: numpy.ndarray
+    :param m: starting augmented matrix. If None, it equals A. Defaults to None.
+    :type m: numpy.ndarray or NoneType
     :param args: either the list of matrices or both the list of matrices and rhs having bee built during the
        application of the methos
     :type args: list[numpy.ndarray] or tuple(list[numpy.ndarray], list[numpy.ndarray])
     :return: processed matrix
     :rtype: numpy.ndarray
     """
+
+    if m is None:
+        m = A.copy()
     m = np.array(m).astype(float)
     if alpha.value == 0 and r.value in {'Ei(alpha)', 'Eij(alpha)'}:
         print('Le coefficient alpha doit être non-nul!')
@@ -1113,6 +1164,99 @@ def echelonnage(i, j, r, alpha, A, m, *args):
         print("La liste des matrices ou des matrices et des vecteurs connus doit être donnée en entrée de la fonction!")
         raise ValueError
     return m
+
+
+def LU_interactive(i, j, r, alpha, *args):
+    """Method which performs the Gauss elimination method step described by `r.value` with parameters `ì`, `j` and
+    `alpha` on matrix `A`
+
+    :param i: first reference line
+    :type i: ipywidgets.Text
+    :param j: second reference line
+    :type j: ipywidgets.Text
+    :param r: RadioButton describing the elementary matricial operation to be performed
+    :type r: ipywidgets.radioButton
+    :param alpha: scalar coefficient
+    :type alpha: ipywidgets.Text
+    :param A: starting matrix
+    :type A: numpy.ndarray
+    :param m: starting augmented matrix. If None, it equals A. Defaults to None.
+    :type m: numpy.ndarray or NoneType
+    :param args: either the list of matrices or both the list of matrices and rhs having bee built during the
+       application of the method
+    :type args: list[numpy.ndarray] or tuple(list[numpy.ndarray], list[numpy.ndarray])
+    :return: processed matrix
+    :rtype: numpy.ndarray
+    """
+
+    if len(args) == 2:
+        U = np.array(args[1][-1]).astype(float)
+    else:
+        print("La liste des matrices diagonales inférieures et supérieures déjà calculées doit être donnée en entrée de"
+              " la fonction")
+        raise ValueError
+
+    if alpha.value == 0 and r.value in {'Ei(alpha)', 'Eij(alpha)'}:
+        print('Le coefficient alpha doit être non-nul!')
+
+    is_valid_operation = True
+    if r.value == 'Eij':
+        print("Exchanging two lines is not a valid operation, if LU decomposition WITHOUT pivoting has to be computed")
+        is_valid_operation = False
+    if r.value == 'Ei(alpha)':
+        U, L = Ealpha(U, i.value-1, eval(alpha.value), get_E_inv=True)
+    if r.value == 'Eij(alpha)':
+        U, L = Eijalpha(U, i.value-1, j.value-1, eval(alpha.value), get_E_inv=True)
+
+    if is_valid_operation:
+        LList = args[0]
+        UList = args[1]
+        if r.value != 'Revert':
+            UList.append(U)
+            LList.append(np.dot(LList[-1], L))
+        else:
+            if len(UList) > 1 and len(LList) > 1:
+                UList.pop()
+                U = UList[-1]
+                LList.pop()
+                L = LList[-1]
+            else:
+                print("Impossible de revenir sur l'opération!")
+        printLUMatrices(LList, UList)
+    else:
+        L = args[0][-1]
+        U = args[1][-1]
+    return L, U
+
+
+def LU_no_pivoting(A, ptol=1e-5):
+    """Method that computes the LU decomposition of a matrix, without using pivoting. If the matrix cannot be
+    decomposed, the method raises a ValueError.
+
+    :param A: matrix to be decomposed
+    :type A: list[list] or numpy.ndarray
+    :param ptol: tolerance on the pivot values; if a pivot with value smaller (in absolute value) than ptol is found,
+      a ValueError is raised. Defaults to 1e-5
+    :type ptol: float
+    :return: lower triangular matrix L and upper triangular matrix U such that A = LU, if they exist
+    :rtype: tuple(numpy.ndarray, numpy.ndarray) or NoneType
+    """
+
+    A = np.array(A).astype(float)
+    n = A.shape[1]
+    for i in range(n):
+        pivot = A[i, i]
+        if abs(pivot) <= ptol:
+            print("Pivot avec la valeur 0 rencontré. Cette matrice n'admet pas de décomposition LU (sans pivoting)")
+            raise ValueError
+        for k in range(i+1, n):
+            lam = A[k, i] / pivot
+            A[k, i+1:n] = A[k, i+1:n] - lam * A[i, i+1:n]
+            A[k, i] = lam
+
+    L = np.eye(n) + np.tril(A, -1)
+    U = np.triu(A)
+    return L, U
 
 
 def manualOp(*args):
