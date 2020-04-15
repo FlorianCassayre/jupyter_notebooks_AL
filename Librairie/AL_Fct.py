@@ -307,17 +307,23 @@ def texMatrix(*args):
     return texA
 
 
-def printA(*args):
+def printA(*args, name=None):
     """Method which prints the input matrix.
 
     .. note:: if two inputs are passed, they represent A and b respectively; as a result the augmented matrix A|B is
       plotted. Otherwise, if the input is unique, just the matrix A is plotted
 
     :param args: input arguments; they could be either a matrix and a vector or a single matrix
-    :type args: list
+    :type args: list[numpy.ndarray] or list[list]
+    :param name: if not None, it is the name of the matrix; what is printed is then {name} = {value}. If None, only the
+      matrix value is displayed. Defaults to None
+    :type name: str or NoneType
     """
 
-    texA = '$' + texMatrix(*args) + '$'
+    if name is not None and type(name) is str:
+        texA = '$' + name + ' = ' + texMatrix(*args) + '$'
+    else:
+        texA = '$' + texMatrix(*args) + '$'
     display(Latex(texA))
     return
 
@@ -368,12 +374,12 @@ def printLUMatrices(LList, UList):
         print("The lists of lower and upper traingular matrices must have the same length!")
         raise ValueError
 
-    texEqu = '\\begin{equation}\\begin{align}'
+    texEqu = '\\begin{align*}'
     for i in range(len(LList)):
         texEqu += 'L &= ' + texMatrix(LList[i]) + '\\qquad & U &= ' + texMatrix(UList[i])
         if i < len(LList) - 1:
             texEqu += ' \\\\ '
-    texEqu += '\\end{align}\\end{equation}'
+    texEqu += '\\end{align*}'
     display(Latex(texEqu))
 
     return
