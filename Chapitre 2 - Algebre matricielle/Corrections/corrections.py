@@ -731,6 +731,7 @@ def Ex3Chapitre2_6_7():
 
     return
 
+
 def Ex4Chapitre2_6_7():
     """Provides the correction of exercise 4 of notebook 2_6-7
     """
@@ -769,6 +770,55 @@ def Ex4Chapitre2_6_7():
                           r"Entrez de nouvelles valeurs!"))
 
     interact_manual(f)
+
+    return
+
+
+def Ex1Chapitre2_8_9(E1, E2, E3, E4):
+    """
+
+    :param E1:
+    :type E1:
+    :param E2:
+    :type E2:
+    :param E3:
+    :type E3:
+    :param E4:
+    :type E4:
+    :return:
+    :rtype:
+    """
+
+    # MATRIX A1
+    E_pre_1 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+    E_post_1 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [-1, 0, 0, 1]]
+
+    # MATRIX A2
+    E_pre_2 = [[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]
+    E_post_2 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1/2, 0], [0, 0, 0, 1]]
+
+    # MATRIX A3
+    E_pre_3 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+    E_post_3 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, -1], [0, 0, 0, 1]]
+
+    # MATRIX A4
+    E_pre_4 = [[1/2, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+    E_post_4 = [[1, 0, 0, 0], [0, 1, 1, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+
+    E_bool = np.zeros(4).astype(bool)
+    E_bool[0] = E1[0] == E_pre_1 and E1[1] == E_post_1
+    E_bool[1] = E2[0] == E_pre_2 and E2[1] == E_post_2
+    E_bool[2] = E3[0] == E_pre_3 and E3[1] == E_post_3
+    E_bool[3] = E4[0] == E_pre_4 and E4[1] == E_post_4
+
+    correct = set(np.where(E_bool)[0]+1)
+    wrong = set(np.arange(1,5)) - correct
+
+    if wrong:
+        print(f"Corrects: {correct}")
+        print(f"Manqué: {wrong}")
+    else:
+        print("Correcte!")
 
     return
 
