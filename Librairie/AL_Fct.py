@@ -821,8 +821,11 @@ def Eij(M, i, j, get_E_inv=False):
     if get_E_inv:
         L = np.eye(M.shape[0], M.shape[1]).astype(float)
         L[[i, j]] = L[[j, i]]
-
-    return M if not get_E_inv else M, L
+        
+    if get_E_inv:
+        return M, L
+    else:
+        return M
 
 
 def Ealpha(M, i, alpha, get_E_inv=False):
@@ -847,7 +850,10 @@ def Ealpha(M, i, alpha, get_E_inv=False):
         L = np.eye(M.shape[0], M.shape[1]).astype(float)
         L[i ,i] = 1 / alpha
 
-    return M if not get_E_inv else M, L
+    if get_E_inv:
+        return M, L
+    else:
+        return M
 
 
 def Eijalpha(M, i, j, alpha, get_E_inv=False):
@@ -874,7 +880,10 @@ def Eijalpha(M, i, j, alpha, get_E_inv=False):
         L = np.eye(M.shape[0], M.shape[1]).astype(float)
         L[i, j] = -alpha
 
-    return M if not get_E_inv else M, L
+    if get_E_inv:
+        return M, L
+    else:
+        return M
 
 
 def echelonMat(ech, *args):
