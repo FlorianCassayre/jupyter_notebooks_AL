@@ -39,7 +39,7 @@ def Ex2Chapitre2_1():
             A = [[1, 0, -2, 3], [0, 1, -1, 7]]
             printA(A)
         else:
-            print("C'est faux.")
+            display(Latex("C'est faux."))
 
     interact_manual(correction, a=a, b=b, c=c)
 
@@ -82,7 +82,7 @@ def Ex3Chapitre2_1():
             A = [[-6, 64], [-32, -22], [28, -10], [-2, 6]]
             printA(A)
         else:
-            print("C'est faux.")
+            display(Latex("C'est faux."))
 
     interact_manual(correction, a=a, b=b, c=c, d=d)
 
@@ -124,9 +124,9 @@ def Ex1Chapitre2_2():
 
     def correction(a, b, c, d):
         if b and not a and not c and not d:
-            print("C'est correct!")
+            display(Latex("C'est correct!"))
         else:
-            print("C'est faux.")
+            display(Latex("C'est faux."))
 
     interact_manual(correction, a=a, b=b, c=c, d=d)
 
@@ -169,7 +169,7 @@ def Ex2Chapitre2_2():
             texA = '$' + texMatrix(A) + '$'
             display(Latex(r"C'est correct! Le produit $ A \cdot B$ vaut: $A \cdot B$ = " + texA))
         else:
-            print("C'est faux.")
+            display(Latex("C'est faux."))
 
     interact_manual(correction, a=a, b=b, c=c, d=d)
 
@@ -240,23 +240,23 @@ def Ex1Chapitre2_3(A, B, C):
     ans2 = isSym(A+C) and not isDiag(A+C)
 
     if ans1 and ans2:
-        print('Correcte!')
+        display(Latex('Correcte!'))
     else:
-        print('Incorrecte! Entrez des nouvelles valeurs pur le matrices B et C!\n')
+        display(Latex('Incorrecte! Entrez des nouvelles valeurs pur le matrices B et C!\n'))
 
     if ans1:
-        print("A+B est bien diagonale!")
+        display(Latex("A+B est bien diagonale!"))
     else:
-        print("A+B est n'est pas diagonale!")
+        display(Latex("A+B est n'est pas diagonale!"))
     texAB = '$' + texMatrix(A+B) + '$'
     display(Latex(r"A+B=" + texAB))
 
     if ans2:
-        print("A+C est bien symétrique et non diagonale!")
+        display(Latex("A+C est bien symétrique et non diagonale!"))
     elif isSym(A + C) and isDiag(A + C):
-        print("A+C est bien symétrique mais elle est aussi diagonale!")
+        display(Latex("A+C est bien symétrique mais elle est aussi diagonale!"))
     else:
-        print("A + C n'est pas symétrique")
+        display(Latex("A + C n'est pas symétrique"))
     texAC = '$' + texMatrix(A + C) + '$'
     display(Latex(r"A+C=" + texAC))
 
@@ -456,7 +456,7 @@ def Ex1aChapitre2_5():
 
     def correction(a, b, c, d):
         if c and not(a) and not(d) and not(b):
-            print("C'est correct! Par exemple, si on applique le produit à la matrice ci-dessous")
+            display(Latex("C'est correct! Par exemple, si on applique le produit à la matrice ci-dessous"))
             A=[[1,-1,0,0], [0,0,0,1], [1,2,1,2], [1,0,0,1]]
             B=[[1,0,0,0], [0,1,0,-6], [0,0,1,0], [0,0,0,1]]
             C=[[0,0,1,0], [0,1,0,0], [1,0,0,0], [0,0,0,1]]
@@ -464,10 +464,11 @@ def Ex1aChapitre2_5():
             texA = '$' + texMatrix(A) + '$'
             texBCA = '$' + texMatrix(BCA) + '$'
             display(Latex('$\qquad A = $' + texA))
-            print("on obtient")
+            display(Latex("on obtient"))
             display((Latex('$\qquad \hat{A} = $' + texBCA)))
         else:
-            print("C'est faux.")
+            display(Latex("C'est faux."))
+
 
     interact_manual(correction,a=a,b=b,c=c,d=d)
 
@@ -482,9 +483,9 @@ def Ex1bChapitre2_5(inv):
     """
 
     if inv == [[0, 0, 1, 0], [0, 1, 0, 6], [1, 0, 0, 0], [0, 0, 0, 1]]:
-        print("C'est correct!")
+        display(Latex("C'est correct!"))
     else:
-        print("C'est faux.")
+         display(Latex("C'est faux."))
 
     return
 
@@ -505,9 +506,9 @@ def Ex2aChapitre2_5(A, B, T, D, L):
     """
 
     if ~(B - np.linalg.multi_dot([L, D, T, A])).any():
-        print("C'est correct!")
+        display(Latex("C'est correct!"))
     else:
-        print("C'est faux.")
+        display(Latex("C'est faux."))
         str = 'Il faut entrer la/les matrice(s) {'
         if (np.asmatrix(T) - np.asmatrix([[0, 0, 1], [0, 1, 0], [1, 0, 0]])).any():
             str = str + ' T, '
@@ -516,7 +517,7 @@ def Ex2aChapitre2_5(A, B, T, D, L):
         if (np.asmatrix(L) - np.asmatrix([[1, 0, 0], [-4, 1, 0], [0, 0, 1]])).any():
             str = str + ' L, '
         str = str + '}. Le produit des matrices entrées vaut:'
-        print(str)
+        display(Latex(str))
         tmp = np.linalg.multi_dot([L, D, T, A])
         texM = '$' + texMatrix(tmp) + '$'
         display(Latex('$\qquad \hat{B} = $' + texM))
@@ -532,9 +533,10 @@ def Ex2bChapitre2_5(inv):
     """
 
     if inv == [[0, 0, 1/5], [4, 1, 0], [1, 0, 0]]:
-        print("C'est correct!")
+        display(Latex("C'est correct!"))
     else:
-        print("C'est faux.")
+        display(Latex("C'est faux."))
+
 
     return
 
@@ -775,7 +777,7 @@ def Ex4Chapitre2_6_7():
 
 
 def Ex1Chapitre2_8_9(E1, E2, E3, E4):
-    """
+    """Provides the correction of exercise 2 of notebook 2_8_9
 
     :param E1:
     :type E1:
@@ -815,14 +817,48 @@ def Ex1Chapitre2_8_9(E1, E2, E3, E4):
     wrong = set(np.arange(1,5)) - correct
 
     if wrong:
-        print(f"Corrects: {correct}")
-        print(f"Manqué: {wrong}")
+        display(Latex(f"Corrects: {correct}"))
+        display(Latex(f"Manqué: {wrong}"))
     else:
-        print("Correcte!")
+        display(Latex("C'est correcte."))
 
     return
 
+def Ex3Chapitre2_8_9():
+    """Provides the correction of exercise 3 of notebook 2_8_9
+    """
+    
+    
+    a_1 = widgets.Checkbox(
+        value=False,
+        description=r'La matrice $A_1$ admet la décomposition LU',
+        disabled=False,
+        layout=Layout(width='80%', height='30px')
+    )
+    
+    a_2 = widgets.Checkbox(
+        value=False,
+        description=r'La matrice $A_2$ admet la décomposition LU',
+        disabled=False,
+        layout=Layout(width='80%', height='30px')
+    )
+    
+    a_3 = widgets.Checkbox(
+        value=False,
+        description=r'La matrice $A_3$ admet la décomposition LU',
+        disabled=False,
+        layout=Layout(width='80%', height='30px')
+    )
+    
+    def correction(a_1, a_2, a_3):
+        if not a_1 and a_2 and not a_3:
+            display(Latex("C'est correct! Plus précisément, la matrice $A_1$ n'admet pas décomposition LU car elle n'est pas inversible, la matrice $A_2$ admet décomposition LU et la matrice $A_3$ n'admet pas décomposition LU car elle ne peut pas être réduite sans échanger deux lignes pendant la méthode d'élimination de Gauss"))         
+        else:
+            display(Latex("C'est faux."))
 
+    interact_manual(correction, a_1=a_1, a_2=a_2, a_3=a_3)
+
+    return
 
 
 
