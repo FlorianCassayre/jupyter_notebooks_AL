@@ -794,7 +794,7 @@ def echZero(indice, M):
     :rtype: numpy.ndarray
     """
 
-    Mat = M[not indice, :].ravel()
+    Mat = M[np.logical_not(indice), :].ravel()
     Mat = np.concatenate([Mat, M[indice, :].ravel()])
     Mat = Mat.reshape(len(M), len(M[0, :]))
     return Mat
