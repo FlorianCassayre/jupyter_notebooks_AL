@@ -902,13 +902,11 @@ def echelonMat(ech, *args):
         A = np.array(args[0]).astype(float)
         m = A.shape[0]
         n = A.shape[1]
-        b = args[1]
-        if type(b[0]) == list:
-            b = np.array(b).astype(float)
-            A = np.concatenate((A, b), axis=1)
-        else:
-            b = [b[i] for i in range(m)]
-            A = [A[i] + [b[i]] for i in range(0, m)]
+        b = np.array(args[1])
+
+        b = np.reshape(b, (n, 1))
+        A = np.concatenate((A, b), axis=1)
+
     else:  # matrice coeff
         A = np.array(args[0]).astype(float)
         m = A.shape[0]
