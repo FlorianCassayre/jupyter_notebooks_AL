@@ -34,7 +34,7 @@ def Ex3Chapitre1_3_4():
     return
 
 
-def Ex3Chapitre1_3_4():
+def Ex4Chapitre1_3_4():
     """Provides the correction to exercise 4 of notebook 1_3-4
     """
 
