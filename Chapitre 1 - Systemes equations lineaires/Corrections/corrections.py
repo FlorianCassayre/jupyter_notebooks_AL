@@ -6,6 +6,10 @@ plotly.offline.init_notebook_mode(connected=True)
 import ipywidgets as widgets
 from ipywidgets import interact_manual, Layout
 from Librairie.AL_Fct import drawLine
+from IPython.display import display, Latex, display_latex
+
+
+###############   CHAPITRE 1_3_4    ###############
 
 
 def Ex3Chapitre1_3_4():
@@ -26,12 +30,22 @@ def Ex3Chapitre1_3_4():
     def correction(res):
         if 'a)' in res and 'c)' in res :
             print("C'est correct!")
+            print('Pour le système a), on peut par exemple faire\n')
+            sola= '$\\left(\\begin{array}{cc|c} 1 & 1 & 3\\\\ -1& 4 & -1 \\end{array}\\right) \\stackrel{E_{12}}{\sim}\\left(\\begin{array}{cc|c} -1& 4 & -1\\\\ 1 & 1 & 3 \\end{array}\\right)\\stackrel{E_{1}(-2)}{\sim}\\left(\\begin{array}{cc|c} 2& -8 & 2\\\\ 1 & 1 & 3 \\end{array}\\right)$'
+            display(Latex(sola))
+
+            print("Pour le système b), les systèmes ne sont pas équivalents. Comme solution on peut exprimer x1 en fonction de x2 et on obtient deux droites (parallèles) de pente 1 mais de hauteurs -2 et 2.$")
+            print('Pour le système c), on peut par exemple faire\n')
+            sola= '$\\left(\\begin{array}{ccc|c} \dfrac{1}{4} & -2 & 1& 5\\\\ 0& 1 & -1 & 0\\\\ 1 & 2 & -1 & 0 \\end{array}\\right) \\stackrel{E_{1}(4)}{\sim}\\left(\\begin{array}{ccc|c} 1 & -8 & 4& 20\\\\ 0& 1 & -1 & 0\\\\ 1 & 2 & -1 & 0\\end{array}\\right)\\stackrel{E_{31}(-1)}{\sim}\\left(\\begin{array}{ccc|c} 1& -8 & 4&20\\\\ 0 & 1 & -1&0\\\\ 0&10 &-5 & -20\\end{array}\\right)\\stackrel{E_{3}\\big({\\tiny\dfrac{1}{5}}\\big)}{\sim}\\left(\\begin{array}{ccc|c}1& -8 & 4&20\\\\ 0 & 1 & -1&0\\\\ 0&2&-1 & -4\\end{array}\\right)$'
+            display(Latex(sola))
+            
         else:
             print("C'est faux. Veuillez rentrer d'autres valeurs")
 
     interact_manual(correction, res=res)
 
     return
+
 
 
 def Ex4Chapitre1_3_4():
@@ -58,6 +72,30 @@ def Ex4Chapitre1_3_4():
     interact_manual(correction, res=res)
 
     return
+
+
+
+###############   CHAPITRE 1_5_6    ###############
+
+
+def Ex1Chapitre1_5_6():
+     """Provides the correction to exercise 4 of notebook 1_3-4
+    """
+         alpha = widgets.Text(
+        value='1',
+        description='Coeff. alpha:',
+        disabled=False
+    )
+
+
+    return
+
+
+
+
+
+###############   CHAPITRE 1_7   ###############
+
 
 
 def Ex2Chapitre1_7():
@@ -92,6 +130,8 @@ def Ex2Chapitre1_7():
     interact_manual(correction, inc=inc, c=comp)
 
     return
+
+
 
 
 def Ex3Chapitre1_7():
