@@ -861,4 +861,76 @@ def Ex3Chapitre2_8_9():
     return
 
 
+def Ex1Chapitre2_10():
+    """Provides the correction to exercise 1 of notebook 2_10
+    """
+
+    a = widgets.Checkbox(
+        value=False,
+        description=r"Le système linéaire n'admet aucune solution",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    b = widgets.Checkbox(
+        value=False,
+        description=r"Le système linéaire admet une solution unique",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+
+    )
+    c = widgets.Checkbox(
+        value=False,
+        description=r"Le système linéaire admet deux solutions distinctes",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    d = widgets.Checkbox(
+        value=False,
+        description=r"Le système linéaire admet une infinité de solutions",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    e = widgets.Checkbox(
+        value=False,
+        description=r"La décomposition LU de $A$ ne peut pas être calculée",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    f = widgets.Checkbox(
+        value=False,
+        description=r"La dernière colonne de $U$ est entièrement composée de zéros",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    g = widgets.Checkbox(
+        value=False,
+        description=r'La dernière ligne de $U$ est entièrement composée de zéros',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    h = widgets.Checkbox(
+        value=False,
+        description=r'La première entrée de la première ligne de $L$ est égale à 1',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    def correction(a, b, c, d, e, f, g, h):
+        if not a and not b and not c and d and not e and not f and g and not h:
+            display(Latex("C'est correct. En effet, $A$ n'est clairement pas inversible, car la dernière ligne est "
+                          "égale à la seconde moins la première, et il en va de même pour le vecteur de droite $b$. "
+                          "Par conséquent, la dernière ligne de $U$ est entièrement composée de zéros (réponse 7) et la "
+                          "dernière entrée du vecteur de droite $b$, après l'application de la méthode d'élimination de "
+                          "Gauss, est également égale à 0. Ainsi, la dernière équation du système linéaire résultant a "
+                          "tous les coefficients égaux à 0, ce qui donne lieu à une infinité de solutions "
+                          "(réponse 4)."))
+        else:
+            display(Latex("C'est faux."))
+
+    interact_manual(correction, a=a, b=b, c=c, d=d, e=e, f=f, g=g, h=h)
+
+    return
+
+
+
 

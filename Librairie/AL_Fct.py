@@ -698,10 +698,6 @@ def Plot3DSys(xL, xR, p, A, b):
                 surface = go.Surface(x=(b[i] - A[i, 1] * y - A[i,2] * z)/A[i, 0], y=y, z=z,
                                      showscale=False, showlegend=True, colorscale=colorscale, opacity=1, name='Plan %d' % j)
 
-    
-            
-
-
             data.append(surface)
             layout = go.Layout(
                 showlegend=True,  # not there WHY???? --> LEGEND NOT YET IMPLEMENTED FOR SURFACE OBJECTS!!
@@ -734,7 +730,6 @@ def Plot3DSys(xL, xR, p, A, b):
     fig = go.Figure(data=data, layout=layout)
     plotly.offline.iplot(fig)
     return
-
 
 def isDiag(M):
     """Method which checks if a matrix is diagonal
@@ -819,7 +814,7 @@ def Eij(M, i, j, get_E_inv=False):
     M[[i, j], :] = M[[j, i], :]
 
     if get_E_inv:
-        L = np.eye(M.shape[0], M.shape[1]).astype(float)
+        L = np.eye(M.shape[0], M.shape[0]).astype(float)
         L[[i, j]] = L[[j, i]]
         
     if get_E_inv:
@@ -847,7 +842,7 @@ def Ealpha(M, i, alpha, get_E_inv=False):
     M[i, :] = alpha * M[i, :]
 
     if get_E_inv:
-        L = np.eye(M.shape[0], M.shape[1]).astype(float)
+        L = np.eye(M.shape[0], M.shape[0]).astype(float)
         L[i ,i] = 1 / alpha
 
     if get_E_inv:
@@ -877,7 +872,7 @@ def Eijalpha(M, i, j, alpha, get_E_inv=False):
     M[i, :] = M[i, :] + alpha * M[j, :]
 
     if get_E_inv:
-        L = np.eye(M.shape[0], M.shape[1]).astype(float)
+        L = np.eye(M.shape[0], M.shape[0]).astype(float)
         L[i, j] = -alpha
 
     if get_E_inv:
@@ -1256,18 +1251,26 @@ def LU_no_pivoting(A, ptol=1e-5):
     """
 
     A = np.array(A).astype(float)
-    n = A.shape[1]
-    for i in range(n):
+    m, n = A.shape
+
+    try:
+        assert m <= n
+    except AssertionError:
+        raise ValueError("La décomposition LU n'est pas implémentée pour les matrices rectangulaires "
+                         "ayant plus de lignes que de colonnes")
+    for i in range(m):
+        if (A[i+1:, :] == 0).all():
+            break
         pivot = A[i, i]
         if abs(pivot) <= ptol:
             print("Pivot avec la valeur 0 rencontré. Cette matrice n'admet pas de décomposition LU (sans pivoting)")
-            raise ValueError
-        for k in range(i+1, n):
+            return None, None
+        for k in range(i+1, m):
             lam = A[k, i] / pivot
             A[k, i+1:n] = A[k, i+1:n] - lam * A[i, i+1:n]
             A[k, i] = lam
 
-    L = np.eye(n) + np.tril(A, -1)
+    L = np.eye(m) + np.tril(A, -1)[:m, :m]
     U = np.triu(A)
     return L, U
 
