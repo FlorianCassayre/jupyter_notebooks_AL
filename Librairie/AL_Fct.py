@@ -254,7 +254,7 @@ def texMatrix(*args):
                              f"{A.shape[0]} rows, while the second one has {b.shape[0]}")
 
         A = np.concatenate((A, b), axis=1)
-        texApre = '\\left[\\begin{array}{'
+        texApre = '\\left(\\begin{array}{'
         texA = ''
         for i in np.asarray(A):
             texALigne = ''
@@ -273,15 +273,15 @@ def texMatrix(*args):
                 texALigne = texALigne + ' & ' + str(round(j, 4) if j % 1 else int(j))
             texALigne = texALigne + ' \\\\'
             texA = texA + texALigne
-        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right]'
+        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
     elif len(args) == 1:  # matrice des coefficients
         if not type(args[0]) is np.ndarray:
             A = np.array(args[0]).astype(float)
         else:
             A = args[0].astype(float)
 
-        texApre = '\\left[\\begin{array}{'
-        texApost = ' \\end{array}\\right]'
+        texApre = '\\left(\\begin{array}{'
+        texApost = ' \\end{array}\\right)'
         texA = ''
         if len(A.shape) == 0 or A.shape[0] == 0:
             return texApre + '}' + texA + texApost
