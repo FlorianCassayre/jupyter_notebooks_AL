@@ -932,5 +932,47 @@ def Ex1Chapitre2_10():
     return
 
 
+def Ex2Chapitre2_10(L, U, b, x, y):
+    """Provides the correction to exercise 2 of notebook 2_10
+
+    :param L: lower triangular matrix from LU decomposition
+    :type L: list[list]
+    :param U: upper triangular matrix from LU decomposition
+    :type U: list[list]
+    :param b: right-hand side vector
+    :type b: list[list]
+    :param x: system solution
+    :type x: list[list]
+    :param y: temporary variable
+    :type y: list[list]
+    """
+
+    if type(L) is list:
+        L = np.array(L)
+
+    if type(U) is list:
+        U = np.array(U)
+
+    if type(x) is list:
+        x = np.array(x)
+
+    if type(y) is list:
+        y = np.array(y)
+
+    y_true = np.linalg.solve(L, b)
+    x_true = np.linalg.solve(U, y)
+
+    res_x = np.linalg.norm(x - x_true) / np.linalg.norm(x_true) <= 1e-4
+    res_y = np.linalg.norm(y - y_true) / np.linalg.norm(y_true) <= 1e-4
+
+    if res_x and res_y:
+        display(Latex("C'est correct"))
+    else:
+        display(Latex("C'est faux"))
+
+    return
+
+
+
 
 
