@@ -861,4 +861,118 @@ def Ex3Chapitre2_8_9():
     return
 
 
+def Ex1Chapitre2_10():
+    """Provides the correction to exercise 1 of notebook 2_10
+    """
+
+    a = widgets.Checkbox(
+        value=False,
+        description=r"Le système linéaire n'admet aucune solution",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    b = widgets.Checkbox(
+        value=False,
+        description=r"Le système linéaire admet une solution unique",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+
+    )
+    c = widgets.Checkbox(
+        value=False,
+        description=r"Le système linéaire admet deux solutions distinctes",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    d = widgets.Checkbox(
+        value=False,
+        description=r"Le système linéaire admet une infinité de solutions",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    e = widgets.Checkbox(
+        value=False,
+        description=r"La décomposition LU de $A$ ne peut pas être calculée",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    f = widgets.Checkbox(
+        value=False,
+        description=r"La dernière colonne de $U$ est entièrement composée de zéros",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    g = widgets.Checkbox(
+        value=False,
+        description=r'La dernière ligne de $U$ est entièrement composée de zéros',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+    h = widgets.Checkbox(
+        value=False,
+        description=r'La première entrée de la première ligne de $L$ est égale à 1',
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    def correction(a, b, c, d, e, f, g, h):
+        if not a and not b and not c and d and not e and not f and g and not h:
+            display(Latex("C'est correct. En effet, $A$ n'est clairement pas inversible, car la dernière ligne est "
+                          "égale à la seconde moins la première, et il en va de même pour le vecteur de droite $b$. "
+                          "Par conséquent, la dernière ligne de $U$ est entièrement composée de zéros (réponse 7) et la "
+                          "dernière entrée du vecteur de droite $b$, après l'application de la méthode d'élimination de "
+                          "Gauss, est également égale à 0. Ainsi, la dernière équation du système linéaire résultant a "
+                          "tous les coefficients égaux à 0, ce qui donne lieu à une infinité de solutions "
+                          "(réponse 4)."))
+        else:
+            display(Latex("C'est faux."))
+
+    interact_manual(correction, a=a, b=b, c=c, d=d, e=e, f=f, g=g, h=h)
+
+    return
+
+
+def Ex2Chapitre2_10(L, U, b, x, y):
+    """Provides the correction to exercise 2 of notebook 2_10
+
+    :param L: lower triangular matrix from LU decomposition
+    :type L: list[list]
+    :param U: upper triangular matrix from LU decomposition
+    :type U: list[list]
+    :param b: right-hand side vector
+    :type b: list[list]
+    :param x: system solution
+    :type x: list[list]
+    :param y: temporary variable
+    :type y: list[list]
+    """
+
+    if type(L) is list:
+        L = np.array(L)
+
+    if type(U) is list:
+        U = np.array(U)
+
+    if type(x) is list:
+        x = np.array(x)
+
+    if type(y) is list:
+        y = np.array(y)
+
+    y_true = np.linalg.solve(L, b)
+    x_true = np.linalg.solve(U, y)
+
+    res_x = np.linalg.norm(x - x_true) / np.linalg.norm(x_true) <= 1e-4
+    res_y = np.linalg.norm(y - y_true) / np.linalg.norm(y_true) <= 1e-4
+
+    if res_x and res_y:
+        display(Latex("C'est correct"))
+    else:
+        display(Latex("C'est faux"))
+
+    return
+
+
+
+
 
