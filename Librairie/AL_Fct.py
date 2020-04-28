@@ -17,7 +17,8 @@ from IPython.core.magic import register_cell_magic
 from IPython.display import HTML
 import ipywidgets as widgets
 import random
-from ipywidgets import interact_manual
+from ipywidgets import interact_manual, Layout
+
 import sympy as sp
 
 
@@ -1466,3 +1467,37 @@ def printEquMatricesOLD(*args):  # M=[M1, M2, ..., Mn] n>1 VERIFIED OK
     texEqu = texEqu + '$'
     display(Latex(texEqu))
     return
+
+
+def Ex1Chapitre1_5_6():
+    style = {'description_width': 'initial'}
+    e=widgets.Textarea(
+        value='',
+        placeholder='Utilisez des lettres majuscules',
+        description='Matrices échelonnées:',
+        layout=Layout(width='60%', height='50px'),
+        style=style,
+        disabled=False
+    )
+
+    er=widgets.Textarea(
+        value='',
+        placeholder='Utilisez des lettres majuscules',
+        description='Matrices échelonnées-réduites:',
+        layout=Layout(width='60%', height='50px'),
+        style=style,
+        disabled=False
+    )
+
+    r=widgets.Textarea(
+        value='',
+        placeholder='Utilisez des lettres majuscules',
+        description='Aucun des deux:',
+        layout=Layout(width='60%', height='50px'),
+        style=style,
+        disabled=False
+    )
+    display(e)
+    display(er)
+    display(r)
+    return e,er,r

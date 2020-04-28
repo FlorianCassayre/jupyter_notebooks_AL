@@ -47,6 +47,7 @@ def Ex3Chapitre1_3_4():
     return
 
 
+
 def Ex4Chapitre1_3_4():
     """Provides the correction to exercise 4 of notebook 1_3-4
     """
@@ -58,7 +59,7 @@ def Ex4Chapitre1_3_4():
         options=['a)', 'b)', 'c)', 'd)', 'e)', 'f)', 'g)', 'h)'],
         description='Systèmes avec le même ensemble de solutions:',
         style=style,
-        layout=Layout(width='35%', height='170px'),
+        layout=Layout(width='15%', height='170px'),
         disabled=False,
     )
 
@@ -72,13 +73,46 @@ def Ex4Chapitre1_3_4():
 
     return
 
+
+
 ###############   CHAPITRE 1_5_6    ###############
 
+def Ex1Chapitre1_5_6(data):
+    """Provides the correction to exercise 1 of notebook 1_5-6
+    e=matrice qui sont échelonnée, er=échelonnée réduite et r=rien
+    """
+    e=data[0].value
+    er=data[1].value
+    r=data[2].value
+    r=list(r.split(','))
+    r=[elem.strip() for elem in r if elem.strip()]
+    er=list(er.split(','))
+    er=[elem.strip() for elem in er if elem.strip()]
+    e=list(e.split(','))
+    e=[elem.strip() for elem in e if elem.strip()]
 
-def Ex1Chapitre1_5_6()
+    corr_e=['C','D','E','G','H','I','J']
+    corr_er=['D','H','I','J']
+    corr_r=['A','B','F']
+
+    if set(corr_r)==set(r) and set(corr_er)==set(er) and set(corr_e)==set(e):
+        print('Correct')
+    else:
+        if not set(corr_r)==set(r):
+            print("Les matrices n'étant ni échelonnées, ni échelonnées-réduites sont fausses. ")
+        if not set(corr_e)==set(e):
+            print("Les matrices étant échelonnées sont fausses. ")
+        if not set(corr_er)==set(er):
+            print("Les matrices étant échelonnées-réduite sont fausses. ")
+    return
+
+
+
 
 
 ###############   CHAPITRE 1_7   ###############
+
+
 
 def Ex2Chapitre1_7():
     """Provides the correction to exercise 2 of notebook 1_7
@@ -112,6 +146,8 @@ def Ex2Chapitre1_7():
     interact_manual(correction, inc=inc, c=comp)
 
     return
+
+
 
 
 def Ex3Chapitre1_7():
