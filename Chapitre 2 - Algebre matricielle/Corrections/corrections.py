@@ -973,6 +973,87 @@ def Ex2Chapitre2_10(L, U, b, x, y):
     return
 
 
+def Ex3Chapitre2_10():
+    """Provides the correction to exercise 3 of notebook 2_10
+
+    :return:
+    :rtype:
+    """
+
+    a = widgets.Checkbox(
+        value=False,
+        description=r"If L is such that all its diagonal elements equal 1, then the temporary variable y is a vector "
+                    r"of ones as well",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    b = widgets.Checkbox(
+        value=False,
+        description=r"Matrix L is diagonal",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    c = widgets.Checkbox(
+        value=False,
+        description=r"Matrix U is diagonal",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    d = widgets.Checkbox(
+        value=False,
+        description=r"The second entry of the solution is always 2.5 times the fourth one",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    e = widgets.Checkbox(
+        value=False,
+        description=r"The second entry of the solution is always 5 times the fourth one",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    f = widgets.Checkbox(
+        value=False,
+        description=r"The sum of all the entries always equals 2.5",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    g = widgets.Checkbox(
+        value=False,
+        description=r"The sum of all the entries but the second one always equals 0",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    h = widgets.Checkbox(
+        value=False,
+        description=r"The vector [1, 0 -1, 0] is one of the solutions to the linear system",
+        disabled=False,
+        layout=Layout(width='80%', height='40px')
+    )
+
+    def correction(a, b, c, d, e, f, g, h):
+        if a and not b and not c and d and not e and not f and g and h:
+            display(Latex("C'est correct. Indeed the set of all possible solutions can be written as "
+                          "$x = [1-4a, 2.5a, 3a-1, a]$. From this, it is clear that the second entry is 2.5 times the "
+                          "fourth one (answer 4), that the sum of all the entries but the second one equals $0$ "
+                          "(answer 7) and that $x^* = [1,0,-1,0]$ is a solution, in case $a$ is set to 0 (answer 8). "
+                          "Also, if L is computed so that it has ones on its diagonal, it is immediate to deduce that "
+                          "the temporary vector $y$ that solves the system $Ly=b$ is actually all made of ones."))
+        else:
+            display(Latex("C'est faux."))
+
+    interact_manual(correction, a=a, b=b, c=c, d=d, e=e, f=f, g=g, h=h)
+
+    return
+
+
+
 
 
 

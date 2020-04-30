@@ -255,7 +255,7 @@ def texMatrix(*args):
                              f"{A.shape[0]} rows, while the second one has {b.shape[0]}")
 
         A = np.concatenate((A, b), axis=1)
-        texApre = '\\left(\\begin{array}{'
+        texApre = '\\left[\\begin{array}{'
         texA = ''
         for i in np.asarray(A):
             texALigne = ''
@@ -274,15 +274,15 @@ def texMatrix(*args):
                 texALigne = texALigne + ' & ' + str(round(j, 4) if j % 1 else int(j))
             texALigne = texALigne + ' \\\\'
             texA = texA + texALigne
-        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
+        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right]'
     elif len(args) == 1:  # matrice des coefficients
         if not type(args[0]) is np.ndarray:
             A = np.array(args[0]).astype(float)
         else:
             A = args[0].astype(float)
 
-        texApre = '\\left(\\begin{array}{'
-        texApost = ' \\end{array}\\right)'
+        texApre = '\\left[\\begin{array}{'
+        texApost = ' \\end{array}\\right]'
         texA = ''
         if len(A.shape) == 0 or A.shape[0] == 0:
             return texApre + '}' + texA + texApost
@@ -1254,6 +1254,8 @@ def LU_no_pivoting(A, ptol=1e-5):
     A = np.array(A).astype(float)
     m, n = A.shape
 
+    n_op = 0
+
     try:
         assert m <= n
     except AssertionError:
@@ -1268,11 +1270,18 @@ def LU_no_pivoting(A, ptol=1e-5):
             return None, None
         for k in range(i+1, m):
             lam = A[k, i] / pivot
+            n_op += 1
             A[k, i+1:n] = A[k, i+1:n] - lam * A[i, i+1:n]
+            n_op += 2*(n-i-1)
             A[k, i] = lam
 
     L = np.eye(m) + np.tril(A, -1)[:m, :m]
     U = np.triu(A)
+
+    n_op += m**2
+
+    print(f"Nombre d'opérations élémentaires: {n_op}")
+
     return L, U
 
 
