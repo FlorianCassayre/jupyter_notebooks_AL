@@ -283,7 +283,7 @@ def check_basis(sol, prop):
         return np.all(lin_comb_ok)
 
 
-def eigen_basis_sp(A, l, prop_basis=None, disp=True):
+def eigen_basis(A, l, prop_basis=None, disp=True, return_=False):
     """
     Display step by step method for finding a basis of the eigenspace of A associated to eigenvalue l
     Eventually check if the proposed basis is correct. Display or not
@@ -291,6 +291,7 @@ def eigen_basis_sp(A, l, prop_basis=None, disp=True):
     @param l: real eigen value of A (float or int)
     @param prop_basis: Proposed basis: list of base vector (type list of list of floats)
     @param disp: boolean if display the solution. If false it displays nothing
+    @param return_: boolean if return something or nothing
     @return: basis: a correct basis for the eigen space (2D numpy array)
             basic_idx: list with indices of basic variables of A - l*I
             free_idx: list with indices of free variables of A - l*I
@@ -302,8 +303,6 @@ def eigen_basis_sp(A, l, prop_basis=None, disp=True):
     n = A.shape[0]
     if n != A.shape[1]:
         raise ValueError('A should be a square matrix.')
-
-
 
     # Compute eigenvals in symbolic
     eig = A.eigenvals()
@@ -396,10 +395,20 @@ def eigen_basis_sp(A, l, prop_basis=None, disp=True):
         else:
             display(Latex("La base donnée est incorrecte."))
 
-    return basis, basic_idx, free_idx
+    if return_:
+        return basis, basic_idx, free_idx
 
 
 def generate_eigen_vector(basis, l, limit):
+    """
+    Function to generate a random eigenvector associated to a eigenvalue given a basis of the eigenspace
+    The returned eigenvector is such that itself and its multiplication with the matrix will stay in range of limit
+    in order to have a nice plot
+    @param basis: basis of eigenspace associated to eigenvalue lambda
+    @param l: eigenvalue
+    @param limit: limit of the plot: norm that the engenvector or its multiplication with the matrix will not exceed
+    @return: eigen vector (numpy array)
+    """
     n = len(basis)
     basis_mat = np.array(basis).T
     basis_mat = basis_mat.astype(np.float64)
@@ -412,7 +421,7 @@ def generate_eigen_vector(basis, l, limit):
     return vect
 
 
-def plot3x3_eigspace(A, xL=-10, xR=10, p=None, plot_vector=True):
+def plot3x3_eigspace(A, xL=-10, xR=10, p=None, plot_vector=False):
     # To have integer numbers
     if p is None:
         p = xR - xL + 1
@@ -455,7 +464,7 @@ def plot3x3_eigspace(A, xL=-10, xR=10, p=None, plot_vector=True):
 
     for i, l in enumerate(w):
         l_eval = float(l)
-        basis, basic_idx, free_idx = eigen_basis_sp(A, l_eval, disp=False)
+        basis, basic_idx, free_idx = eigen_basis(A, l_eval, disp=False, return_=True)
         n_free = len(basis)
         if n_free != len(free_idx):
             raise ValueError("len(basis) and len(free_idx) should be equal.")
@@ -583,15 +592,15 @@ def plot2x2_eigspace(A, xL = -10, xR = 10, p=None):
 
     for i, l in enumerate(w):
         l_eval = float(l)
-        basis, basic_idx, free_idx = eigen_basis_sp(A, l_eval, disp=False)
+        basis, basic_idx, free_idx = eigen_basis(A, l_eval, disp=False, return_=True)
 
         n_free = len(basis)
         if n_free != len(free_idx):
             raise ValueError("len(basis) and len(free_idx) should be equal.")
 
         if n_free == 2:
-            display(Latex("Tous les vecteurs du plan appartiennent à l'espace propre de A associé à $\lambda = "
-                          +sp.latex(l) +"$. On ne peut donc pas le représenter."))
+            display(Latex("Tous les vecteurs du plan appartiennent à l'espace propre de A associé à $\lambda = " \
+                          + sp.latex(l) + "$. On ne peut donc pas le représenter."))
             return
         else:
             t = np.linspace(xL, xR, p)
@@ -629,25 +638,43 @@ def plot_eigspace(A, xL=-10, xR=10, p=None):
     else:
         plot3x3_eigspace(A, xL, xR, p)
 
-# def create_eig_set(A, show_vector=True, tol=10 ** -13):
-#     w, _ = np.linalg.eig(A)
-#     w_imag = np.imag(w)
-#     if np.all(np.abs(w_imag) < 10 ** -13):
-#         w = np.real(w)
-#     else:
-#         raise ValueError("Complex eigenvalues detected")
-#     w_set = [w[0]]
-#
-#     for i in range(1, 3):
-#         # If no very close element already in w_set, then add w[i] in w_set
-#         if np.all(np.abs(w_set - w[i]) > tol):
-#             w_set.append(w[i])
-#
-#     return w_set
-#
-#
-# def create_eig_set_sp(A):
-#     A_sp = sp.Matrix(A)
-#     eig_dic = A_sp.eigenvals()
-#     return np.array(list(eig_dic.keys()), dtype=np.float64)
-#
+
+def latexp(A):
+    """
+    Function to output latex expression of a sympy matrix but with round parenthesis
+    @param A: sympy matrix
+    @return: latex string
+    """
+    return sp.latex(A, mat_delim='(', mat_str='matrix')
+
+
+def ch8_8_ex_1(A, prop_answer):
+    """
+    Check if a matrix is diagonalisable.
+    @param A: sympy square matrix
+    @param prop_answer: boolean, answer given by the student
+    @return:
+    """
+    if not A.is_Matrix:
+        raise ValueError("A should be a sympy Matrix.")
+    n = A.shape[0]
+    if n != A.shape[1]:
+        raise ValueError('A should be a square matrix.')
+
+    eig = A.eigenvects()
+    dim_geom = 0
+
+    for x in eig:
+        dim_geom += len(x[2])
+    answer = dim_geom == n
+
+    if answer:
+        display(Latex("Oui la matrice $A = " + latexp(A) + "$ est diagonalisable."))
+    else:
+        display(Latex("Non la matrice $A = " + latexp(A) + "$ n'est pas diagonalisable."))
+
+    if answer == prop_answer:
+        display(Latex("Votre réponse est correcte !"))
+    else:
+        display(Latex("Votre réponse est incorrecte."))
+
