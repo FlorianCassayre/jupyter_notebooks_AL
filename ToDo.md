@@ -5,4 +5,7 @@
       if the "sliding" parameter *h* is set to 0
 - [x] *printA* library method fails if it is given a row vector (i.e. a list of int/float)
       as input
-- [ ] *ipywidgets* have troubles being displayed on **Noto** 
+- [x] *ipywidgets* have troubles being displayed on **Noto** 
+- [x] *echelonMat* function does not work on matrices having a column
+      made of all zeros
+      
