@@ -79,8 +79,8 @@ def Ex3Chapitre2_1():
     def correction(a, b, c, d):
         if c and not a and not b and not d:
             display(Latex("C'est correct! La matrice C vaut:"))
-            A = [[-6, 64], [-32, -22], [28, -10], [-2, 6]]
-            printA(A)
+            C = [[-6, 64], [-32, -22], [28, -10], [-2, 6]]
+            printA(C)
         else:
             display(Latex("C'est faux."))
 
@@ -95,29 +95,29 @@ def Ex1Chapitre2_2():
 
     a = widgets.Checkbox(
         value=False,
-        description=r'Le produit $A \cdot B$ vaut: <br>'
-                    r'\begin{equation*} \qquad A \cdot B = \begin{bmatrix}-1 & 4\\-3& -3\\2 & 0\end{bmatrix}\end{equation*}',
+        description=r'Le produit $AB$ vaut: <br>'
+                    r'\begin{equation*} \qquad AB = \begin{pmatrix}-1 & 4\\-3& -3\\2 & 0\end{pmatrix}\end{equation*}',
         disabled=False,
         layout=Layout(width='100%', height='110px')
     )
     b = widgets.Checkbox(
         value=False,
-        description=r'Le produit $A \cdot B$ vaut: <br>'
-                    r'\begin{equation*} \qquad A \cdot B =\begin{bmatrix}-1 & 8\\-3& 3\\-2 & 4\end{bmatrix}\end{equation*}',
+        description=r'Le produit $AB$ vaut: <br>'
+                    r'\begin{equation*} \qquad AB =\begin{pmatrix}-1 & 8\\-3& 3\\-2 & 4\end{pmatrix}\end{equation*}',
         disabled=False,
         layout=Layout(width='100%', height='110px')
 
     )
     c = widgets.Checkbox(
         value=False,
-        description=r'Le produit $A \cdot B$ vaut: <br>'
-                    r'\begin{equation*} \qquad A \cdot B =\begin{bmatrix}5 & -4\\1 & 0\end{bmatrix}\end{equation*}',
+        description=r'Le produit $AB$ vaut: <br>'
+                    r'\begin{equation*} \qquad AB =\begin{pmatrix}5 & -4\\1 & 0\end{pmatrix}\end{equation*}',
         disabled=False,
         layout=Layout(width='100%', height='90px')
     )
     d = widgets.Checkbox(
         value=False,
-        description=r"Le produit $A \cdot B$ n'est pas définie",
+        description=r"Le produit $AB$ n'est pas défini",
         disabled=False,
         layout=Layout(width='100%', height='60px')
     )
@@ -139,26 +139,26 @@ def Ex2Chapitre2_2():
 
     a = widgets.Checkbox(
         value=False,
-        description=r'Le produit $A \cdot B$ appartient à $M_{3 \times 3}(\mathbb{R})$',
+        description=r'Le produit $AB$ appartient à $\mathcal{M}_{3 \times 3}(\mathbb{R})$',
         disabled=False,
         layout=Layout(width='80%', height='50px')
     )
     b = widgets.Checkbox(
         value=False,
-        description=r'Le produit $A \cdot B$ appartient à $M_{3 \times 2}(\mathbb{R})$',
+        description=r'Le produit $AB$ appartient à $\mathcal{M}_{3 \times 2}(\mathbb{R})$',
         disabled=False,
         layout=Layout(width='80%', height='50px')
 
     )
     c = widgets.Checkbox(
         value=False,
-        description=r'Le produit $A \cdot B$ appartient à $M_{2 \times 1}(\mathbb{R})$',
+        description=r'Le produit $AB$ appartient à $\mathcal{M}_{2 \times 1}(\mathbb{R})$',
         disabled=False,
         layout=Layout(width='80%', height='50px')
     )
     d = widgets.Checkbox(
         value=False,
-        description=r"$A \cdot B$ n'est pas définie",
+        description=r"$AB$ n'est pas définie",
         disabled=False,
         layout=Layout(width='80%', height='50px')
     )
@@ -167,7 +167,7 @@ def Ex2Chapitre2_2():
         if c and not a and not b and not d:
             A = [[14], [6]]
             texA = '$' + texMatrix(A) + '$'
-            display(Latex(r"C'est correct! Le produit $ A \cdot B$ vaut: $A \cdot B$ = " + texA))
+            display(Latex(r"C'est correct! Le produit $ AB$ vaut: $AB$ = " + texA))
         else:
             display(Latex("C'est faux."))
 
@@ -179,7 +179,7 @@ def Ex2Chapitre2_2():
 def Ex3Chapitre2_2():
     """Provides the correction of exercise 3 of notebook 2_2
     """
-    display(Latex("Insert the values of a and b as floating point numbers"))
+    display(Latex("Insérez les valeurs de a et b"))
     a = widgets.FloatText(
         value=0.0,
         step=0.1,
@@ -206,10 +206,10 @@ def Ex3Chapitre2_2():
         texBA = '$' + texMatrix(BA) + '$'
 
         if a.value == 5/2 and b.value == -3/2:
-            display(Latex(r"Correcte! Le produits $A \cdot B$ et $B \cdot A$ valent chacun: " + texAB))
+            display(Latex(r"Correcte! Le produits $AB$ et $BA$ valent chacun: " + texAB))
         else:
-            display(Latex(r"Incorrecte! Le produit $A \cdot B$ vaut " + texAB + r"et par contre le produit "
-                          r"$B \cdot A$ vaut " + texBA + r" Entrez de nouvelles valeurs!"))
+            display(Latex(r"Incorrecte! Le produit $AB$ vaut " + texAB + r"et par contre le produit "
+                          r"$BA$ vaut " + texBA + r". Entrez de nouvelles valeurs!"))
 
     interact_manual(f)
 
@@ -313,7 +313,7 @@ def Ex1Chapitre2_4():
     a = widgets.Checkbox(
         value=False,
         description=r'Le système admet une solution unique et elle est:'
-                    r'$$\qquad \qquad x = \begin{bmatrix} 1&4/3&4/3\end{bmatrix}^T$$',
+                    r'$$\qquad \qquad x = \begin{pmatrix} 1&4/3&4/3\end{pmatrix}^T$$',
         disabled=False,
         layout=Layout(width='80%', height='70px')
     )
@@ -326,7 +326,7 @@ def Ex1Chapitre2_4():
     c = widgets.Checkbox(
         value=False,
         description=r'Le système admet une solution unique et elle est:'
-                    r'$$\qquad \qquad x = \begin{bmatrix} 1&4/3&8/3\end{bmatrix}^T$$',
+                    r'$$\qquad \qquad x = \begin{pmatrix} 1&4/3&8/3\end{pmatrix}^T$$',
         disabled=False,
         layout=Layout(width='80%', height='70px')
 
@@ -340,7 +340,7 @@ def Ex1Chapitre2_4():
     e = widgets.Checkbox(
         value=False,
         description=r'$A$ est inversible et son inverse est: <br>'
-                    r'$$\qquad \qquad A^{-1} = \begin{bmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&5/6\end{bmatrix}$$',
+                    r'$$\qquad \qquad A^{-1} = \begin{pmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&5/6\end{pmatrix}$$',
         disabled=False,
         layout=Layout(width='80%', height='100px')
     )
@@ -353,7 +353,7 @@ def Ex1Chapitre2_4():
     g = widgets.Checkbox(
         value=False,
         description=r'$A$ est inversible et son inverse est:'
-                    r'$$\qquad \qquad A^{-1} = \begin{bmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&-1/2\end{bmatrix}$$',
+                    r'$$\qquad \qquad A^{-1} = \begin{pmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&-1/2\end{pmatrix}$$',
         disabled=False,
         layout=Layout(width='80%', height='100x')
     )
@@ -738,7 +738,7 @@ def Ex4Chapitre2_6_7():
     """Provides the correction of exercise 4 of notebook 2_6-7
     """
 
-    display(Latex("Insert the values of a and b as floating point numbers"))
+    display(Latex("Insérez les valeurs de a et b"))
     a = widgets.FloatText(
         value=0.0,
         step=0.1,
@@ -765,10 +765,10 @@ def Ex4Chapitre2_6_7():
         texBA = '$' + texMatrix(BA) + '$'
 
         if a.value == -1 and b.value == -2:
-            display(Latex(r"Correcte! Le produits $A \cdot B$ et $B \cdot A$ valent chacun: $I$ = " + texAB))
+            display(Latex(r"Correcte! Le produits $AB$ et $BA$ valent chacun: $I$ = " + texAB))
         else:
-            display(Latex(r"Incorrecte! Le produit $A \cdot B$ vaut  " + texAB + r" et le produit "
-                          r"$B \cdot A$ vaut  " + texBA + r"  donc, $A$ ne peut pas être l'inverse de $B$. "
+            display(Latex(r"Incorrecte! Le produit $AB$ vaut  " + texAB + r" et le produit "
+                          r"$BA$ vaut  " + texBA + r",  donc $A$ ne peut pas être l'inverse de $B$. "
                           r"Entrez de nouvelles valeurs!"))
 
     interact_manual(f)
@@ -817,7 +817,10 @@ def Ex1Chapitre2_8_9(E1, E2, E3, E4):
     wrong = set(np.arange(1,5)) - correct
 
     if wrong:
-        display(Latex(f"Corrects: {correct}"))
+        if correct:
+            display(Latex(f"Corrects: {correct}"))
+        else:
+            display((Latex("Corrects: {}")))
         display(Latex(f"Manqué: {wrong}"))
     else:
         display(Latex("C'est correcte."))
@@ -1032,7 +1035,7 @@ def Ex3Chapitre2_10():
 
     h = widgets.Checkbox(
         value=False,
-        description=r"The vector [1, 0 -1, 0] is one of the solutions to the linear system",
+        description=r"The vector $\hat{x} = (1, 0 -1, 0)$ is one of the solutions to the linear system",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
