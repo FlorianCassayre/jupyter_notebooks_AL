@@ -4,7 +4,7 @@ import AL_Fct as al
 import numpy as np
 import sympy as sp
 from IPython.utils import io
-from IPython.display import display, Latex
+from IPython.display import display, Latex, Markdown
 import plotly
 import plotly.graph_objects as go
 
@@ -50,9 +50,9 @@ def CheckEigenVector(A, v):
         b = A * v
 
         # Print some explanation about the method
-        display(Latex("On voit que $ b = A v = " + sp.latex(b) + "$"))
+        display(Latex("On voit que $ b = A v = " + latexp(b) + "$"))
         display(Latex("On cherche alors un nombre $\lambda \in \mathbb{R}$ tel que $b = \lambda v" \
-                      + "\Leftrightarrow" + sp.latex(b) + " = \lambda" + sp.latex(v) + '$'))
+                      + "\Leftrightarrow" + latexp(b) + " = \lambda" + latexp(v) + '$'))
 
         # Symbol for lambda
         l = sp.symbols('\lambda', real=True)
@@ -106,10 +106,10 @@ def ch8_1_exo_2(A, l, vp, v):
             z = sp.simplify(A * v - l * v)
             if z == sp.zeros(n, 1):
                 display(Latex("$v$ est bien un vecteur propre de $A$ associé à $\lambda = " + str(l) + "$ car on a:"))
-                display(Latex("$$" + sp.latex(A) + sp.latex(v) + "= " + str(l) + "\cdot " + sp.latex(v) + "$$"))
+                display(Latex("$$" + latexp(A) + latexp(v) + "= " + str(l) + "\cdot " + latexp(v) + "$$"))
             else:
                 display(Latex("$v$ n'est pas un vecteur propre de $A$ associé à $\lambda = " + str(l) + "$ car on a:"))
-                display(Latex("$$" + sp.latex(A) + sp.latex(v) + "\\neq \lambda" + sp.latex(v) + "$$"))
+                display(Latex("$$" + latexp(A) + latexp(v) + "\\neq \lambda" + latexp(v) + "$$"))
         else:
             display(Latex("$v$ est le vecteur nul et ne peut pas être par définition un vecteur propre."))
 
@@ -230,7 +230,7 @@ def valeurs_propres(A):
 
     det_str = sp.latex(poly_exp) + "=" + sp.latex(poly_factor)
 
-    display(Latex("On cherche les valeurs propres de la matrice $ A=" + sp.latex(A) + "$."))
+    display(Latex("On cherche les valeurs propres de la matrice $ A=" + latexp(A) + "$."))
     display(Latex("Le polynome caractéristique de $A$ est: $$\det(A- \lambda I)= " + det_str + "$$"))
 
     eq = sp.Eq(poly, 0)
@@ -336,7 +336,7 @@ def eigen_basis(A, l, prop_basis=None, disp=True, return_=False):
     b = np.zeros(n)
 
     if disp:
-        display(Latex("On a $ A = " + sp.latex(A) + "$."))
+        display(Latex("On a $ A = " + latexp(A) + "$."))
         display(Latex("On cherche une base de l'espace propre associé à $\lambda = " + str(l) + "$."))
 
     # ER matrix
@@ -678,3 +678,68 @@ def ch8_8_ex_1(A, prop_answer):
     else:
         display(Latex("Votre réponse est incorrecte."))
 
+
+def isDiagonalizable(A):
+    """
+    Step by step method to determine if a given matrix is diagonalizable. This methods uses always (I think)
+    the easiest way to determine it.
+    @param A: sympy matrix
+    @return: nothing
+    """
+    if not A.is_Matrix:
+        raise ValueError("A should be a sympy Matrix.")
+
+    n = A.shape[0]
+    if n != A.shape[1]:
+        raise ValueError('A should be a square matrix.')
+
+    display(Latex("On cherche à déterminer si la matrice $A=" + latexp(A) + "$ de taille $n \\times n$ avec $n = " +
+                  str(n) + "$ est diagonalisable."))
+
+    if A.is_lower or A.is_upper:
+        display(Latex("Les valeurs propres sont simple à trouver, ce sont les éléments diagonaux."))
+    else:
+        valeurs_propres(A)
+
+    # Check if eigenvalue are all distincts
+    eig = A.eigenvects()
+
+    if len(eig) == n:
+        display(Latex("On a $n$ valeurs propres distinctes. La matrice est donc diagonalisable."))
+        return
+    else:
+        display(Latex("Les valeurs propres ne sont pas toutes distinctes. On va donc vérifier la multiplicité " +
+                      "géométrique des valeurs propres ayant une multiplicité algébrique supérieur à 1."))
+
+        # Some list to have info about eigenvalues with algebraic mult > 1
+        idx = []
+        eigenvalues = []
+        mult_al = []
+        mult_geo = []
+
+        for i in range(len(eig)):
+            if eig[i][1] > 1:
+                idx.append(i)
+                eigenvalues.append(eig[i][0])
+                mult_al.append(eig[i][1])
+                mult_geo.append(len(eig[i][2]))
+
+        display(Latex("L'ensemble des valeurs propres ayant une multiplicité algébrique supérieur à 1 est " + str(
+            eigenvalues) + "."))
+
+        for i, l in enumerate(eigenvalues):
+            display(Markdown("**On calcule la multiplicité géométrique pour $\lambda= " + sp.latex(l) +
+                             "$ ayant une multiplicité algébrique de " + str(mult_al[i]) + ".**"))
+
+            basis, basic, free = eigen_basis(A, l, prop_basis=None, disp=True, return_=True)
+            display(Markdown("**La multiplicité géométrique pour $\lambda= " + sp.latex(l) + "$ est de " +
+                             str(len(free)) + ".**"))
+            if (len(free) < mult_al[i]):
+                display(Markdown("**La multiplicité géométrique est strictement inférieur à la multiplicité"
+                                 "algébrique + pour cette valeur propre. La matrice n'est donc pas diagonalisable.**"))
+                return
+            else:
+                display(Latex("On a bien multiplicité algébrique = multiplicité géométrique pour cette valeur propre."))
+
+        display(Markdown("**Toutes les valeurs propres ont une multiplicité algébrique et géométrique égales." +
+                         " La matrice $A$ est donc bien diagonalisable !**"))
