@@ -255,7 +255,7 @@ def texMatrix(*args):
                              f"{A.shape[0]} rows, while the second one has {b.shape[0]}")
 
         A = np.concatenate((A, b), axis=1)
-        texApre = '\\left[\\begin{array}{'
+        texApre = '\\left(\\begin{array}{'
         texA = ''
         for i in np.asarray(A):
             texALigne = ''
@@ -274,15 +274,15 @@ def texMatrix(*args):
                 texALigne = texALigne + ' & ' + str(round(j, 4) if j % 1 else int(j))
             texALigne = texALigne + ' \\\\'
             texA = texA + texALigne
-        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right]'
+        texA = texApre + '}  ' + texA[:-2] + ' \\end{array}\\right)'
     elif len(args) == 1:  # matrice des coefficients
         if not type(args[0]) is np.ndarray:
             A = np.array(args[0]).astype(float)
         else:
             A = args[0].astype(float)
 
-        texApre = '\\left[\\begin{array}{'
-        texApost = ' \\end{array}\\right]'
+        texApre = '\\left(\\begin{array}{'
+        texApost = ' \\end{array}\\right)'
         texA = ''
         if len(A.shape) == 0 or A.shape[0] == 0:
             return texApre + '}' + texA + texApost
@@ -900,7 +900,7 @@ def echelonMat(ech, *args):
         n = A.shape[1]
         b = np.array(args[1])
 
-        b = np.reshape(b, (n, 1))
+        b = np.reshape(b, (m, 1))
         A = np.concatenate((A, b), axis=1)
 
     else:  # matrice coeff
@@ -908,29 +908,31 @@ def echelonMat(ech, *args):
         m = A.shape[0]
         n = A.shape[1]
 
-    if ech == 'E':  # Echelonnée
+    if ech in {'E', 'ER'}:  # Echelonnée
+
         Mat = np.array(A)
         Mat = Mat.astype(float)  # in case the array in int instead of float.
         numPivot = 0
         for i in range(len(Mat)):
             j = i
-            while all(abs(Mat[j:, i]) < 1e-15) and j != len(Mat[0, :]) - 1:  # if column (or rest of) is 0, take next
-                j += 1
+            goOn = True
+            if all(abs(Mat[j:, i]) < 1e-15) and j != len(Mat[0, :]) - 1:  # if column (or rest of) is 0, take next
+                goOn = False
             if j == len(Mat[0, :]) - 1:
-                if len(Mat[0, :]) > j:
-                    Mat[i + 1:len(Mat), :] = 0
+                Mat[i+1:len(Mat), :] = 0
                 break
-            if abs(Mat[i, j]) < 1e-15:
-                Mat[i, j] = 0
-                zero = abs(Mat[i:, j]) < 1e-15
-                M = echZero(zero, Mat[i:, :])
-                Mat[i:, :] = M
-            Mat = Ealpha(Mat, i, 1 / Mat[i, j])  # usually Mat[i,j]!=0
-            for k in range(i + 1, len(A)):
-                Mat = Eijalpha(Mat, k, i, -Mat[k, j])
-                # Mat[k,:]=[0 if abs(Mat[k,l])<1e-15 else Mat[k,l] for l in range(len(MatCoeff[0,:]))]
-            numPivot += 1
-            Mat[abs(Mat) < 1e-15] = 0
+            if goOn:
+                if abs(Mat[i, j]) < 1e-15:
+                    Mat[i, j] = 0
+                    zero = abs(Mat[i:, j]) < 1e-15
+                    M = echZero(zero, Mat[i:, :])
+                    Mat[i:, :] = M
+                Mat = Ealpha(Mat, i, 1 / Mat[i, j])  # usually Mat[i,j]!=0
+                for k in range(i + 1, len(A)):
+                    Mat = Eijalpha(Mat, k, i, -Mat[k, j])
+                    # Mat[k,:]=[0 if abs(Mat[k,l])<1e-15 else Mat[k,l] for l in range(len(MatCoeff[0,:]))]
+                numPivot += 1
+                Mat[abs(Mat) < 1e-15] = 0
 
         print("La matrice est sous la forme échelonnée")
         if len(args) == 2:
@@ -938,51 +940,22 @@ def echelonMat(ech, *args):
         else:
             printEquMatrices([A, Mat])
 
-    elif ech == 'ER':  # Echelonnée réduite
-        Mat = np.array(A)
-        Mat = Mat.astype(float)  # in case the array in int instead of float.
-        numPivot = 0
-        for i in range(len(Mat)):
-            j = i
-            while all(abs(Mat[j:, i]) < 1e-15) and j != len(
-                    Mat[0, :]) - 1:  # if column (or rest of) is zero, take next column
-                j += 1
-            if j == len(Mat[0, :]) - 1:
-                # ADD ZERO LINES BELOW!!!!!!
-                if len(Mat[0, :]) > j:
-                    Mat[i + 1:len(Mat), :] = 0
-                break
-            if abs(Mat[i, j]) < 1e-15:
-                Mat[i, j] = 0
-                zero = abs(Mat[i:, j]) < 1e-15
-                M = echZero(zero, Mat[i:, :])
-                Mat[i:, :] = M
-            Mat = Ealpha(Mat, i, 1 / Mat[i, j])  # normalement Mat[i,j]!=0
-            for k in range(i + 1, len(A)):
-                Mat = Eijalpha(Mat, k, i, -Mat[k, j])
-                # Mat[k,:]=[0 if abs(Mat[k,l])<1e-15 else Mat[k,l] for l in range(len(MatCoeff[0,:]))]
-            numPivot += 1
-            Mat[abs(Mat) < 1e-15] = 0
-
-        print("La matrice est sous la forme échelonnée")
-        if len(args) == 2:
-            printEquMatrices([A[:, :n], Mat[:, :n]], [A[:, n:], Mat[:, n:]])
-        else:
-            printEquMatrices([np.asmatrix(A), np.asmatrix(Mat)])
+    if ech == 'ER':  # Echelonnée réduite
 
         Mat = np.array(Mat)
-        i = (len(Mat) - 1)
+        i = len(Mat) - 1
         while i >= 1:
-            while all(
-                    abs(Mat[i, :len(Mat[0]) - 1]) < 1e-15) and i != 0:  # if ligne (or rest of) is zero, take next ligne
-                i -= 1
-            # we have a lign with one non-nul element
             j = i  # we can start at pos ij at least the pivot is there
-            if abs(Mat[i, j]) < 1e-15:  # if element Aij=0 take next one --> find pivot
-                j += 1
-            # Aij!=0 and Aij==1 if echelonMat worked
-            for k in range(i):  # put zeros above pivot (which is 1 now)
-                Mat = Eijalpha(Mat, k, i, -Mat[k, j])
+            goOn = True
+            if all(abs(Mat[i, :len(Mat[0]) - 1]) < 1e-15) and i != 0:  # if row (or rest of) is zero, take next
+                goOn = False
+            if goOn:
+                # we have a row with one non-nul element
+                if abs(Mat[i, j]) < 1e-15:  # if element Aij=0 take next one --> find pivot
+                    j += 1
+                # Aij!=0 and Aij==1 if echelonMat worked
+                for k in range(i):  # put zeros above pivot (which is 1 now)
+                    Mat = Eijalpha(Mat, k, i, -Mat[k, j])
             i -= 1
 
         print("La matrice est sous la forme échelonnée réduite")
@@ -990,6 +963,11 @@ def echelonMat(ech, *args):
             printEquMatrices([A[:, :n], Mat[:, :n]], [A[:, n:], Mat[:, n:]])
         else:
             printEquMatrices([A, Mat])
+
+        if (Mat[:min(m,n), :min(m,n)] == np.eye(min(m,n))).all():
+            print("La matrice peut être réduite à la matrice d'identité")
+        else:
+            print("La matrice ne peut pas être réduite à la matrice d'identité")
 
     else:
         print(f"Méthode d'échelonnage non reconnue {ech}. Méthodes disponibles: 'E' (pour la forme échelonnée standard)"
