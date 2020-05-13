@@ -81,6 +81,7 @@ def Ex1Chapitre1_5_6(data):
     """Provides the correction to exercise 1 of notebook 1_5-6
     e=matrice qui sont échelonnée, er=échelonnée réduite et r=rien
     """
+
     e=data[0].value
     er=data[1].value
     r=data[2].value
@@ -95,23 +96,19 @@ def Ex1Chapitre1_5_6(data):
     corr_er=['D','H','I','J']
     corr_r=['A','B','F']
 
-    if set(corr_r)==set(r) and set(corr_er)==set(er) and set(corr_e)==set(e):
+    if set(corr_r) == set(r) and set(corr_er) == set(er) and set(corr_e) == set(e):
         print('Correct')
     else:
-        if not set(corr_r)==set(r):
+        if not set(corr_r) == set(r):
             print("Les matrices n'étant ni échelonnées, ni échelonnées-réduites sont fausses. ")
-        if not set(corr_e)==set(e):
+        if not set(corr_e) == set(e):
             print("Les matrices étant échelonnées sont fausses. ")
-        if not set(corr_er)==set(er):
+        if not set(corr_er) == set(er):
             print("Les matrices étant échelonnées-réduite sont fausses. ")
     return
 
 
-
-
-
 ###############   CHAPITRE 1_7   ###############
-
 
 
 def Ex2Chapitre1_7():
