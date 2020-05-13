@@ -827,6 +827,7 @@ def Ex1Chapitre2_8_9(E1, E2, E3, E4):
 
     return
 
+
 def Ex3Chapitre2_8_9():
     """Provides the correction of exercise 3 of notebook 2_8_9
     """
@@ -1055,8 +1056,172 @@ def Ex3Chapitre2_10():
 
     return
 
+def Ex1Chapitre2_11():
+    """Provides the correction to exercise 1 of notebook 2_11
+    """
+
+    print("Cliquer sur CTRL pour sélectionner plusieurs réponses")
+
+    style = {'description_width': 'initial'}
+    ans1 = widgets.SelectMultiple(
+        options=['Addition', 'Multiplication', 'Addition par blocs', 'Multiplication par blocs'],
+        description='Cas 1:',
+        style=style,
+        layout=Layout(width='30%', height='90px'),
+        disabled=False,
+    )
+    ans2 = widgets.SelectMultiple(
+        options=['Addition', 'Multiplication', 'Addition par blocs', 'Multiplication par blocs'],
+        description='Cas 2:',
+        style=style,
+        layout=Layout(width='30%', height='90px'),
+        disabled=False,
+    )
+    ans3 = widgets.SelectMultiple(
+        options=['Addition', 'Multiplication', 'Addition par blocs', 'Multiplication par blocs'],
+        description='Cas 3:',
+        style=style,
+        layout=Layout(width='30%', height='90px'),
+        disabled=False,
+    )
+    ans4 = widgets.SelectMultiple(
+        options=['Addition', 'Multiplication', 'Addition par blocs', 'Multiplication par blocs'],
+        description='Cas 4:',
+        style=style,
+        layout=Layout(width='30%', height='90px'),
+        disabled=False,
+    )
+
+    def correction(ans1, ans2, ans3, ans4):
+        res_ans = np.zeros(4).astype(bool)
+        res_ans[0] = 'Sum' in ans1 and 'Multiplication' in ans1 \
+                   and 'Block Sum' in ans1 and not 'Block Multiplication' in ans1
+        res_ans[1] = 'Sum' in ans2 and 'Multiplication' in ans2 \
+                    and not 'Block Sum' in ans2 and 'Block Multiplication' in ans2
+        res_ans[2] = not 'Sum' in ans3 and 'Multiplication' in ans3 \
+                    and not 'Block Sum' in ans3 and 'Block Multiplication' in ans3
+        res_ans[3] = not 'Sum' in ans4 and 'Multiplication' in ans4 \
+                    and not 'Block Sum' in ans4 and not 'Block Multiplication' in ans4
+        if res_ans.all():
+            display(Latex("C'est correct!"))
+        else:
+            display(Latex("C'est faux."))
+            correct = set(np.where(res_ans)[0] + 1)
+            wrong = set(np.arange(1, 5)) - correct
+            if correct:
+                display(Latex(f"Corrects: {correct}"))
+            else:
+                display((Latex("Corrects: {}")))
+            display(Latex(f"Manqué: {wrong}"))
+
+    interact_manual(correction, ans1=ans1, ans2=ans2, ans3=ans3, ans4=ans4)
+
+    return
 
 
+def Ex2Chapitre2_11():
+    """Provides the correction of exercise 2 of notebook 2_11
+    """
+    display(Latex("Insérez votre réponse ici"))
+    a = widgets.IntText(
+        value=0,
+        step=1,
+        description='Answer:',
+        disabled=False
+    )
+
+    display(a)
+
+    def f():
+        A_tex = "$$ \\qquad \\qquad \\qquad  \\qquad \\qquad \\qquad \\quad" \
+                " A = \\left(\\begin{array}{@{}cc|cc|c@{}} " \
+                "a_{11} & a_{12} & a_{13} & a_{14} & a_{15} \\\\" \
+                " a_{21} & a_{22} & a_{23} & a_{24} & a_{25} \\\\ " \
+                "a_{31} & a_{32} & a_{33} & a_{34} & a_{35} \\\\ " \
+                "a_{41} & a_{42} & a_{43} & a_{44} & a_{45} " \
+                "\\end{array}\\right)$$"
+
+        if a.value == 8:
+            display(Latex(r"Correcte! En effet les colonnes de la matrice A doivent être décomposées comme suit, "
+                          r"afin de satisfaire les contraintes de dimensionnalité" + A_tex + r"Ensuite, la décomposition "
+                          "en blocs par lignes peut être effectuée dans l'une des $2^{n-1}=8$ possibilités disponibles."))
+        else:
+            display(Latex(r"Incorrecte! Aide: Faites attention à la façon dont A doit être décomposé en blocs par "
+                          r"colonnes."))
+
+    interact_manual(f)
+
+    return
 
 
+def Ex3Chapitre2_11(C1, C2, C3):
+    """Provides the correction of exercise 3 of notebook 2_11
 
+    :param C1:
+    :type C1:
+    :param C2:
+    :type C2:
+    :param C3:
+    :type C3:
+    :return:
+    :rtype:
+    """
+
+    C1_true = [[]]
+    C2_true = [[-1,-4,1], [4,6,2], [1,-1,2]]
+    C3_true = [[6,7,2], [-10,-11,-2], [4,12,8], [-4,-8,-4]]
+
+    C_bool = np.zeros(3).astype(bool)
+    C_bool[0] = C1 == C1_true
+    C_bool[1] = C2 == C2_true
+    C_bool[2] = C3 == C3_true
+
+    correct = set(np.where(C_bool)[0]+1)
+    wrong = set(np.arange(1,4)) - correct
+
+    if wrong:
+        display(Latex("C'est faux."))
+        if correct:
+            display(Latex(f"Corrects: {correct}"))
+        else:
+            display((Latex("Corrects: {}")))
+        display(Latex(f"Manqué: {wrong}"))
+    else:
+        display(Latex("C'est correcte."))
+
+    return
+
+
+def Ex4Chapitre2_11(A1_inv, A2_inv):
+    """Provides the correction to exercise 4 of notebook 2_11
+
+    :param A1_inv: inverse of matrix A1
+    :type A1_inv: list[list]
+    :param A2_inv: inverse of matrix A2
+    :type A2_inv: list[list]
+    """
+
+    A1 = np.array([[1, 2, 0, 1, 0], [0, -2, 1, -1, 0], [-2, -1, 1, 0, 1], [0, 0, 0, 2, 0], [0, 0, 0, 0, 1]])
+    A1_inv_true = np.linalg.inv(A1)
+    A1_inv = np.array(A1_inv)
+
+    A2_inv_true = [[]]
+
+    A_inv_bool = np.zeros(3).astype(bool)
+    A_inv_bool[0] = A1_inv.shape == A1_inv_true.shape and np.linalg.norm(A1_inv - A1_inv_true) < 1e-6
+    A_inv_bool[1] = A2_inv == A2_inv_true
+
+    correct = set(np.where(A_inv_bool)[0] + 1)
+    wrong = set(np.arange(1, 3)) - correct
+
+    if wrong:
+        display(Latex("C'est faux."))
+        if correct:
+            display(Latex(f"Corrects: {correct}"))
+        else:
+            display((Latex("Corrects: {}")))
+        display(Latex(f"Manqué: {wrong}"))
+    else:
+        display(Latex("C'est correcte."))
+
+    return
