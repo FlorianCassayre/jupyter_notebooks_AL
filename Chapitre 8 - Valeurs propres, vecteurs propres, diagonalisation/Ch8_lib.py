@@ -283,7 +283,7 @@ def check_basis(sol, prop):
         return np.all(lin_comb_ok)
 
 
-def eigen_basis(A, l, prop_basis=None, disp=True, return_=False):
+def eigen_basis(A, l, prop_basis=None, disp=True, return_=False, dispA=True):
     """
     Display step by step method for finding a basis of the eigenspace of A associated to eigenvalue l
     Eventually check if the proposed basis is correct. Display or not
@@ -336,7 +336,8 @@ def eigen_basis(A, l, prop_basis=None, disp=True, return_=False):
     b = np.zeros(n)
 
     if disp:
-        display(Latex("On a $ A = " + latexp(A) + "$."))
+        if dispA:
+            display(Latex("On a $ A = " + latexp(A) + "$."))
         display(Latex("On cherche une base de l'espace propre associé à $\lambda = " + str(l) + "$."))
 
     # ER matrix
@@ -682,7 +683,7 @@ def ch8_8_ex_1(A, prop_answer):
 def isDiagonalizable(A):
     """
     Step by step method to determine if a given matrix is diagonalizable. This methods uses always (I think)
-    the easiest way to determine it.
+    the easiest way to determine it (as seen in the MOOC)
     @param A: sympy matrix
     @return: nothing
     """
@@ -736,10 +737,93 @@ def isDiagonalizable(A):
                              str(len(free)) + ".**"))
             if (len(free) < mult_al[i]):
                 display(Markdown("**La multiplicité géométrique est strictement inférieur à la multiplicité"
-                                 "algébrique + pour cette valeur propre. La matrice n'est donc pas diagonalisable.**"))
+                                 + "algébrique pour cette valeur propre. La matrice n'est donc pas diagonalisable.**"))
                 return
             else:
                 display(Latex("On a bien multiplicité algébrique = multiplicité géométrique pour cette valeur propre."))
 
         display(Markdown("**Toutes les valeurs propres ont une multiplicité algébrique et géométrique égales." +
                          " La matrice $A$ est donc bien diagonalisable !**"))
+
+
+
+def find_P_D(A, P_user, D_user, step_by_step=True):
+    """
+
+    :param A: sympy square matrix
+    :param P_user: sympy square matrix
+    :param D_user: sympa sqaure matrix
+    :param step_by_step: Print step by step solution
+    :return:
+    """
+    if not A.is_Matrix or not P_user.is_Matrix or not D_user.is_Matrix:
+        raise ValueError("A, P and D should be a sympy Matrix.")
+
+    n = A.shape[0]
+    if n != A.shape[1] or P_user.shape[0] != n or P_user.shape[1] != n or D_user.shape[0] != n or D_user.shape[1] != n:
+        raise ValueError('A, P and D should be a square matrix of the same size.')
+
+    if not D_user.is_diagonal():
+        raise ValueError("D should be a diagonal matrix.")
+
+    if not A.is_diagonalizable():
+        raise ValueError("A is not diagonalizable.")
+
+    if step_by_step:
+        display(Latex("On cherche à déterminer les matrices $P$ et $D$ telles que $A=" + latexp(A) + "= P D P^{-1}$."))
+
+        if A.is_lower or A.is_upper:
+            display(Latex("Les valeurs propres sont simple à trouver, ce sont les éléments diagonaux."))
+        else:
+            valeurs_propres(A)
+
+        display(
+            Latex("Pour chaque valeur propre $\lambda_i$, on cherche $n_i$ vecteurs propres linéairement indépendants"
+                  + " (avec $n_i = \dim E_{\lambda_i}$). On trouve ces vecteurs on calculant une base pour " +
+                  "chaque espace propre. On peut ensuite utiliser les vecteurs de base comme colonnes pour la "
+                  + "matrice $P$."))
+
+        eig = A.eigenvects()
+
+        # Some list to have info about eigenvalues with algebraic mult > 1
+        idx = []
+        eigenvalues = []
+        mult_al = []
+        mult_geo = []
+        D = sp.zeros(n)
+
+        for i in range(len(eig)):
+            idx.append(i)
+            eigenvalues.append(eig[i][0])
+            mult_al.append(eig[i][1])
+            mult_geo.append(len(eig[i][2]))
+
+        P = []
+
+        k = 0
+        for i, l in enumerate(eigenvalues):
+            basis, _, _ = eigen_basis(A, l, return_=True, disp=step_by_step, dispA=False)
+            for j in range(len(basis)):
+                D[k, k] = l
+                k += 1
+                P.append(basis[j])
+
+        P = np.transpose(np.array(P))
+
+        if np.all(np.mod(P, 1) == 0):
+            P = P.astype(int)
+
+        P = sp.Matrix(P)
+
+        display(Latex("En utilisant les vecteurs de base trouvés ci dessus pour les colonnes de la matrice $P$ et en " +
+                      "plaçant les valeurs propres de $A$ correspondantes sur la diagonal de $D$, on obtient " +
+                      "les matrices $P$ et $D$."))
+        display(Latex("$P = " + latexp(P) + "$, " + "$D = " + latexp(D) + "$"))
+
+    P_1_user = P_user ** -1
+
+    if ((A - P_user * D_user * P_1_user).norm() < 1e-10):
+        display(Latex("Votre réponse est correcte, on a bien $A = PDP^{-1}$"))
+    else:
+        display(Latex("Votre réponse est incorrecte, $A \\neq PDP^{-1}$"))
+
