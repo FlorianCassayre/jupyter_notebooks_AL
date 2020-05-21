@@ -688,7 +688,7 @@ def Ex3Chapitre2_6_7():
     )
     e = widgets.Checkbox(
         value=False,
-        description=r"Si $\alpha=-4$ et $\beta=-2$, alors $A$ n'est pas inversible et le système linéaire n'admet pas"
+        description=r"Si $\alpha=-4$ et $\beta=-2$, alors $A$ n'est pas inversible et le système linéaire n'admet pas "
                     r"de solutions",
         disabled=False,
         style=style,
@@ -720,12 +720,13 @@ def Ex3Chapitre2_6_7():
     )
 
     def correction(a, b, c, d, e, f, g, h):
-        if c and e and h and not a and not b and not d and not f and not g:
+        if c and e and g and h and not a and not b and not d and not f:
             display(Latex(r"C'est correct! En effet $A$ n'est pas inversible si $\alpha = \dfrac{8}{\beta}$ (résultat "
                           r"obtenu en divisant par élément les lignes de A les unes par les autres et en imposant que "
                           r"les résultats des divisions soient les mêmes). De plus, si $\alpha = -2$ et $\beta = -4$, "
                           r"alors le système admet une infinité de solutions, puisque les rapports obtenus par la "
-                          r"division est $-\dfrac{1}{2}$)."))
+                          r"division est $-\dfrac{1}{2}$, qui est égal au rapport entre les éléments du vecteur de droite "
+                          r"$b$."))
         else:
             display(Latex("C'est faux."))
 
@@ -793,19 +794,19 @@ def Ex1Chapitre2_8_9(E1, E2, E3, E4):
 
     # MATRIX A1
     E_pre_1 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
-    E_post_1 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [-1, 0, 0, 1]]
+    E_post_1 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 1]]
 
     # MATRIX A2
     E_pre_2 = [[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]
-    E_post_2 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1/2, 0], [0, 0, 0, 1]]
+    E_post_2 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1/2, 0], [0, 0, 0, -1]]
 
     # MATRIX A3
     E_pre_3 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
-    E_post_3 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, -1], [0, 0, 0, 1]]
+    E_post_3 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, -2], [0, 0, 0, 1]]
 
     # MATRIX A4
     E_pre_4 = [[1/2, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
-    E_post_4 = [[1, 0, 0, 0], [0, 1, 1, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+    E_post_4 = [[1, 0, 0, 0], [0, 1, 1, 0], [0, 0, 1, 0], [0, 0, 0, -1]]
 
     E_bool = np.zeros(4).astype(bool)
     E_bool[0] = E1[0] == E_pre_1 and E1[1] == E_post_1
