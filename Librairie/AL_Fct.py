@@ -969,10 +969,6 @@ def echelonMat(ech, *args):
         else:
             print("La matrice ne peut pas être réduite à la matrice d'identité")
 
-    else:
-        print(f"Méthode d'échelonnage non reconnue {ech}. Méthodes disponibles: 'E' (pour la forme échelonnée standard)"
-              f", 'ER' (pour la forme échelonnée réduite))")
-
     return np.asmatrix(Mat)
 
 
