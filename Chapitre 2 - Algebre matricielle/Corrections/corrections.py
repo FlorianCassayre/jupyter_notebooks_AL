@@ -5,8 +5,9 @@ import plotly
 plotly.offline.init_notebook_mode(connected=True)
 import ipywidgets as widgets
 from IPython.display import display, Latex
-from ipywidgets import interact_manual, Layout
+from ipywidgets import interact_manual, Layout, interactive, HBox, VBox, widgets, interact, FloatSlider
 from Librairie.AL_Fct import printA, texMatrix, isDiag, isSym
+import plotly.graph_objs as go
 
 
 def Ex2Chapitre2_1():
@@ -314,34 +315,34 @@ def Ex1Chapitre2_4():
     a = widgets.Checkbox(
         value=False,
         description=r'Le système admet une solution unique et elle est:'
-                    r'$$\qquad \qquad x = \begin{pmatrix} 1&4/3&4/3\end{pmatrix}^T$$',
+                    r'$$\qquad \qquad x = \begin{pmatrix} 1&4/3&4/3\end{pmatrix}^T.$$',
         disabled=False,
         layout=Layout(width='50%', height='70px')
     )
     b = widgets.Checkbox(
         value=False,
-        description=r"Le système n'admet aucune solution",
+        description=r"Le système n'admet aucune solution.",
         disabled=False,
         layout=Layout(width='50%', height='20px')
     )
     c = widgets.Checkbox(
         value=False,
         description=r'Le système admet une solution unique et elle est:'
-                    r'$$\qquad \qquad x = \begin{pmatrix} 1&4/3&8/3\end{pmatrix}^T$$',
+                    r'$$\qquad \qquad x = \begin{pmatrix} 1&4/3&8/3\end{pmatrix}^T.$$',
         disabled=False,
         layout=Layout(width='50%', height='70px')
 
     )
     d = widgets.Checkbox(
         value=False,
-        description=r'Le système admet plusieurs solutions',
+        description=r'Le système admet plusieurs solutions.',
         disabled=False,
         layout=Layout(width='50%', height='20px')
     )
     e = widgets.Checkbox(
         value=False,
         description=r'$A$ est inversible et son inverse est: <br>'
-                    r'$$\qquad \qquad A^{-1} = \begin{pmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&5/6\end{pmatrix}$$',
+                    r'$$\qquad \qquad A^{-1} = \begin{pmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&5/6\end{pmatrix}.$$',
         disabled=False,
         layout=Layout(width='50%', height='100px')
     )
@@ -349,13 +350,13 @@ def Ex1Chapitre2_4():
     f = widgets.Checkbox(
         value=False,
         description=r'$A$ est inversible et son inverse est:'
-                    r'$$\qquad \qquad A^{-1} = \begin{pmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&-1/2\end{pmatrix}$$',
+                    r'$$\qquad \qquad A^{-1} = \begin{pmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&-1/2\end{pmatrix}.$$',
         disabled=False,
         layout=Layout(width='50%', height='150px')
     )
     g = widgets.Checkbox(
         value=False,
-        description=r"$A$ n'est pas inversible",
+        description=r"$A$ n'est pas inversible.",
         disabled=False,
         layout=Layout(width='50%', height='20px')
     )
@@ -377,19 +378,19 @@ def Ex2Chapitre2_4():
 
     a = widgets.Checkbox(
         value=False,
-        description=r"Le système admet une solution unique seulement si $\alpha < 2$",
+        description=r"Le système admet une solution unique seulement si $\alpha < 2$.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     b = widgets.Checkbox(
         value=False,
-        description=r"Le système admet une unique solution seulement si $\alpha \geq 2$",
+        description=r"Le système admet une unique solution seulement si $\alpha \geq 2$.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     c = widgets.Checkbox(
         value=False,
-        description=r'Le système admet une unique solution $\forall \alpha \in \mathbb{R}$',
+        description=r'Le système admet une unique solution $\forall \alpha \in \mathbb{R}.$',
         disabled=False,
         layout=Layout(width='80%', height='40px')
 
@@ -397,20 +398,20 @@ def Ex2Chapitre2_4():
     d = widgets.Checkbox(
         value=False,
         description=r"Le système n'admet aucune solution si $\alpha < 2$, alors qu'il admet une solution unique si "
-                    r"$\alpha \geq 2$",
+                    r"$\alpha \geq 2.$",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     e = widgets.Checkbox(
         value=False,
         description=r"Le système admet plusieurs solutions si $\alpha \neq 2$, alors qu'il admet une solution unique si"
-                    r" $\alpha = 2$",
+                    r" $\alpha = 2$.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     f = widgets.Checkbox(
         value=False,
-        description=r"Le système n'admet jamais de solutions uniques, quelle que soit  $\alpha \in \mathbb{R}$",
+        description=r"Le système n'admet jamais de solutions uniques, quelle que soit  $\alpha \in \mathbb{R}$.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
@@ -432,26 +433,26 @@ def Ex1aChapitre2_5():
 
     a = widgets.Checkbox(
         value=False,
-        description=r'\(E_1E_2\) multiplie la ligne 4 par -6 et échange les lignes 2 et 3',
+        description=r'\(E_1E_2\) multiplie la ligne 4 par -6 et échange les lignes 2 et 3.',
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     b = widgets.Checkbox(
         value=False,
-        description=r'\(E_1E_2\) ajoute 6 fois la ligne 4 à la ligne 2 et échange les lignes 1 et 3',
+        description=r'\(E_1E_2\) ajoute 6 fois la ligne 4 à la ligne 2 et échange les lignes 1 et 3.',
         disabled=False,
         layout=Layout(width='80%', height='40px')
 
     )
     c = widgets.Checkbox(
         value=False,
-        description=r'\(E_1E_2\) échange les lignes 1 et 3 et ajoute -6 fois la ligne 4 à la ligne 2',
+        description=r'\(E_1E_2\) échange les lignes 1 et 3 et ajoute -6 fois la ligne 4 à la ligne 2.',
         disabled=False,
        layout=Layout(width='80%', height='40px')
     )
     d = widgets.Checkbox(
         value=False,
-        description=r"\(E_1E_2\) ajoute -6 fois la ligne 4 à la ligne 2 et échange les lignes 1 et 2",
+        description=r"\(E_1E_2\) ajoute -6 fois la ligne 4 à la ligne 2 et échange les lignes 1 et 2.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
@@ -549,53 +550,53 @@ def Ex1Chapitre2_6_7():
 
     a = widgets.Checkbox(
         value=False,
-        description=r'$A^{-1}$ existe et le système admet plusieurs solutions, quelle que soit la valeur de $b$',
+        description=r'$A^{-1}$ existe et le système admet plusieurs solutions, quelle que soit la valeur de $b$.',
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     b = widgets.Checkbox(
         value=False,
         description=r'$A^{-1}$ existe et le système admet une solution unique ou plusieurs solutions en fonction '
-                    r'de la valeur de $b$',
+                    r'de la valeur de $b$.',
         disabled=False,
         layout=Layout(width='80%', height='40px')
 
     )
     c = widgets.Checkbox(
         value=False,
-        description=r'$A$ est inversible et le système admet une solution unique, quelle que soit la valeur de $b$',
+        description=r'$A$ est inversible et le système admet une solution unique, quelle que soit la valeur de $b$.',
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     d = widgets.Checkbox(
         value=False,
-        description=r'$A^{-1}$ existe et le système admet au moins une solution, quelle que soit la valeur de $b$',
+        description=r'$A^{-1}$ existe et le système admet au moins une solution, quelle que soit la valeur de $b$.',
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     e = widgets.Checkbox(
         value=False,
         description=r"$A$ n'est pas inversible et le système admet une unique solution ou plusieurs solutions, "
-                    r"selon la valeur de $b$ ",
+                    r"selon la valeur de $b$. ",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     f = widgets.Checkbox(
         value=False,
         description=r"$A$ n'est pas inversible et le système admet une solution unique, "
-                    r"quelle que soit la valeur de $b$",
+                    r"quelle que soit la valeur de $b$.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     g = widgets.Checkbox(
         value=False,
-        description=r"Le système admet une solution unique et $A$ n'est pas inversible",
+        description=r"Le système admet une solution unique et $A$ n'est pas inversible.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     h = widgets.Checkbox(
         value=False,
-        description=r'Le système admet une solution unique et $A$ est inversible',
+        description=r'Le système admet une solution unique et $A$ est inversible.',
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
@@ -617,20 +618,20 @@ def Ex2Chapitre2_6_7():
 
     a = widgets.Checkbox(
         value=False,
-        description=r'$A_1$ est inversible',
+        description=r'$A_1$ est inversible.',
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     b = widgets.Checkbox(
         value=False,
-        description=r'$A_2$ est inversible',
+        description=r'$A_2$ est inversible.',
         disabled=False,
         layout=Layout(width='80%', height='40px')
 
     )
     c = widgets.Checkbox(
         value=False,
-        description=r'$A_3$ est inversible',
+        description=r'$A_3$ est inversible.',
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
@@ -658,7 +659,7 @@ def Ex3Chapitre2_6_7():
     a = widgets.Checkbox(
         value=False,
         description=r"Si $\alpha = 4$ et $\beta = 2$, alors $A$ n'est pas inversible et le système linéaire "
-                    r"admet une infinité de solutions",
+                    r"admet une infinité de solutions.",
         disabled=False,
         style=style,
         layout=Layout(width='80%', height='40px')
@@ -666,7 +667,7 @@ def Ex3Chapitre2_6_7():
     b = widgets.Checkbox(
         value=False,
         description=r"Si $\alpha=8$ et $\beta=-1$, alors $A$ n'est pas inversible et le système linéaire n'admet pas de"
-                    r" solutions",
+                    r" solutions.",
         disabled=False,
         style=style,
         layout=Layout(width='80%', height='40px')
@@ -675,7 +676,7 @@ def Ex3Chapitre2_6_7():
     c = widgets.Checkbox(
         value=False,
         description=r"Si $\alpha=-2$ et $\beta=-4$, alors $A$ n'est pas inversible et le système linéaire admet "
-                    r"une infinité de solutions",
+                    r"une infinité de solutions.",
         disabled=False,
         style=style,
         layout=Layout(width='80%', height='40px')
@@ -683,7 +684,7 @@ def Ex3Chapitre2_6_7():
     d = widgets.Checkbox(
         value=False,
         description=r"Si $\alpha=8$ et $\beta=1$, alors $A$ n'est pas inversible et le système linéaire admet "
-                    r"une infinité de solutions",
+                    r"une infinité de solutions.",
         disabled=False,
         style=style,
         layout=Layout(width='80%', height='40px')
@@ -691,7 +692,7 @@ def Ex3Chapitre2_6_7():
     e = widgets.Checkbox(
         value=False,
         description=r"Si $\alpha=-4$ et $\beta=-2$, alors $A$ n'est pas inversible et le système linéaire n'admet pas "
-                    r"de solutions",
+                    r"de solutions.",
         disabled=False,
         style=style,
         layout=Layout(width='80%', height='40px')
@@ -699,7 +700,7 @@ def Ex3Chapitre2_6_7():
     f = widgets.Checkbox(
         value=False,
         description=r'Si $\alpha=4$ et $\beta=1$, alors $A$ est inversible et le système linéaire admet une infinité '
-                    r'de solutions',
+                    r'de solutions.',
         disabled=False,
         style=style,
         layout=Layout(width='80%', height='40px')
@@ -707,7 +708,7 @@ def Ex3Chapitre2_6_7():
     g = widgets.Checkbox(
         value=False,
         description=r'Si $\alpha=4$ et $\beta=1$, alors $A$ est inversible et le système linéaire admet une solution'
-                    r' unique',
+                    r' unique.',
         disabled=False,
         style=style,
         layout=Layout(width='80%', height='40px')
@@ -715,7 +716,7 @@ def Ex3Chapitre2_6_7():
     h = widgets.Checkbox(
         value=False,
         description=r"$A$ n'est pas inversible pour infinite de valeurs de $\alpha$ et $\beta$. Mais il existe un unique couple $(\alpha, \beta)$ pour lequel"
-                    r"le système admet une infinité de solutions",
+                    r"le système admet une infinité de solutions.",
         disabled=False,
         style=style,
         layout=Layout(width='100%', height='40px')
@@ -735,6 +736,53 @@ def Ex3Chapitre2_6_7():
     interact_manual(correction, a=a, b=b, c=c, d=d, e=e, f=f, g=g, h=h)
 
     return
+
+
+def graphe_Ex3Chapitre2_6_7():
+    """Provides the graph of exercice 3 of nnotebook 2_6-7
+    """
+    np.seterr(divide='ignore', invalid='ignore')
+
+    A=[[2, 0], [0, -4]] # we initialize the problem. The values of alpha and beta are fixed
+    b=[1, -2]
+
+    m=len(A)
+    MatCoeff = [A[i]+[b[i]]for i in range(m)] #becomes augmented matrix
+    MatCoeff=np.array(MatCoeff)
+    data=[]
+    x=np.linspace(-15,15,101)
+    y=np.linspace(-10,10,101)
+    MatCoeff=np.array(MatCoeff)
+    for i in range(len(MatCoeff)):
+        trace=go.Scatter(x=x,  y= (MatCoeff[i,2]-MatCoeff[i,0]*x)/MatCoeff[i,1], name='d) Droite %d'%(i+1))
+        data.append(trace)
+
+    f=go.FigureWidget(data=data,
+        layout=go.Layout(xaxis=dict(
+            range=[-15, 15]
+        ),
+        yaxis=dict(
+            range=[-10, 10]
+        ) )                  
+    )
+
+    def update_y(alpha, beta):
+        MatCoeff= [[2, -alpha, 1],[beta, -4, -2]]
+        MatCoeff=np.array(MatCoeff)
+        if MatCoeff[0,1] == 0:
+            MatCoeff[0,1] += 1e-3
+        f.data[0].y = (MatCoeff[0,2]-MatCoeff[0,0]*x)/MatCoeff[0,1]
+        if MatCoeff[1,1] == 0:
+            MatCoeff[1,1] += 1e-3
+        f.data[1].y=(MatCoeff[1,2]-MatCoeff[1,0]*x)/MatCoeff[1,1]
+
+    freq_slider = interactive(update_y, alpha=(-20, 20, 1/2), beta=(-20, 20, 1/2))
+
+    vb = VBox((f, freq_slider))
+    vb.layout.align_items = 'center'
+    vb    
+
+    return vb
 
 
 def Ex4Chapitre2_6_7():
@@ -838,28 +886,28 @@ def Ex3Chapitre2_8_9():
     
     a_1 = widgets.Checkbox(
         value=False,
-        description=r'La matrice $A_1$ admet la décomposition LU',
+        description=r'La matrice $A_1$ admet une décomposition LU.',
         disabled=False,
         layout=Layout(width='80%', height='30px')
     )
     
     a_2 = widgets.Checkbox(
         value=False,
-        description=r'La matrice $A_2$ admet la décomposition LU',
+        description=r'La matrice $A_2$ admet une décomposition LU.',
         disabled=False,
         layout=Layout(width='80%', height='30px')
     )
     
     a_3 = widgets.Checkbox(
         value=False,
-        description=r'La matrice $A_3$ admet la décomposition LU',
+        description=r'La matrice $A_3$ admet une décomposition LU.',
         disabled=False,
         layout=Layout(width='80%', height='30px')
     )
     
     def correction(a_1, a_2, a_3):
         if not a_1 and a_2 and not a_3:
-            display(Latex("C'est correct! Plus précisément, la matrice $A_1$ n'admet pas décomposition LU car elle n'est pas inversible, la matrice $A_2$ admet décomposition LU et la matrice $A_3$ n'admet pas décomposition LU car elle ne peut pas être réduite sans échanger deux lignes pendant la méthode d'élimination de Gauss"))         
+            display(Latex("C'est correct! Plus précisément, la matrice $A_1$ n'admet pas de décomposition LU car elle n'est pas inversible, la matrice $A_2$ admet décomposition LU et la matrice $A_3$ n'admet pas décomposition LU car elle ne peut pas être réduite sans échanger deux lignes pendant la méthode d'élimination de Gauss"))         
         else:
             display(Latex("C'est faux."))
 
@@ -874,50 +922,50 @@ def Ex1Chapitre2_10():
 
     a = widgets.Checkbox(
         value=False,
-        description=r"Le système linéaire n'admet aucune solution",
+        description=r"Le système linéaire n'admet aucune solution.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     b = widgets.Checkbox(
         value=False,
-        description=r"Le système linéaire admet une solution unique",
+        description=r"Le système linéaire admet une solution unique.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
 
     )
     c = widgets.Checkbox(
         value=False,
-        description=r"Le système linéaire admet deux solutions distinctes",
+        description=r"Le système linéaire admet deux solutions distinctes.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     d = widgets.Checkbox(
         value=False,
-        description=r"Le système linéaire admet une infinité de solutions",
+        description=r"Le système linéaire admet une infinité de solutions.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     e = widgets.Checkbox(
         value=False,
-        description=r"La décomposition LU de $A$ ne peut pas être calculée",
+        description=r"La décomposition LU de $A$ ne peut pas être calculée.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     f = widgets.Checkbox(
         value=False,
-        description=r"La dernière colonne de $U$ est entièrement composée de zéros",
+        description=r"La dernière colonne de $U$ est entièrement composée de zéros.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     g = widgets.Checkbox(
         value=False,
-        description=r'La dernière ligne de $U$ est entièrement composée de zéros',
+        description=r'La dernière ligne de $U$ est entièrement composée de zéros.',
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     h = widgets.Checkbox(
         value=False,
-        description=r'La première entrée de la première ligne de $L$ est égale à 1',
+        description=r'La première entrée de la première ligne de $L$ est égale à 1.',
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
@@ -997,61 +1045,61 @@ def Ex3Chapitre2_10():
 
     b = widgets.Checkbox(
         value=False,
-        description=r"Matrix L is diagonal",
+        description=r"La matrice L est diagonale.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
 
     c = widgets.Checkbox(
         value=False,
-        description=r"Matrix U is diagonal",
+        description=r"La matrice U est diagonale",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
 
     d = widgets.Checkbox(
         value=False,
-        description=r"The second entry of the solution is always 2.5 times the fourth one",
+        description=r"La deuxième entrée de la solution est toujours 2.5 fois la 4ème.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
 
     e = widgets.Checkbox(
         value=False,
-        description=r"The second entry of the solution is always 5 times the fourth one",
+        description=r"La deuxième entrée de la solution est toujours 5 fois la 4ème.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
 
     f = widgets.Checkbox(
         value=False,
-        description=r"The sum of all the entries always equals 2.5",
+        description=r"La somme de toutes les entrées est toujours égale à 2.5",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
 
     g = widgets.Checkbox(
         value=False,
-        description=r"The sum of all the entries but the second one always equals 0",
+        description=r"La somme de toutes les entrées sauf la deuxième, est toujours égale à 0.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
 
     h = widgets.Checkbox(
         value=False,
-        description=r"The vector $\hat{x} = (1, 0 -1, 0)$ is one of the solutions to the linear system",
+        description=r"Le vecteur $\hat{x} = (1, 0 -1, 0)$ est une des solutions du systèmes d'équations linéaires.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
 
     def correction(a, b, c, d, e, f, g, h):
         if a and not b and not c and d and not e and not f and g and h:
-            display(Latex("C'est correct. Indeed the set of all possible solutions can be written as "
-                          "$x = [1-4a, 2.5a, 3a-1, a]$. From this, it is clear that the second entry is 2.5 times the "
-                          "fourth one (answer 4), that the sum of all the entries but the second one equals $0$ "
-                          "(answer 7) and that $x^* = [1,0,-1,0]$ is a solution, in case $a$ is set to 0 (answer 8). "
-                          "Also, if L is computed so that it has ones on its diagonal, it is immediate to deduce that "
-                          "the temporary vector $y$ that solves the system $Ly=b$ is actually all made of ones."))
+            display(Latex("C'est correct. En effet, l'ensemble des solutions peut être écrit comme "
+                          "$x = [1-4a, 2.5a, 3a-1, a]$. On en déduit que la deuxième entrée est 2.5 fois la 4ème (réponse 4),"
+                          " que la somme de toutes les entrée sauf la 2ème vaut 0 (réponse 7) "
+                          "et que $\hat{x} = [1,0,-1,0]$ est une solution, c'est le cas $a=0$ (réponse 8). "
+                          "Alors, si L est calculée de manière à obtenir des 1 sur sa diagonale, on peut déduire que "
+                          "le vecteur $\vec{y}$ qui résout $L\vec{y}=\vec{b}$ n'est fait que de 1."))
         else:
             display(Latex("C'est faux."))
 
