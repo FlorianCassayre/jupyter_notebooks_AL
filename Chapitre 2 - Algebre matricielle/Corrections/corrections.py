@@ -1145,14 +1145,14 @@ def Ex1Chapitre2_11():
 
     def correction(ans1, ans2, ans3, ans4):
         res_ans = np.zeros(4).astype(bool)
-        res_ans[0] = 'Sum' in ans1 and 'Multiplication' in ans1 \
-                   and 'Block Sum' in ans1 and not 'Block Multiplication' in ans1
-        res_ans[1] = 'Sum' in ans2 and 'Multiplication' in ans2 \
-                    and not 'Block Sum' in ans2 and 'Block Multiplication' in ans2
-        res_ans[2] = not 'Sum' in ans3 and 'Multiplication' in ans3 \
-                    and not 'Block Sum' in ans3 and 'Block Multiplication' in ans3
-        res_ans[3] = not 'Sum' in ans4 and 'Multiplication' in ans4 \
-                    and not 'Block Sum' in ans4 and not 'Block Multiplication' in ans4
+        res_ans[0] = 'Addition' in ans1 and 'Multiplication' in ans1 \
+                   and 'Addition par blocs' in ans1 and not 'Multiplication par blocs' in ans1
+        res_ans[1] = 'Addition' in ans2 and 'Multiplication' in ans2 \
+                    and not 'Addition par blocs' in ans2 and 'Multiplication par blocs' in ans2
+        res_ans[2] = not 'Addition' in ans3 and 'Multiplication' in ans3 \
+                    and not 'Addition par blocs' in ans3 and 'Multiplication par blocs' in ans3
+        res_ans[3] = not 'Addition' in ans4 and 'Multiplication' in ans4 \
+                    and not 'Addition par blocs' in ans4 and not 'Multiplication par blocs' in ans4
         if res_ans.all():
             display(Latex("C'est correct!"))
         else:

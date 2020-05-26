@@ -1244,7 +1244,7 @@ def LU_no_pivoting(A, ptol=1e-5):
             break
         pivot = A[i, i]
         if abs(pivot) <= ptol:
-            print("Pivot avec la valeur 0 rencontré. Cette matrice n'admet pas de décomposition LU (sans pivoting)")
+            print("Pivot avec la valeur 0 rencontré. Cette matrice n'admet pas de décomposition LU (sans permutation)")
             return None, None
         for k in range(i+1, m):
             lam = A[k, i] / pivot
