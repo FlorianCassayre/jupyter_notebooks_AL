@@ -1232,7 +1232,8 @@ def LU_no_pivoting(A, ptol=1e-5):
     A = np.array(A).astype(float)
     m, n = A.shape
 
-    n_op = 0
+    n_ops = 0
+    n_steps = 0
 
     try:
         assert m <= n
@@ -1248,17 +1249,21 @@ def LU_no_pivoting(A, ptol=1e-5):
             return None, None
         for k in range(i+1, m):
             lam = A[k, i] / pivot
-            n_op += 1
-            A[k, i+1:n] = A[k, i+1:n] - lam * A[i, i+1:n]
-            n_op += 2*(n-i-1)
-            A[k, i] = lam
+            n_ops += 1
+            if lam:
+                A[k, i+1:n] = A[k, i+1:n] - lam * A[i, i+1:n]
+                n_ops += 2*(n-i-1)
+                A[k, i] = lam
+                n_steps += 1
 
     L = np.eye(m) + np.tril(A, -1)[:m, :m]
     U = np.triu(A)
 
-    n_op += m**2
+    n_ops += m**2
 
-    print(f"Nombre d'opérations élémentaires: {n_op}")
+    print(f"Nombre d'opérations élémentaires (I, II, III): {n_steps}")
+    print(f"Coût de la décomposition LU (nombre total d'additions, soustractions, "
+          f"multiplications et divisions): {n_ops}")
 
     return L, U
 
