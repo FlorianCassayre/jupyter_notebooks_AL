@@ -12,7 +12,7 @@
 # Set notebook mode to work in offline
 from __future__ import division
 import numpy as np
-from IPython.display import display, Latex, display_latex
+from IPython.display import display, Latex, display_latex, Markdown
 import plotly
 import plotly.graph_objs as go
 import matplotlib.pylab as plt
@@ -20,6 +20,11 @@ from matplotlib.patches import Polygon
 from matplotlib.collections import PolyCollection
 import plotly.offline as pyo
 import plotly.graph_objs as go
+import ipywidgets as widgets
+from ipywidgets import interact, interactive, fixed, interact_manual, Layout, HBox, VBox
+
+
+
 
 
 plotly.offline.init_notebook_mode(connected=True)
@@ -76,6 +81,21 @@ def brackets(expr):
     else:
         return expr_latex
 
+def ch7ex1(matrix):
+    button = widgets.Button(description = 'Solution', disabled = False)
+    box = HBox(children = [button])
+    out = widgets.Output()
+    
+    
+    def solution(e):
+        out.clear_output()
+        Determinant_3x3(matrix, step_by_step=True)    
+    
+    button.on_click(solution)
+    
+    display(box)
+    display(out)
+    
     
 def Determinant_3x3(A, step_by_step=True ,row=True, n=1):
     """
@@ -86,6 +106,12 @@ def Determinant_3x3(A, step_by_step=True ,row=True, n=1):
     :param n: row or col number to compute the determinant from (int between 1 and 3)
     :return: display step by step solution for 
     """
+    
+    
+    
+    
+    
+    
     
     if A.shape!=(3,3):
         raise ValueError('Dimension of matrix A should be 3x3. The input A must be a sp.Matrix of shape (3,3).')
@@ -144,6 +170,24 @@ def Determinant_3x3(A, step_by_step=True ,row=True, n=1):
     else:
         display(Latex("$" + detA_s + "=" + sp.latex(sp.det(A)) + "$"))
 
+def ch7ex2(matrix):
+    button = widgets.Button(description = 'Solution', disabled = False)
+    box = HBox(children = [button])
+    out = widgets.Output()
+    
+    
+    def solution(e):
+        out.clear_output()
+        Sarrus_3x3(matrix)    
+    
+    button.on_click(solution)
+    
+    display(box)
+    display(out)        
+        
+        
+        
+        
 def Sarrus_3x3(A):
     if A.shape!=(3,3):
         raise ValueError('Dimension of matrix A should be 3x3. The input A must be a sp.Matrix of shape (3,3).')
@@ -171,11 +215,33 @@ def Sarrus_3x3(A):
     prod5 = A[0,0] * A[1,2] * A[2,1]; 
     prod6 = A[0,1] * A[1,0] * A[2,2]; 
     
+    def cplus(ex):
+        # Function to return the correct sign to print after a plus
+        if sp.simplify(ex) < 0:
+            string = " "
+        else:
+            string = "+"
+        return string
+    
+    def cminus(ex):
+        # Function to return the correct sing to print after a plus
+        if sp.simplify(ex) < 0:
+            string = " "
+        else:
+            string = "-"
+        return string
+    
+    
+    
+    
     display(Latex('$' + detA_s + ' = ' + x1 + "+" + x2 + "+" + x3 + "-" + y1 + "-" + y2 + "-" + y3 + '$'  ))
-    display(Latex('$' + detA_s + ' = ' + sp.latex(sp.simplify(prod1)) + " + " + sp.latex(sp.simplify(prod2)) + " + " \
-                  + sp.latex(sp.simplify(prod3)) + " - [(" + sp.latex(sp.simplify(prod4)) + ") + ("\
-                  + sp.latex(sp.simplify(prod5)) + ") + (" + sp.latex(sp.simplify(prod6)) + ')] $'))
-    display(Latex('$' + detA_s + ' = ' + sp.latex(sp.simplify(prod1+prod2+prod3)) + ' - ' + sp.latex(sp.simplify(prod4+prod5+prod6)) + '$'))
+  
+    
+    display(Latex('$' + detA_s + ' = ' + sp.latex(sp.simplify(prod1)) + cplus(prod2) + sp.latex(sp.simplify(prod2)) + cplus(prod3) \
+                  + sp.latex(sp.simplify(prod3)) + " - [" + sp.latex(sp.simplify(prod4)) + cplus(prod5) + \
+                  sp.latex(sp.simplify(prod5)) + cplus(prod6) + sp.latex(sp.simplify(prod6)) + '] $'))
+    display(Latex('$' + detA_s + ' = ' + sp.latex(sp.simplify(prod1+prod2+prod3)) + cminus(prod4+prod5 +prod6) \
+                  + sp.latex(sp.simplify(prod4+prod5+prod6)) + '$'))
     
     display(Latex('$' + detA_s + ' = ' + sp.latex(sp.simplify(sp.det(A))) + '$'))
             
@@ -185,7 +251,19 @@ def question7_2(reponse):
     A = sp.Matrix([[4,6,-3], [-1,2,3], [4, -5, 1]])
     
     if np.abs(reponse - sp.det(A)) != 0:
-        Determinant_3x3(A, step_by_step = True)
+        button = widgets.Button(description = 'Solution', disabled = False)
+        box = HBox(children = [button])
+        out = widgets.Output()
+    
+    
+        def solution(e):
+            out.clear_output()
+            Determinant_3x3(A, step_by_step = True)
+    
+        button.on_click(solution)
+    
+        display(box)
+        display(out)        
     else:
         display("Bravo! Vous avez trouvé la réponse. Utilisez cette réponse pour les prochaines questions.")       
 
@@ -194,7 +272,19 @@ def question7_2a(reponse):
     
     if np.abs(reponse - sp.det(a)) != 0:
         display("Dans ce cas, cette matrice est la transposée de A. Les déterminants sont égaux.")
-        Determinant_3x3(a, step_by_step = True)
+        button = widgets.Button(description = 'Solution', disabled = False)
+        box = HBox(children = [button])
+        out = widgets.Output()
+    
+    
+        def solution(e):
+            out.clear_output()
+            Determinant_3x3(a, step_by_step = True)
+    
+        button.on_click(solution)
+    
+        display(box)
+        display(out)      
     else:
         display("Bravo! Vous avez trouvé la réponse")
         
@@ -205,7 +295,19 @@ def question7_2b(reponse):
         display("Dans ce cas, la première rangée a été multiplié par deux et elle a été ajouté à la deuxième rangée")
         display(Latex("$ Soit: 2 \\times R_1 + R_2 \\rightarrow R_2 $"))
         display("Le déterminant est le même")
-        Determinant_3x3(b, step_by_step = True)
+        button = widgets.Button(description = 'Solution', disabled = False)
+        box = HBox(children = [button])
+        out = widgets.Output()
+    
+    
+        def solution(e):
+            out.clear_output()
+            Determinant_3x3(b, step_by_step = True)
+    
+        button.on_click(solution)
+    
+        display(box)
+        display(out)      
     else:
         display("Bravo! Vous avez trouvé la réponse")    
         
@@ -217,7 +319,20 @@ def question7_2c(reponse):
         display(Latex("$ Soit: 4 \\times R_2 \\rightarrow R_2, -1 \\times R_3 \\rightarrow R_3  $"))
         display("Le déterminant est donc:")
         display(Latex('$ det|c| = (-1) \cdot (4) \cdot det|A| = -4 \cdot 155 = - 620 $'))
-        Determinant_3x3(c, step_by_step = True)
+        
+        button = widgets.Button(description = 'Solution', disabled = False)
+        box = HBox(children = [button])
+        out = widgets.Output()
+    
+    
+        def solution(e):
+            out.clear_output()
+            Determinant_3x3(c, step_by_step = True)
+    
+        button.on_click(solution)
+    
+        display(box)
+        display(out)      
     else:
         display("Bravo! Vous avez trouvé la réponse")          
 
@@ -229,7 +344,20 @@ def question7_2d(reponse):
         display(Latex("$ Soit: -2 \\times R_3 \\rightarrow R_3 $"))
         display("Le déterminant est donc:")
         display(Latex("$ det|d| = (-2) \cdot det|A| = -2 \cdot 155 = - 310 $"))
-        Determinant_3x3(d, step_by_step = True)
+        
+        button = widgets.Button(description = 'Solution', disabled = False)
+        box = HBox(children = [button])
+        out = widgets.Output()
+    
+    
+        def solution(e):
+            out.clear_output()
+            Determinant_3x3(d, step_by_step = True)
+    
+        button.on_click(solution)
+    
+        display(box)
+        display(out)      
     else:
         display("Bravo! Vous avez trouvé la réponse.")
         
@@ -242,7 +370,20 @@ def question7_2e(reponse):
         display(Latex("$ Soit: 2 \\times R_1 + R_3 \\rightarrow R_3, R_1 \\leftrightarrow R_2 $"))
         display("Le déterminant est donc:")
         display(Latex("$ det|e| = (-1) \cdot det|A| = (-1) \cdot 155 = - 155 $"))
-        Determinant_3x3(e, step_by_step = True)
+        
+        button = widgets.Button(description = 'Solution', disabled = False)
+        box = HBox(children = [button])
+        out = widgets.Output()
+    
+    
+        def solution(k):
+            out.clear_output()
+            Determinant_3x3(e, step_by_step = True)
+    
+        button.on_click(solution)
+    
+        display(box)
+        display(out)      
     else:
         display("Bravo! Vous avez trouvé la réponse.")
         
@@ -255,42 +396,260 @@ def question7_2f(reponse):
         display(Latex("$ Soit: 5 \\times R_2 \\rightarrow R_2, \: et \: transposée $"))
         display("Le déterminant est donc:")
         display(Latex("$ det|f| = 5 \cdot det|A|^T = 5 \cdot det|A| = 5 \cdot 155 = 755 $"))
-        Determinant_3x3(f, step_by_step = True)
+        
+        button = widgets.Button(description = 'Solution', disabled = False)
+        box = HBox(children = [button])
+        out = widgets.Output()
+    
+    
+        def solution(e):
+            out.clear_output()
+            Determinant_3x3(f, step_by_step = True)
+    
+        button.on_click(solution)
+    
+        display(box)
+        display(out)      
     else:
         display("Bravo! Vous avez trouvé la réponse.")        
 
         
 ## 7.3
-def whether_invertible(A):
+def whether_invertibleA(A):
     """Judge whether the matrix A is invertible by calculating the determinant."""
     A_RREF = A.rref()[0]
     A_det = sp.Float(A.det(), 4)
     detA_s = sp.latex(A)
     detAr_s = sp.latex(A_RREF)
     Ar_det = sp.Float(A_RREF.det(), 4)
-    display(Latex("$" +   "\det A"+"="+ "\det" + detA_s + "=" + "k \cdot"+ "\det" + detAr_s+  "= k \cdot"+ "{}".format(Ar_det)+"=" + "{}".format(A_det)+"$" ))
-    display(Latex("Où $k$ est une constante  qui n'est pas égale à zéro. "))
-    if detA_s == 0:
-        display(Latex("$\det A$ est égal à zéro, donc la matrice $A$ est singulière." ))
-    else:
-        display(Latex("$\det A $ n'est pas égal à zéro, donc la matrice $A$ est inversible."))
-
-
+    
+    # For printing different cases;
+    
+    
+    select = widgets.SelectMultiple(
+        options = ['La matrice est inversible', "La matrice n'est pas inversible"],
+        description = 'Réponse: ',
+        disabled = False,
+        layout = Layout(width='auto', height = 'auto')
+    )
+    button = widgets.Button(description = 'Vérifier', disabled = False)
+    button2 = widgets.Button(description = 'Solution', disabled = False)
+    box = HBox(children = [button, button2])
+    out = widgets.Output()
+    
+    
+    def callback(e):
+        out.clear_output()
+        with out:
+            if len(select.value) <= 0:
+                pass
+            elif len(select.value) >1:
+                display(Markdown('Seulement une réponse est requise'))
+            elif sp.det(A) == 0:
+                if "La matrice n'est pas inversible" not in select.value:
+                    display(Markdown("Faux"))
+                else:
+                    display(Markdown("Correct!"))
+            elif  sp.det(A) != 0:
+                if 'La matrice est inversible' not in select.value:
+                    display(Markdown("Faux"))
+                else:
+                    display(Markdown("Correct!"))
+    
+    def solution(e):
+        out.clear_output()
         
+        display(Latex("$" +   "\det A"+"="+ "\det" + detA_s + "=" + "k \cdot"+ "\det" + detAr_s+  "= k \cdot"+ "{}".format(Ar_det)+"=" + "{}".format(A_det)+"$" ))
+        display(Latex("Où $k$ est une constante  qui n'est pas égale à zéro. "))
+        if sp.det(A) == 0:
+            display(Latex("$\det A$ est égal à zéro, donc la matrice $A$ est singulière." ))
+        else:
+            display(Latex("$\det A $ n'est pas égal à zéro, donc la matrice $A$ est inversible."))
+    button.on_click(callback)
+    button2.on_click(solution)
+    display(select)
+    display(box)
+    display(out)
+
+def whether_invertibleB(A):
+    """Judge whether the matrix B is invertible by calculating the determinant."""
+    A_RREF = A.rref()[0]
+    A_det = sp.Float(A.det(), 4)
+    detA_s = sp.latex(A)
+    detAr_s = sp.latex(A_RREF)
+    Ar_det = sp.Float(A_RREF.det(), 4)
+    
+    # For printing different cases;
+    
+    
+    select = widgets.SelectMultiple(
+        options = ['La matrice est inversible', "La matrice n'est pas inversible"],
+        description = 'Réponse: ',
+        disabled = False,
+        layout = Layout(width='auto', height = 'auto')
+    )
+    button = widgets.Button(description = 'Vérifier', disabled = False)
+    button2 = widgets.Button(description = 'Solution', disabled = False)
+    box = HBox(children = [button, button2])
+    out = widgets.Output()
+    
+    
+    def callback(e):
+        out.clear_output()
+        with out:
+            if len(select.value) <= 0:
+                pass
+            elif len(select.value) >1:
+                display(Markdown('Seulement une réponse est requise'))
+            elif sp.det(A) == 0:
+                if "La matrice n'est pas inversible" not in select.value:
+                    display(Markdown("Faux"))
+                else:
+                    display(Markdown("Correct!"))
+            elif  sp.det(A) != 0:
+                if 'La matrice est inversible' not in select.value:
+                    display(Markdown("Faux"))
+                else:
+                    display(Markdown("Correct!"))
+    
+    def solution(e):
+        out.clear_output()
+        
+        display(Latex("$" +   "\det B"+"="+ "\det" + detA_s + "=" + "k \cdot"+ "\det" + detAr_s+  "= k \cdot"+ "{}".format(Ar_det)+"=" + "{}".format(A_det)+"$" ))
+        display(Latex("Où $k$ est une constante  qui n'est pas égale à zéro. "))
+        if sp.det(A) == 0:
+            display(Latex("$\det B$ est égal à zéro, donc la matrice $B$ est singulière." ))
+        else:
+            display(Latex("$\det B $ n'est pas égal à zéro, donc la matrice $B$ est inversible."))
+    button.on_click(callback)
+    button2.on_click(solution)
+    display(select)
+    display(box)
+    display(out)
+
+def whether_invertibleC(A):
+    """Judge whether the matrix C is invertible by calculating the determinant."""
+    A_RREF = A.rref()[0]
+    A_det = sp.Float(A.det(), 4)
+    detA_s = sp.latex(A)
+    detAr_s = sp.latex(A_RREF)
+    Ar_det = sp.Float(A_RREF.det(), 4)
+    
+    select = widgets.SelectMultiple(
+        options = ['La matrice est inversible', "La matrice n'est pas inversible"],
+        description = 'Réponse: ',
+        disabled = False,
+        layout = Layout(width='auto', height = 'auto')
+    )
+    button = widgets.Button(description = 'Vérifier', disabled = False)
+    button2 = widgets.Button(description = 'Solution', disabled = False)
+    box = HBox(children = [button, button2])
+    out = widgets.Output()
+    
+    
+    def callback(e):
+        out.clear_output()
+        with out:
+            if len(select.value) <= 0:
+                pass
+            elif len(select.value) >1:
+                display(Markdown('Seulement une réponse est requise'))
+            elif sp.det(A) == 0:
+                if "La matrice n'est pas inversible" not in select.value:
+                    display(Markdown("Faux"))
+                else:
+                    display(Markdown("Correct!"))
+            elif  sp.det(A) != 0:
+                if 'La matrice est inversible' not in select.value:
+                    display(Markdown("Faux"))
+                else:
+                    display(Markdown("Correct!"))
+    
+    def solution(e):
+        out.clear_output()
+        
+        display(Latex("$" +   "\det C"+"="+ "\det" + detA_s + "=" + "k \cdot"+ "\det" + detAr_s+  "= k \cdot"+ "{}".format(Ar_det)+"=" + "{}".format(A_det)+"$" ))
+        display(Latex("Où $k$ est une constante  qui n'est pas égale à zéro. "))
+        if sp.det(A) == 0:
+            display(Latex("$\det C$ est égal à zéro, donc la matrice $C$ est singulière." ))
+        else:
+            display(Latex("$\det C $ n'est pas égal à zéro, donc la matrice $C$ est inversible."))
+    button.on_click(callback)
+    button2.on_click(solution)
+    display(select)
+    display(box)
+    display(out)        
         
 ## 7.4
-def question7_4_solution(reponse):
-    if np.abs(reponse - 2/7) > 0.01:
-        display("La solution est donnée ci desous.")
-        A = sp.Matrix([[3,-2,7], [1,-1,4], [2,5,-6]])
-        B = sp.Matrix([[4, -3, 0],[9, -4, -1],[-7, 1, 1]])
-        Determinant_3x3(A, step_by_step = True)
-        Determinant_3x3(B, step_by_step = True)
-        display(Latex("$$ \det C = \det B \det A^{-1} = \det B \left( \\frac{1}{\det A} \\right) = \\frac{\det B}{\det A} = \\frac{-6}{-21} = \\frac{2}{7} $$"))
+def question7_4a_solution(reponse):
+    if np.abs(reponse - 6/119) > 0.01:
+        
+        button = widgets.Button(description = 'Solution', disabled = False)
+        box = HBox(children = [button])
+        out = widgets.Output()
+    
+    
+        def solution(e):
+            out.clear_output()
+            display(Markdown("Faux."))
+            A = sp.Matrix([[-3,2,7], [1,-1,4], [2,5,-6]]) # det = 119
+            B = sp.Matrix([[-4, 3, 0],[9, -4, -1],[-7, 1, 1]]) # det = 6
+            Determinant_3x3(A, step_by_step = True)
+            Determinant_3x3(B, step_by_step = True)
+            display(Latex("$$ \det C = \det B \det A^{-1} = \det B \left( \\frac{1}{\det A} \\right) = \\frac{\det B}{\det A} = \\frac{6}{119}$$"))
+
+        button.on_click(solution)
+    
+        display(box)
+        display(out)        
+        
+        
+        
     else:
         display("Bravo! Vous avez trouvé la réponse")
         
 
+def question7_4b_solution(detC, somme):
+    A = sp.Matrix([[1, 3, -6], [5, 2, 2], [-2, -4, 9]])
+    B = sp.Matrix([[5, 0, -2], [10, -3, 7], [-1, 4, 1]])
+    C = sp.Matrix([[6, 3, -8], [15, -1, 9],[-3, 0, 10]])
+    flag1 = False
+    flag2 = False
+    
+    if detC != sp.det(C):
+        display(Markdown('Votre solution pour $\det(A+B) $ est fausse'))
+        flag1 = True
+    if somme != (sp.det(A) + sp.det(B)):
+        display(Markdown('Votre solution pour $\det A + \det B$ est fausse'))
+        flag1 = True
+    else:
+        display(Markdown("Correct! $\det(A+B)$ n'est pas égale à $\det A + \det B $"))
+    
+    if flag1:
+        display(Markdown('Cliquez en sous pour la solution pour $\det(A+B)$ et pour $\det A + \det B $ '))
+        button1 = widgets.Button(description = 'Solution', disabled = False)
+        box1 = HBox(children = [button1])
+        out1 = widgets.Output()
+    
+    
+        def solution(e):
+            out1.clear_output()
+            display(Markdown('La solution pour $\det(A+B)$'))
+            Determinant_3x3(C, step_by_step = True)
+            
+            display(Markdown('La solution pour $\det A$'))
+            Determinant_3x3(A, step_by_step = True)
+            
+            display(Markdown('La solution pour $\det B$'))
+            Determinant_3x3(B, step_by_step = True)
+            
+        button1.on_click(solution)
+    
+        display(box1)
+        display(out1)      
+       
+    
+        
 ## 7.5
 def plotDeterminant3D(A):
     """
