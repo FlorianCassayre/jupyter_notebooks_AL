@@ -543,6 +543,7 @@ def whether_invertibleC(A):
     
     def callback(e):
         out.clear_output()
+        @out.capture()
         with out:
             if len(select.value) <= 0:
                 pass
@@ -561,6 +562,7 @@ def whether_invertibleC(A):
     
     def solution(e):
         out.clear_output()
+        @out.capture()
         
         display(Latex("$" +   "\det C"+"="+ "\det" + detA_s + "=" + "k \cdot"+ "\det" + detAr_s+  "= k \cdot"+ "{}".format(Ar_det)+"=" + "{}".format(A_det)+"$" ))
         display(Latex("Où $k$ est une constante  qui n'est pas égale à zéro. "))
@@ -571,6 +573,7 @@ def whether_invertibleC(A):
     button.on_click(callback)
     button2.on_click(solution)
     display(select)
+    @out.capture()
     display(box)
     display(out)        
         
@@ -624,7 +627,7 @@ def question7_4b_solution(detC, somme):
         button1 = widgets.Button(description = 'Solution', disabled = False)
         box1 = HBox(children = [button1])
         out1 = widgets.Output()
-    
+        @out1.capture()
     
         def solution(e):
             out1.clear_output()
