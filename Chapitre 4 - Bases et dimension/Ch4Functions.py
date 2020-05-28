@@ -11,6 +11,8 @@ import ipywidgets as widgets
 from ipywidgets import interact, interactive, fixed, interact_manual, Layout
 import plotly.express as px
 import sympy as sp
+import matplotlib.pyplot as plt
+from itertools import permutations
 
 def ch4_1_2ex1(solution):
     v = np.array([[1, 0, 2], [0, 1, 0], [1, 1, 1]]).transpose()
@@ -215,10 +217,18 @@ Comme tous les vecteurs sont issus de $\mathbb{R}^3$ on peut facilement représe
     """, lambda: plot_vectors([[1, 0, 1], [0, 2, 0], [0, 0, 3]], [1, 1, 1], [1, 0.5, 0]))
     
 def ch4_3ex1b():
-    ch4_3ex1(1, """On ne peut pas générer $\mathbb{R}^3$ à partir de cet ensemble. En effet, on ne peut par exemple pas représenter le vecteur $\\begin{pmatrix} 0 \\\\ 0 \\\\ 1 \end{pmatrix} \\in \mathbb{R}^3$ comme combinaison linéaire de $\\begin{pmatrix} 1 \\\\ 0 \\\\ 0 \end{pmatrix}$ et $\\begin{pmatrix} 0 \\\\ 1 \\\\ 0 \end{pmatrix}$.
+    ch4_3ex1(1, """
+    
+On ne peut pas générer $\mathbb{R}^3$ à partir de cet ensemble. En effet, on ne peut par exemple pas représenter le vecteur $\\begin{pmatrix} 1 \\\\ 0 \\\\ 0 \end{pmatrix} \\in \mathbb{R}^3$ comme combinaison linéaire de $\\begin{pmatrix} 1 \\\\ 0 \\\\ 1 \end{pmatrix}$ et $\\begin{pmatrix} 0 \\\\ 1 \\\\ 0 \end{pmatrix}$.
 
 Graphiquement les deux vecteurs ne peuvent engendrer qu'un plan - et non un espace :
     """, lambda: plot_vectors([[1, 0, 0]], [0, 1, 0], [1]))
+    
+def ch4_3ex1c():
+    ch4_3ex1(0, """
+    
+Ces trois vecteurs sont linéairement indépendants, ils engendrent donc $\mathbb{R}^3$ et forment une base de cet espace.
+    """, lambda: None)
     
 def ch4_3ex2():
     vecs = np.array([[1, 1, 1], [0, 1, 2], [2, 1, 4], [2, 1, 0], [1, 0, -1]])
@@ -261,17 +271,17 @@ def ch4_3ex2():
 def ch4_3ex3():
     ch4_3ex1(1, """
 
-$\mathbb{P}(\mathbb{R})$ est un espace infini, il ne peut être généré que par des bases infinies (par exemple, $\{1, x, x^2, x^3, ...\}$).
+Cet ensemble n'est pas une base de $\mathbb{P}^n(\mathbb{R})$ car il ne permet pas (par exemple) de générer les polynômes constants.
 
-Cet ensemble ne forme donc pas une base pour $\mathbb{P}(\mathbb{R})$.
+$\mathbb{P}^n(\mathbb{R})$ est néanmoins engendré par $\{1, x, x^2, x^3, ..., x^{n-1}\}$.
     """, lambda: None)
     
 def ch4_3ex4():
     ch4_3ex1(2, """
 
-L'espace engendré par cet ensemble est $\mathbb{R}^{2 \\times 2}$ et donc sa dimension est $4$.
+L'espace engendré par cet ensemble est $M_{2 \times 2}(\mathbb{R})$ et donc sa dimension est $4$.
 
-Attention cet ensemble n'est pas une base de $\mathbb{R}^{2 \\times 2}$ car ses éléments sont linéairement dépendants !
+Attention cet ensemble n'est pas une base de $M_{2 \times 2}(\mathbb{R})$ car ses éléments sont linéairement dépendants !
 
     """, lambda: None, ['2', '3', '4', '5'])
 
@@ -337,7 +347,7 @@ def ch4_6ex1():
         feedback = ""
         is_correct = False
         if r == 6:
-            feeback = "Comme la matrice n'est pas nulle, au moins une variable n'est pas libre."
+            feedback = "Comme la matrice n'est pas nulle, au moins une variable n'est pas libre."
         elif r >= 7:
             feedback = "La dimension de l'espace des solutions ne peut excéder la dimension de l'espace des variables."
         elif r == 5:
@@ -383,6 +393,23 @@ def ch4_6ex2():
     display(text)
     display(button)
     display(out)
+    
+def ch4_7_8ex3_venn():
+    ax = plt.gca()
+    r = 5
+    rd = r / 2
+    rc = rd * 2
+    f = 25
+    a = plt.Circle((-rd, 0), radius=r, color="#fc032c90")
+    b = plt.Circle((rd, 0), radius=r, color="#0377fc90")
+    ax.add_patch(a)
+    ax.add_patch(b)
+    ax.annotate("A", xy=(-rc, 0), fontsize=f, ha='center', va='center')
+    ax.annotate("A ∩ B", xy=(0, 0), fontsize=f, ha='center', va='center')
+    ax.annotate("B", xy=(rc, 0), fontsize=f, ha='center', va='center')
+    plt.axis('scaled')
+    plt.axis('off')
+    plt.show()
 
 def ch4_6ex3(base):
     base = np.array(base)
@@ -469,10 +496,56 @@ def ch4_7_8ex2():
     display(button)
     display(out)
 
-def ch4_7_8ex3(answer, explanation):
+
+def ch4_7_8ex3_cube(name, color):
+    return go.Mesh3d(
+        name=name,
+        x=[-1, -1, 1, 1, -1, -1, 1, 1],
+        y=[-1, 1, 1, -1, -1, 1, 1, -1],
+        z=[-1, -1, -1, -1, 1, 1, 1, 1],
+        i=[7, 0, 0, 0, 4, 4, 6, 6, 4, 0, 3, 2],
+        j=[3, 4, 1, 2, 5, 6, 5, 2, 0, 1, 6, 3],
+        k=[0, 7, 2, 3, 6, 7, 1, 1, 5, 5, 7, 6],
+        color=color,
+        opacity=0.25
+    )
+
+def ch4_7_8ex3_plane(name, color, variant):
+    ep = 1.25
+    p1 = ep * np.array([-1, 1, 1, -1])
+    p2 = ep * np.array([-1, -1, 1, 1])
+    pz = np.array([0, 0, 0, 0] if variant == 0 else [0, 0.01, 0.02, 0.03]) # Bug workaround
+    ps = list(permutations([p1, p2, pz]))[variant]
+    return go.Mesh3d(
+        name=name,
+        x=ps[0],
+        y=ps[1],
+        z=ps[2],
+        color=color,
+        opacity=0.25
+    )
+
+def ch4_7_8ex3_line(name, color, variant):
+    el = 1.5
+    l1 = [-el, el, None]
+    lz = [0, 0, None]
+    ps = list(permutations([l1, lz, lz]))[variant]
+    return go.Scatter3d(
+        name=name,
+        x=ps[0],
+        y=ps[1],
+        z=ps[2],
+        opacity=0.25,
+        line=dict(color=color, width=4)
+    )
+
+def ch4_7_8ex3(answer, explanation, plot):
     text = widgets.IntText(description='Réponse :')
     button = widgets.Button(description='Vérifier')
+    show = widgets.Button(description='Visualiser')
+    box = widgets.HBox(children=[button, show])
     out = widgets.Output()
+    out2 = widgets.Output()
     
     def callback(e):
         out.clear_output()
@@ -485,29 +558,35 @@ def ch4_7_8ex3(answer, explanation):
             else:
                 display(Markdown("C'est incorrect." + other))
         
+    def callback2(e):
+        with out2:
+            plot()
+    
     button.on_click(callback)
+    show.on_click(callback2)
     
     display(text)
-    display(button)
+    display(box)
     display(out)
+    display(out2)
 
 def ch4_7_8ex3a():
-    ch4_7_8ex3(2, "$V$ est un sous-ensemble de $W$, donc $\dim (W + V) = \dim W = 2$.")
+    ch4_7_8ex3(2, "$V$ est un sous-ensemble de $W$, donc $\dim (W + V) = \dim W = 2$.", lambda: go.Figure(data=[ch4_7_8ex3_plane('A', 'red', 0), ch4_7_8ex3_line('B', 'blue', 0)]).show())
 
 def ch4_7_8ex3b():
-    ch4_7_8ex3(3, "$W$ et $V$ sont deux espaces indépendants, donc $\dim (W + V) = \dim W + \dim V = 2 + 1 = 3$.")
+    ch4_7_8ex3(3, "$W$ et $V$ sont deux espaces indépendants, donc $\dim (W + V) = \dim W + \dim V = 2 + 1 = 3$.", lambda: go.Figure(data=[ch4_7_8ex3_plane('A', 'red', 0), ch4_7_8ex3_line('B', 'blue', 3)]).show())
 
 def ch4_7_8ex3c():
-    ch4_7_8ex3(1, "La somme d'un même espace n'a pas d'effet : $\dim (V + V) = \dim V = 1$.")
+    ch4_7_8ex3(1, "La somme d'un même espace n'a pas d'effet : $\dim (V + V) = \dim V = 1$.", lambda: go.Figure(data=[ch4_7_8ex3_line('A', 'red', 0), ch4_7_8ex3_line('B', 'blue', 0)]).show())
     
 def ch4_7_8ex3d():
-    ch4_7_8ex3(2, "$V_1$ et $V_2$ sont deux espaces indépendants, donc $\dim (V_1 + V_2) = \dim V_1 + \dim V_2 = 1 + 1 = 2$.")
+    ch4_7_8ex3(2, "$V_1$ et $V_2$ sont deux espaces indépendants, donc $\dim (V_1 + V_2) = \dim V_1 + \dim V_2 = 1 + 1 = 2$.", lambda: go.Figure(data=[ch4_7_8ex3_line('A', 'red', 0), ch4_7_8ex3_line('B', 'blue', 2)]).show())
 
 def ch4_7_8ex3e():
-    ch4_7_8ex3(3, "$\dim (W_1 + W_2) = 2 + 2 - 1 = 3$.")
+    ch4_7_8ex3(3, "$\dim (W_1 + W_2) = 2 + 2 - 1 = 3$.", lambda: go.Figure(data=[ch4_7_8ex3_plane('A', 'red', 0), ch4_7_8ex3_plane('B', 'blue', 1)]).show())
     
 def ch4_7_8ex3f():
-    ch4_7_8ex3(3, "$\dim (U + X) = 0 + 3 - 0 = 3$.")
+    ch4_7_8ex3(3, "$\dim (U + X) = 0 + 3 - 0 = 3$.", lambda: go.Figure(data=[ch4_7_8ex3_cube('B', 'blue')]).show())
     
     
 def ch4_9ex1():
