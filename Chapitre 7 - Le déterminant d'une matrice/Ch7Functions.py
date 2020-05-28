@@ -85,7 +85,7 @@ def ch7ex1(matrix):
     button = widgets.Button(description = 'Solution', disabled = False)
     box = HBox(children = [button])
     out = widgets.Output()
-    
+    @out.capture()
     
     def solution(e):
         out.clear_output()
@@ -107,12 +107,7 @@ def Determinant_3x3(A, step_by_step=True ,row=True, n=1):
     :return: display step by step solution for 
     """
     
-    
-    
-    
-    
-    
-    
+
     if A.shape!=(3,3):
         raise ValueError('Dimension of matrix A should be 3x3. The input A must be a sp.Matrix of shape (3,3).')
     if n<1 or n>3 or not isinstance(n, int):
@@ -174,7 +169,7 @@ def ch7ex2(matrix):
     button = widgets.Button(description = 'Solution', disabled = False)
     box = HBox(children = [button])
     out = widgets.Output()
-    
+    @out.capture()
     
     def solution(e):
         out.clear_output()
@@ -254,14 +249,13 @@ def question7_2(reponse):
         button = widgets.Button(description = 'Solution', disabled = False)
         box = HBox(children = [button])
         out = widgets.Output()
-    
+        @out.capture()
     
         def solution(e):
             out.clear_output()
             Determinant_3x3(A, step_by_step = True)
     
         button.on_click(solution)
-    
         display(box)
         display(out)        
     else:
@@ -275,7 +269,7 @@ def question7_2a(reponse):
         button = widgets.Button(description = 'Solution', disabled = False)
         box = HBox(children = [button])
         out = widgets.Output()
-    
+        @out.capture()
     
         def solution(e):
             out.clear_output()
@@ -298,7 +292,7 @@ def question7_2b(reponse):
         button = widgets.Button(description = 'Solution', disabled = False)
         box = HBox(children = [button])
         out = widgets.Output()
-    
+        @out.capture()
     
         def solution(e):
             out.clear_output()
@@ -323,7 +317,7 @@ def question7_2c(reponse):
         button = widgets.Button(description = 'Solution', disabled = False)
         box = HBox(children = [button])
         out = widgets.Output()
-    
+        @out.capture()
     
         def solution(e):
             out.clear_output()
@@ -348,7 +342,7 @@ def question7_2d(reponse):
         button = widgets.Button(description = 'Solution', disabled = False)
         box = HBox(children = [button])
         out = widgets.Output()
-    
+        @out.capture()
     
         def solution(e):
             out.clear_output()
@@ -374,7 +368,7 @@ def question7_2e(reponse):
         button = widgets.Button(description = 'Solution', disabled = False)
         box = HBox(children = [button])
         out = widgets.Output()
-    
+        @out.capture()
     
         def solution(k):
             out.clear_output()
@@ -400,7 +394,7 @@ def question7_2f(reponse):
         button = widgets.Button(description = 'Solution', disabled = False)
         box = HBox(children = [button])
         out = widgets.Output()
-    
+        @out.capture()
     
         def solution(e):
             out.clear_output()
@@ -436,7 +430,7 @@ def whether_invertibleA(A):
     button2 = widgets.Button(description = 'Solution', disabled = False)
     box = HBox(children = [button, button2])
     out = widgets.Output()
-    
+    @out.capture()
     
     def callback(e):
         out.clear_output()
@@ -492,7 +486,7 @@ def whether_invertibleB(A):
     button2 = widgets.Button(description = 'Solution', disabled = False)
     box = HBox(children = [button, button2])
     out = widgets.Output()
-    
+    @out.capture()
     
     def callback(e):
         out.clear_output()
@@ -545,10 +539,11 @@ def whether_invertibleC(A):
     button2 = widgets.Button(description = 'Solution', disabled = False)
     box = HBox(children = [button, button2])
     out = widgets.Output()
-    
+    @out.capture()
     
     def callback(e):
         out.clear_output()
+        @out.capture()
         with out:
             if len(select.value) <= 0:
                 pass
@@ -567,6 +562,7 @@ def whether_invertibleC(A):
     
     def solution(e):
         out.clear_output()
+        @out.capture()
         
         display(Latex("$" +   "\det C"+"="+ "\det" + detA_s + "=" + "k \cdot"+ "\det" + detAr_s+  "= k \cdot"+ "{}".format(Ar_det)+"=" + "{}".format(A_det)+"$" ))
         display(Latex("Où $k$ est une constante  qui n'est pas égale à zéro. "))
@@ -577,6 +573,7 @@ def whether_invertibleC(A):
     button.on_click(callback)
     button2.on_click(solution)
     display(select)
+    @out.capture()
     display(box)
     display(out)        
         
@@ -587,7 +584,7 @@ def question7_4a_solution(reponse):
         button = widgets.Button(description = 'Solution', disabled = False)
         box = HBox(children = [button])
         out = widgets.Output()
-    
+        @out.capture()
     
         def solution(e):
             out.clear_output()
@@ -630,7 +627,7 @@ def question7_4b_solution(detC, somme):
         button1 = widgets.Button(description = 'Solution', disabled = False)
         box1 = HBox(children = [button1])
         out1 = widgets.Output()
-    
+        @out1.capture()
     
         def solution(e):
             out1.clear_output()
