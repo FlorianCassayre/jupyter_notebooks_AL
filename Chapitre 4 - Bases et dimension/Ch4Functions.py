@@ -610,12 +610,12 @@ def ch4_9ex1():
         out.clear_output()
         with out:
             if (1 in select.value or 3 in select.value):
-                    print('Mauvaise réponse. \nAttention à ne pas confondre les espaces des lignes et colonnes')
+                print('Mauvaise réponse. \nAttention à ne pas confondre les espaces des lignes et colonnes')
             elif (2 not in select.value or 4 not in select.value or 5 not in select.value):
                 print('Il manque au moins une réponse.')
             elif (2 in select.value and 4 in select.value and 5 in select.value):
                 print('Correct !')
-                     
+
     button.on_click(callback)
 
     display(select)
@@ -629,11 +629,11 @@ def ch4_9ex2_1():
     )
     button = widgets.Button(description='Vérifier')
     out = widgets.Output()
-    
+
     def callback(e):
         out.clear_output()
         r = text.value
-        
+
         with out:
             if r == 2:
                 display(Markdown("Par la proposition 4 c'est  correct!"))
@@ -641,9 +641,9 @@ def ch4_9ex2_1():
                 display(Markdown("Faux, c'est trop grand"))
             else:
                 display(Markdown("Faux, c'est trop petit"))
-        
+
     button.on_click(callback)
-    
+
     display(text)
     display(button)
     display(out)
@@ -661,7 +661,7 @@ def ch4_9ex2_2():
     out = widgets.Output()
 
     def callback(e):
-        
+
         out.clear_output()
         with out:
             if len(select.value) <= 0: # Empty
@@ -676,8 +676,6 @@ def ch4_9ex2_2():
     display(select)
     display(button)
     display(out)
-    
-
 
 def ch4_9ex2_3():
     text = widgets.IntText(description='Réponse :', disabled=False)
@@ -693,31 +691,31 @@ def ch4_9ex2_3():
         with out:
             if(text.value == 2):
                 print('Correct !')
-            else: 
-                print('False, try again or check the solution')
-    
+            else:
+                print('Faux, essayez encore ou regardez la solution')
+
     def solution(e):
         out.clear_output()
         with out:
             A = np.array([[1, 2, 3], [0, 1, 2]])
             A_t = A.transpose()
-            display(Markdown('Pour trouver le rang colonne de $A$, nous utilisons la remarque 2 et trouvous le rang ligne de la transposée de $A$.'))
-            display(Markdown('Par les propositions 3 et 4, nous échelonnons la matrice transposée et observont le nombre de lignes qui contiennent des pivots'))
+            display(Markdown('Pour trouver le rang colonne de $A$, nous utilisons la remarque 1 et trouvous le rang ligne de la transposée de $A$.'))
+            display(Markdown('Par les propositions 1 et 2, nous échelonnons la matrice transposée et observont le nombre de lignes qui contiennent des pivots'))
             M = al.echelonMat('E', A_t)
             display(Markdown('Ainsi le rang colonne de $A$ est 2'))
-                      
+
     button.on_click(callback)
     button2.on_click(solution)
-    
+
     display(text)
     display(box)
     display(out)
     
 def ch4_10ex1_1(A, b):
     A_sol = [[1, 4, 3, 4],[2, 6, 5, 8],[1, 0, 1, 4]]
-    b_sol = [1, 1, 1]
+    b_sol = [[1], [1], [1]]
     if A == [] or b == []:
-        print("Au moins une des deux entrée est vide")
+        print("Attention, vous avez laissé au moins une des deux entrée vide")
     elif not (len(A) == len(b)):
         print("Les tailles de la matrice et du vecteur ne correspondent pas")
     else:
@@ -731,38 +729,56 @@ def ch4_10ex1_1(A, b):
             print("La Matrice A est fausse, votre reponse correspond au système suivant:")
             al.printSyst(A, b)
         else:
-            print("Faux, votre reponse correspond au système suivant:")
+            print("Faux, votre réponse correspond au système suivant:")
             al.printSyst(A, b)
             
-def ch4_10ex1_2_display():
+def ch4_10ex1_2_1_ech():
+    global m
+    print('Échelonnez la matrice transposée de A')
     A_sol = np.array([[1, 4, 3, 4],[2, 6, 5, 8],[1, 0, 1, 4]])
     A_sol_t = A_sol.transpose()
-    M = al.echelonMat('E', A_sol_t)
+    al.printA(A_sol_t)
+    [i,j,r,alpha]= al.manualEch(A_sol_t)
+    MatriceList=[np.array(A_sol_t)]
+    m = A_sol_t
+
+    button = widgets.Button(description='Appliquer')
+    out = widgets.Output()
+
+    def applique(e):
+        global m
+        out.clear_output()
+        with out:
+            m=al.echelonnage(i, j, r, alpha, A_sol_t, m, MatriceList)
+
+    button.on_click(applique)
+    display(button)
+    display(out)
     
 def ch4_10ex1_2_1():
-    
+
     text_rang = widgets.IntText()
-    box = VBox([Label('Rang colonne de A:'), text_rang])
+    box = widgets.VBox([widgets.Label('Rang colonne de A:'), text_rang])
     button = widgets.Button(description='Vérifier')
     out = widgets.Output()
-    
+
     def callback(e):
         out.clear_output()
         with out:
             if(text_rang.value == 2):
                 print('Correct !')
-            else: 
-                print('False, try again or check the solution')
-                     
+            else:
+                print('Faux, essayez encore ou regardez la solution')
+
     button.on_click(callback)
     display(box)
     display(button)
     display(out)
 
 def ch4_10ex1_2_2(base):
-  
+
     base_sol = [[1,2,1],[0,1,2]]
-    
+
     if base_sol == []:
         print("L'entrée est vide")
     else:
@@ -771,28 +787,62 @@ def ch4_10ex1_2_2(base):
         else:
             print("Faux")
 
+def ch4_10ex1_3_ech():
+    global m
+    A= [[1, 2, 1],[0, 1, 2],[1, 1, 1]]
+    al.printA(A)
+    [i,j,r,alpha]= al.manualEch(A)
+    MatriceList=[np.array(A)]
+    m2=A
+    button = widgets.Button(description='Appliquer')
+    out = widgets.Output()
+
+    def callback(e):
+        #global m2
+        out.clear_output()
+        with out:
+            #m2=
+            al.echelonnage(i, j, r, alpha, A, m2, MatriceList)
+
+    button.on_click(callback)
+    display(button)
+    display(out)
+
 def ch4_10ex1_3():
- 
+
     radio = widgets.RadioButtons(
-        options=['Yes', 'No'],
-        description='Answer:',
+        options=['Oui', 'Non'],
+        description='Réponse:',
         disabled=False
     )
 
     button = widgets.Button(description='Vérifier')
+    button2 = widgets.Button(description='Solution', disabled=True)
+    box = widgets.HBox(children=[button,button2])
     out = widgets.Output()
 
     def callback(e):
         out.clear_output()
+        button2.disabled = False
         with out:
-            if (radio.value == "Yes"):
-                    print('Mauvaise réponse.')
-            else: 
+            if (radio.value == "Oui"):
+                print('Mauvaise réponse.')
+            else:
                 print('Correct !')
-                     
+
+    def solution(e):
+        out.clear_output()
+        with out:
+            A = np.array([[1, 2, 1],[0, 1, 2],[0, 0, 1]])
+            display(Markdown('Après échelonnage, la matrice devient'))
+            al.printA(A)
+            display(Markdown("Ainsi le rang colonne de la matrice augmentée est 3, et le système n'admet pas de solution"))
+
+    button2.on_click(solution)
     button.on_click(callback)
+
     display(radio)
-    display(button)
+    display(box)
     display(out)
 
     
