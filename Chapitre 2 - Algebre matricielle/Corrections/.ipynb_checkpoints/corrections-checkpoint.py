@@ -22,8 +22,7 @@ def Ex2Chapitre2_1():
     )
     b = widgets.Checkbox(
         value=False,
-        description=r'Il existe \(\lambda\in \mathbb{R}\) tel que \((A-\lambda B)^T\) '
-                    r'soit échelonnée (mais pas réduite)',
+        description=r'Il existe \(\lambda\in \mathbb{R}\) tel que \((A-\lambda B)^T\) soit échelonnée (mais pas réduite)',
         disabled=False,
         layout=Layout(width='80%', height='30px')
 
@@ -309,7 +308,6 @@ def Ex2Chapitre2_3():
 
     return
 
-
 def Ex1Chapitre2_4():
     """Provides the correction to exercise 2 of notebook 2_4
     """
@@ -344,7 +342,7 @@ def Ex1Chapitre2_4():
     e = widgets.Checkbox(
         value=False,
         description=r'$A$ est inversible et son inverse est: <br>'
-                    r'$$\qquad \qquad A^{-1} = \begin{pmatrix} 1/2&0&1/2\\1/2&-1/3&1/6\\1/2&-2/3&5/6\end{pmatrix}.$$',
+                    r'$$\qquad \qquad A^{-1} = \begin{pmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&5/6\end{pmatrix}.$$',
         disabled=False,
         layout=Layout(width='50%', height='100px')
     )
@@ -352,9 +350,9 @@ def Ex1Chapitre2_4():
     f = widgets.Checkbox(
         value=False,
         description=r'$A$ est inversible et son inverse est:'
-                    r'$$\qquad \qquad A^{-1} = \begin{pmatrix} 1/2&0&1/2\\1/2&-1/3&-1/3\\1/2&-2/3&-1/2\end{pmatrix}.$$',
+                    r'$$\qquad \qquad A^{-1} = \begin{pmatrix} 1/2&0&1/2\\1/2&-1/3&5/3\\1/2&-2/3&-1/2\end{pmatrix}.$$',
         disabled=False,
-        layout=Layout(width='50%', height='100px')
+        layout=Layout(width='50%', height='150px')
     )
     g = widgets.Checkbox(
         value=False,
@@ -380,13 +378,13 @@ def Ex2Chapitre2_4():
 
     a = widgets.Checkbox(
         value=False,
-        description=r"Le système admet une solution unique seulement si $\alpha < -7$.",
+        description=r"Le système admet une solution unique seulement si $\alpha < 2$.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     b = widgets.Checkbox(
         value=False,
-        description=r"Le système admet une unique solution seulement si $\alpha \geq -7$.",
+        description=r"Le système admet une unique solution seulement si $\alpha \geq 2$.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
@@ -399,21 +397,21 @@ def Ex2Chapitre2_4():
     )
     d = widgets.Checkbox(
         value=False,
-        description=r"Le système n'admet aucune solution si $\alpha < -7$, alors qu'il admet une solution unique si "
-                    r"$\alpha \geq -7.$",
+        description=r"Le système n'admet aucune solution si $\alpha < 2$, alors qu'il admet une solution unique si "
+                    r"$\alpha \geq 2.$",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     e = widgets.Checkbox(
         value=False,
-        description=r"Le système n'admet aucune solution si $\alpha \neq -7$, alors qu'il admet une solution unique si"
-                    r" $\alpha = -7$.",
+        description=r"Le système admet plusieurs solutions si $\alpha \neq 2$, alors qu'il admet une solution unique si"
+                    r" $\alpha = 2$.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
     f = widgets.Checkbox(
         value=False,
-        description=r"Aucun des précédents.",
+        description=r"Le système n'admet jamais de solutions uniques, quelle que soit  $\alpha \in \mathbb{R}$.",
         disabled=False,
         layout=Layout(width='80%', height='40px')
     )
